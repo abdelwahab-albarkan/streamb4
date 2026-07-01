@@ -1,27 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
-
-const QUEUE_FILE = path.join(process.cwd(), 'data', 'publish-queue.json')
-
-function readQueue(): any[] {
-  try {
-    if (!fs.existsSync(QUEUE_FILE)) { fs.writeFileSync(QUEUE_FILE, '[]', 'utf8'); return [] }
-    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8') || '[]')
-  } catch { return [] }
-}
-
-function writeQueue(queue: any[]): void {
-  try {
-    fs.mkdirSync(path.dirname(QUEUE_FILE), { recursive: true })
-    fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2), 'utf8')
-  } catch {}
-}
+import { connectDB } from '@/lib/mongodb'
+import { PublishQueue } from '@/lib/models/PublishQueue'
 
 export async function GET() {
   try {
-    const queue = readQueue()
-    const scheduled = queue.filter((q: any) => q.scheduledAt && q.status === 'pending')
+    await connectDB()
+    const scheduled = await PublishQueue.find({ scheduledAt: { $ne: '' }, status: 'pending' }).lean()
     return NextResponse.json({ scheduled })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
@@ -35,7 +19,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing article, platforms, or scheduledAt' }, { status: 400 })
     }
 
-    const queue = readQueue()
+    await connectDB()
+
     const item = {
       id: `s_${Date.now()}`,
       article,
@@ -43,10 +28,11 @@ export async function POST(req: NextRequest) {
       scheduledAt,
       addedAt: new Date().toISOString(),
       status: 'pending',
-      type: 'scheduled',
+      result: null,
+      priority: 0,
     }
-    queue.push(item)
-    writeQueue(queue)
+
+    await new PublishQueue(item).save()
     return NextResponse.json({ ok: true, item })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
@@ -58,8 +44,8 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const id = searchParams.get('id')
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
-    const queue = readQueue().filter((q: any) => q.id !== id)
-    writeQueue(queue)
+    await connectDB()
+    await PublishQueue.findOneAndDelete({ id })
     return NextResponse.json({ ok: true })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })

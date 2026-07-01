@@ -1,21 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
-
-const FILE = path.join(process.cwd(), "data", "players.json");
-
-async function readPlayers() {
-  try {
-    const data = await fs.readFile(FILE, "utf-8");
-    return JSON.parse(data || "[]");
-  } catch {
-    return [];
-  }
-}
-
-async function writePlayers(players: any[]) {
-  await fs.writeFile(FILE, JSON.stringify(players, null, 2), "utf-8");
-}
+import { connectDB } from "@/lib/mongodb";
+import { Player } from "@/lib/models/Player";
 
 // PUT — update a player
 export async function PUT(
@@ -25,17 +10,19 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const players = await readPlayers();
+    await connectDB();
 
-    const idx = players.findIndex((p: any) => p.id === id);
-    if (idx === -1) {
+    const updated = await Player.findOneAndUpdate(
+      { id },
+      { ...body, id },
+      { new: true }
+    ).lean();
+
+    if (!updated) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    players[idx] = { ...players[idx], ...body, id };
-    await writePlayers(players);
-
-    return NextResponse.json(players[idx]);
+    return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: "Failed to update player" }, { status: 500 });
   }
@@ -48,14 +35,14 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const players = await readPlayers();
-    const filtered = players.filter((p: any) => p.id !== id);
+    await connectDB();
 
-    if (filtered.length === players.length) {
+    const deleted = await Player.findOneAndDelete({ id }).lean();
+
+    if (!deleted) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    await writePlayers(filtered);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete player" }, { status: 500 });

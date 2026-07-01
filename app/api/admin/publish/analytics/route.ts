@@ -1,22 +1,18 @@
 import { NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
-
-const ANALYTICS_FILE = path.join(process.cwd(), 'data', 'publish-analytics.json')
-
-function readAnalytics(): any {
-  try {
-    if (!fs.existsSync(ANALYTICS_FILE)) return {}
-    return JSON.parse(fs.readFileSync(ANALYTICS_FILE, 'utf8') || '{}')
-  } catch { return {} }
-}
+import { connectDB } from '@/lib/mongodb'
+import { PublishAnalytics } from '@/lib/models/PublishAnalytics'
 
 export async function GET() {
   try {
-    const data = readAnalytics()
-    const byDate: Record<string, any> = data.byDate || {}
-    const today = new Date().toISOString().slice(0, 10)
+    await connectDB()
+    const allDocs = await PublishAnalytics.find({}).lean()
 
+    const byDate: Record<string, any> = {}
+    for (const doc of allDocs) {
+      byDate[doc.date] = doc
+    }
+
+    const today = new Date().toISOString().slice(0, 10)
     const todayData = byDate[today] || { total: 0, success: 0, failed: 0, website: 0, blogger: 0, devto: 0, totalDuration: 0 }
 
     // Last 7 days
@@ -55,7 +51,7 @@ export async function GET() {
     const successRate = totalPublications > 0 ? Math.round((totalSuccess / totalPublications) * 100) : 0
 
     return NextResponse.json({
-      total: data.total || totalPublications,
+      total: totalPublications,
       today: todayData.total || 0,
       todaySuccess: todayData.success || 0,
       todayFailed: todayData.failed || 0,

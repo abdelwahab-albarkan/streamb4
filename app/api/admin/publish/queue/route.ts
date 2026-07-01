@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
-
-const QUEUE_FILE = path.join(process.cwd(), 'data', 'publish-queue.json')
-
-function readQueue(): any[] {
-  try {
-    if (!fs.existsSync(QUEUE_FILE)) { fs.writeFileSync(QUEUE_FILE, '[]', 'utf8'); return [] }
-    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8') || '[]')
-  } catch { return [] }
-}
-
-function writeQueue(queue: any[]): void {
-  try {
-    fs.mkdirSync(path.dirname(QUEUE_FILE), { recursive: true })
-    fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2), 'utf8')
-  } catch {}
-}
+import { connectDB } from '@/lib/mongodb'
+import { PublishQueue } from '@/lib/models/PublishQueue'
 
 export async function GET() {
   try {
-    return NextResponse.json({ queue: readQueue() })
+    await connectDB()
+    const queue = await PublishQueue.find({}).lean()
+    return NextResponse.json({ queue })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
   }
@@ -31,17 +17,20 @@ export async function POST(req: NextRequest) {
     const { article, platforms, scheduledAt } = await req.json()
     if (!article || !platforms?.length) return NextResponse.json({ error: 'Missing article or platforms' }, { status: 400 })
 
-    const queue = readQueue()
+    await connectDB()
+
     const item = {
       id: `q_${Date.now()}`,
       article,
       platforms,
-      scheduledAt: scheduledAt || null,
+      scheduledAt: scheduledAt || '',
       addedAt: new Date().toISOString(),
       status: 'pending',
+      result: null,
+      priority: 0,
     }
-    queue.push(item)
-    writeQueue(queue)
+
+    await new PublishQueue(item).save()
     return NextResponse.json({ ok: true, item })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
@@ -53,8 +42,8 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const id = searchParams.get('id')
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
-    const queue = readQueue().filter((q: any) => q.id !== id)
-    writeQueue(queue)
+    await connectDB()
+    await PublishQueue.findOneAndDelete({ id })
     return NextResponse.json({ ok: true })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
@@ -63,14 +52,14 @@ export async function DELETE(req: NextRequest) {
 
 export async function PUT() {
   try {
-    const queue = readQueue()
+    await connectDB()
+    const queue = await PublishQueue.find({}).lean() as any[]
     const now = new Date().toISOString()
     const next = queue.find((q: any) => q.status === 'pending' && (!q.scheduledAt || q.scheduledAt <= now))
     if (!next) return NextResponse.json({ ok: true, message: 'No items ready to process' })
 
     // Mark as processing
-    next.status = 'processing'
-    writeQueue(queue)
+    await PublishQueue.findOneAndUpdate({ id: next.id }, { status: 'processing' })
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/admin/publish`, {
@@ -80,18 +69,19 @@ export async function PUT() {
       })
       const data = await res.json()
 
-      next.status = res.ok ? 'done' : 'failed'
-      next.processedAt = new Date().toISOString()
-      next.result = data
-
-      const updated = readQueue().map((q: any) => q.id === next.id ? next : q)
-      writeQueue(updated)
+      await PublishQueue.findOneAndUpdate(
+        { id: next.id },
+        {
+          status: res.ok ? 'done' : 'failed',
+          result: data,
+        }
+      )
       return NextResponse.json({ ok: true, result: data })
     } catch (err: any) {
-      next.status = 'failed'
-      next.error = err?.message
-      const updated = readQueue().map((q: any) => q.id === next.id ? next : q)
-      writeQueue(updated)
+      await PublishQueue.findOneAndUpdate(
+        { id: next.id },
+        { status: 'failed', result: { error: err?.message } }
+      )
       return NextResponse.json({ ok: false, error: err?.message }, { status: 500 })
     }
   } catch (err: any) {

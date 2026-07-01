@@ -1,21 +1,10 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const dataFilePath = path.join(process.cwd(), "data", "posts.json");
-
-function readPosts() {
-  try {
-    if (!fs.existsSync(dataFilePath)) return [];
-    const data = fs.readFileSync(dataFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export async function GET() {
-  const posts = readPosts().filter((p: any) => p.status === "published");
+  await connectDB();
+  const posts = await Post.find({ status: "published" }).sort({ publishedAt: -1 }).limit(20).lean();
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -27,7 +16,6 @@ export async function GET() {
     <atom:link href="https://streamb4.com/api/rss" rel="self" type="application/rss+xml"/>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     ${posts
-      .slice(0, 20)
       .map(
         (post: any) => `
     <item>
@@ -35,7 +23,7 @@ export async function GET() {
       <link>https://streamb4.com/blog/${post.slug}</link>
       <guid>https://streamb4.com/blog/${post.slug}</guid>
       <description><![CDATA[${post.excerpt}]]></description>
-      <pubDate>${new Date(post.date || Date.now()).toUTCString()}</pubDate>
+      <pubDate>${new Date((post as any).date || Date.now()).toUTCString()}</pubDate>
       <category>${post.category}</category>
     </item>`
       )

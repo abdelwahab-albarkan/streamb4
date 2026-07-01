@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
-import fs from "fs/promises";
-import path from "path";
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 const BASE = "https://streamb4.com";
 
@@ -28,26 +28,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const filePath = path.join(process.cwd(), "data", "posts.json");
-    const raw = await fs.readFile(filePath, "utf8");
-    const posts: Array<{
-      slug: string;
-      status: string;
-      updatedAt?: string;
-      date?: string;
-      isFeatured?: boolean;
-    }> = JSON.parse(raw || "[]");
+    await connectDB();
+    const posts = await Post.find({ status: "published" }).lean() as any[];
 
-    blogEntries = posts
-      .filter((p) => p.status === "published")
-      .map((p) => ({
-        url: `${BASE}/blog/${p.slug}`,
-        lastModified: new Date(p.updatedAt || p.date || Date.now()),
-        changeFrequency: "weekly" as const,
-        priority: p.isFeatured ? 0.8 : 0.65,
-      }));
+    blogEntries = posts.map((p) => ({
+      url: `${BASE}/blog/${p.slug}`,
+      lastModified: new Date(p.updatedAt || p.date || Date.now()),
+      changeFrequency: "weekly" as const,
+      priority: p.isFeatured ? 0.8 : 0.65,
+    }));
   } catch {
-    // posts.json not found or empty — sitemap will only include static pages
+    // DB not available — sitemap will only include static pages
   }
 
   return [...STATIC_PAGES, ...blogEntries];

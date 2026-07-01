@@ -1,33 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const dataFilePath = path.join(process.cwd(), "data", "posts.json");
-
-function readPosts() {
-  try {
-    if (!fs.existsSync(dataFilePath)) {
-      return [];
-    }
-    const data = fs.readFileSync(dataFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
-  }
-}
-
-function writePosts(posts: any[]) {
-  try {
-    fs.writeFileSync(dataFilePath, JSON.stringify(posts, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error writing posts:", err);
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const posts = readPosts();
-  const post = posts.find((p: any) => p.id === id || p.slug === id);
+  await connectDB();
+  const post = await Post.findOne({ $or: [{ id }, { slug: id }] }).lean();
 
   if (!post) {
     return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
@@ -40,22 +18,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const postData = await request.json();
-    const posts = readPosts();
-    const index = posts.findIndex((p: any) => p.id === id);
+    await connectDB();
 
-    if (index === -1) {
+    const updatedPost = await Post.findOneAndUpdate(
+      { id },
+      { ...postData, id },
+      { new: true }
+    ).lean();
+
+    if (!updatedPost) {
       return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
     }
-
-    // Keep views and original date
-    const updatedPost = {
-      ...posts[index],
-      ...postData,
-      id: id,
-    };
-
-    posts[index] = updatedPost;
-    writePosts(posts);
 
     return NextResponse.json({ success: true, post: updatedPost });
   } catch (err: any) {
@@ -66,14 +39,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const posts = readPosts();
-    const filtered = posts.filter((p: any) => p.id !== id);
+    await connectDB();
 
-    if (posts.length === filtered.length) {
+    const deleted = await Post.findOneAndDelete({ id }).lean();
+
+    if (!deleted) {
       return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
     }
 
-    writePosts(filtered);
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

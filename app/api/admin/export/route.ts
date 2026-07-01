@@ -1,29 +1,20 @@
 import { NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
-
-async function getPosts() {
-  try {
-    const postsFilePath = path.join(process.cwd(), 'data', 'posts.json')
-    const content = await fs.readFile(postsFilePath, 'utf-8')
-    return JSON.parse(content || '[]')
-  } catch (error) {
-    return []
-  }
-}
+import { connectDB } from '@/lib/mongodb'
+import { Post } from '@/lib/models/Post'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const format = searchParams.get('format') || 'json'
-  
-  const posts = await getPosts()
-  
+
+  await connectDB()
+  const posts = await Post.find({}).lean()
+
   if (format === 'csv') {
     const headers = [
       'id','title','slug','status','category',
       'tags','views','seoScore','publishedAt'
     ]
-    
+
     const csv = [
       headers.join(','),
       ...posts.map((p: any) => [
@@ -38,7 +29,7 @@ export async function GET(req: Request) {
         p.publishedAt || ''
       ].join(','))
     ].join('\n')
-    
+
     return new NextResponse(csv, {
       headers: {
         'Content-Type': 'text/csv',
@@ -46,6 +37,6 @@ export async function GET(req: Request) {
       }
     })
   }
-  
+
   return NextResponse.json(posts)
 }

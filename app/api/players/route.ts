@@ -1,21 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
-
-const FILE = path.join(process.cwd(), "data", "players.json");
-
-async function readPlayers() {
-  try {
-    const data = await fs.readFile(FILE, "utf-8");
-    return JSON.parse(data || "[]");
-  } catch {
-    return [];
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Player } from "@/lib/models/Player";
 
 // Public GET — returns only enabled players, sorted by order
 export async function GET() {
-  const players = await readPlayers();
+  await connectDB();
+  const players = await Player.find({}).lean();
   const enabled = players
     .filter((p: any) => p.enabled !== false)
     .sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999));

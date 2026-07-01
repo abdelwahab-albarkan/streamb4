@@ -2,8 +2,6 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import fs from "fs/promises";
-import path from "path";
 import MarkdownPreview from "@/components/blog/MarkdownPreview";
 import ViewIncrementTrigger from "./ViewIncrementTrigger";
 import CommentSection from "@/components/blog/CommentSection";
@@ -16,23 +14,21 @@ import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleFAQ } from "@/components/blog/ArticleFAQ";
 import { ContentBlock } from "@/components/blog/ContentBlocks";
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 async function getPost(slug: string) {
   try {
-    const fsModule = await import("fs/promises");
-    const pathModule = await import("path");
-    const filePath = pathModule.join(process.cwd(), "data", "posts.json");
-    const data = await fsModule.readFile(filePath, "utf-8");
-    const posts = JSON.parse(data || "[]");
-
-    let post = posts.find((p: any) => p.slug === slug && p.status === "published");
+    await connectDB();
+    let post = await Post.findOne({ slug, status: "published" }).lean() as any;
 
     if (!post) {
+      // Partial slug match fallback
+      const posts = await Post.find({ status: "published" }).lean() as any[];
       post = posts.find(
         (p: any) =>
-          p.status === "published" &&
-          (p.slug?.includes(slug) || slug?.includes(p.slug))
-      );
+          p.slug?.includes(slug) || slug?.includes(p.slug)
+      ) || null;
     }
 
     return post || null;
@@ -44,12 +40,8 @@ async function getPost(slug: string) {
 
 async function getRelatedPosts(category: string, currentId: string) {
   try {
-    const dataFilePath = path.join(process.cwd(), "data", "posts.json");
-    const data = await fs.readFile(dataFilePath, "utf8");
-    const posts = JSON.parse(data || "[]");
-    return posts
-      .filter((p: any) => p.category === category && p.id !== currentId && p.status === "published")
-      .slice(0, 3);
+    await connectDB();
+    return await Post.find({ category, id: { $ne: currentId }, status: "published" }).limit(3).lean();
   } catch (err) {
     return [];
   }

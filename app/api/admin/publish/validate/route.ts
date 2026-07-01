@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { connectDB } from '@/lib/mongodb'
+import { Post } from '@/lib/models/Post'
 
 interface SEOCheck {
   id: string
@@ -95,13 +95,8 @@ export async function POST(req: NextRequest) {
     const { article } = await req.json()
     if (!article) return NextResponse.json({ error: 'Missing article' }, { status: 400 })
 
-    let existingPosts: any[] = []
-    try {
-      const postsFile = path.join(process.cwd(), 'data', 'posts.json')
-      if (fs.existsSync(postsFile)) {
-        existingPosts = JSON.parse(fs.readFileSync(postsFile, 'utf8') || '[]')
-      }
-    } catch {}
+    await connectDB()
+    const existingPosts = await Post.find({}).lean()
 
     const seoChecks = validateSEO(article)
     const duplicateWarning = checkDuplicates(article, existingPosts)

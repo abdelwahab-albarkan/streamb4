@@ -1,46 +1,29 @@
-import fs from "fs";
-import path from "path";
+import { connectDB } from '@/lib/mongodb'
+import { PublishLog } from '@/lib/models/PublishLog'
 
-const logsFilePath = path.join(process.cwd(), "data", "logs.json");
-
-function readLogs() {
+export async function addAdminLog(entry: { platform?: string; status: string; article?: string; message: string; url?: string }) {
   try {
-    if (!fs.existsSync(logsFilePath)) {
-      fs.mkdirSync(path.dirname(logsFilePath), { recursive: true });
-      fs.writeFileSync(logsFilePath, "[]", "utf8");
-      return [];
+    await connectDB()
+    await PublishLog.create({
+      timestamp: new Date().toISOString(),
+      platform: entry.platform || 'system',
+      status: entry.status,
+      article: entry.article || '',
+      message: entry.message,
+      url: entry.url || '',
+    })
+    // Keep only latest 500
+    const count = await PublishLog.countDocuments()
+    if (count > 500) {
+      const oldest = await PublishLog.find({}).sort({ timestamp: 1 }).limit(count - 500).select('_id')
+      await PublishLog.deleteMany({ _id: { $in: oldest.map((d: any) => d._id) } })
     }
-    const data = fs.readFileSync(logsFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
+  } catch (e) {
+    console.error('Logger error:', e)
   }
 }
 
-function writeLogs(logs: any[]) {
-  try {
-    fs.writeFileSync(logsFilePath, JSON.stringify(logs, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error writing logs:", err);
-  }
-}
-
-export async function logAction(action: string, user: string, details: string, ip: string = "127.0.0.1") {
-  try {
-    const logs = readLogs();
-    const newLog = {
-      id: String(Date.now()) + Math.random().toString(36).substr(2, 4),
-      action,
-      user,
-      details,
-      ip,
-      timestamp: new Date().toISOString().replace("T", " ").slice(0, 19),
-    };
-
-    logs.unshift(newLog);
-    const trimmed = logs.slice(0, 500);
-    writeLogs(trimmed);
-  } catch (err) {
-    console.error("Failed to log action:", err);
-  }
+// Legacy export for backward compatibility
+export async function logAction(action: string, user: string, details: string, _ip: string = '127.0.0.1') {
+  await addAdminLog({ status: 'info', message: `[${action}] user=${user} ${details}` })
 }

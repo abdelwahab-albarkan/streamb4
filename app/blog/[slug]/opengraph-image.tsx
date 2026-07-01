@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
-import fs from "fs/promises";
-import path from "path";
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -8,10 +8,8 @@ export const contentType = "image/jpeg";
 
 async function getPost(slug: string) {
   try {
-    const filePath = path.join(process.cwd(), "data", "posts.json");
-    const data = await fs.readFile(filePath, "utf-8");
-    const posts = JSON.parse(data || "[]");
-    return posts.find((p: any) => p.slug === slug && p.status === "published") || null;
+    await connectDB();
+    return await Post.findOne({ slug, status: "published" }).lean() || null;
   } catch {
     return null;
   }

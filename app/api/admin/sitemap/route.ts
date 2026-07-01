@@ -1,23 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const postsFilePath = path.join(process.cwd(), "data", "posts.json");
-const sitemapFilePath = path.join(process.cwd(), "public", "sitemap.xml");
-
-function readPosts() {
-  try {
-    if (!fs.existsSync(postsFilePath)) return [];
-    const data = fs.readFileSync(postsFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export async function POST() {
   try {
-    const posts = readPosts().filter((p: any) => p.status === "published");
+    await connectDB();
+    const posts = await Post.find({ status: "published" }).lean();
 
     const urls = [
       { url: "https://streamb4.com", priority: "1.0", lastmod: new Date().toISOString().split("T")[0] },
@@ -27,7 +15,7 @@ export async function POST() {
       ...posts.map((p: any) => ({
         url: `https://streamb4.com/blog/${p.slug}`,
         priority: "0.7",
-        lastmod: p.date || new Date().toISOString().split("T")[0],
+        lastmod: (p as any).date || new Date().toISOString().split("T")[0],
       })),
     ];
 
@@ -43,9 +31,6 @@ ${urls
   )
   .join("\n")}
 </urlset>`;
-
-    fs.mkdirSync(path.dirname(sitemapFilePath), { recursive: true });
-    fs.writeFileSync(sitemapFilePath, xml, "utf8");
 
     return NextResponse.json({ success: true, xml });
   } catch (err: any) {

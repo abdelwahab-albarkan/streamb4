@@ -1,32 +1,7 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import { sendWelcomeEmail } from "@/lib/email";
-
-
-const dataFilePath = path.join(process.cwd(), "data", "subscribers.json");
-
-function readSubscribers() {
-  try {
-    if (!fs.existsSync(dataFilePath)) {
-      fs.mkdirSync(path.dirname(dataFilePath), { recursive: true });
-      fs.writeFileSync(dataFilePath, "[]", "utf8");
-      return [];
-    }
-    const data = fs.readFileSync(dataFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
-  }
-}
-
-function writeSubscribers(subscribers: any[]) {
-  try {
-    fs.writeFileSync(dataFilePath, JSON.stringify(subscribers, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error writing subscribers:", err);
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Subscriber } from "@/lib/models/Subscriber";
 
 export async function POST(request: Request) {
   try {
@@ -36,21 +11,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Invalid email format" }, { status: 400 });
     }
 
-    const subscribers = readSubscribers();
-    const exists = subscribers.some((s: any) => s.email.toLowerCase() === email.toLowerCase());
+    await connectDB();
+
+    const exists = await Subscriber.findOne({ email: email.toLowerCase() }).lean();
 
     if (exists) {
       return NextResponse.json({ success: false, error: "already_subscribed" });
     }
 
     const newSubscriber = {
+      id: String(Date.now()),
       email: email.toLowerCase(),
+      name: "",
+      status: "active",
       subscribedAt: new Date().toISOString().replace("T", " ").slice(0, 19),
       source,
     };
 
-    subscribers.push(newSubscriber);
-    writeSubscribers(subscribers);
+    await new Subscriber(newSubscriber).save();
 
     try {
       await sendWelcomeEmail(email);
@@ -67,6 +45,7 @@ export async function POST(request: Request) {
 // Subscriber list is sensitive — only expose count publicly.
 // Admin reads happen through /api/admin/* routes which are JWT-protected.
 export async function GET() {
-  const subscribers = readSubscribers();
-  return NextResponse.json({ success: true, count: subscribers.length });
+  await connectDB();
+  const count = await Subscriber.countDocuments({ status: "active" });
+  return NextResponse.json({ success: true, count });
 }

@@ -8,8 +8,8 @@ import { PostCard } from "@/components/blog/PostCard";
 import { FeaturedPost } from "@/components/blog/FeaturedPost";
 import { NewsletterSection } from "@/components/blog/NewsletterSection";
 import { getCategoryImage } from "@/lib/blogImages";
-import fs from "fs/promises";
-import path from "path";
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export const metadata: Metadata = {
   title: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog",
@@ -65,10 +65,8 @@ const blogBreadcrumbSchema = {
 
 async function getPosts() {
   try {
-    const dataFilePath = path.join(process.cwd(), "data", "posts.json");
-    const data = await fs.readFile(dataFilePath, "utf8");
-    const posts = JSON.parse(data || "[]");
-    return posts.filter((p: any) => p.status === "published");
+    await connectDB();
+    return await Post.find({ status: "published" }).sort({ publishedAt: -1 }).lean();
   } catch (err) {
     return [];
   }

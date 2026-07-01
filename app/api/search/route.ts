@@ -1,18 +1,6 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const dataFilePath = path.join(process.cwd(), "data", "posts.json");
-
-function readPosts() {
-  try {
-    if (!fs.existsSync(dataFilePath)) return [];
-    const data = fs.readFileSync(dataFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    return [];
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
 
 export async function GET(request: Request) {
   try {
@@ -23,11 +11,12 @@ export async function GET(request: Request) {
       return NextResponse.json([]);
     }
 
-    const posts = readPosts();
+    await connectDB();
+
+    const posts = await Post.find({ status: "published" }).lean();
     const q = query.toLowerCase();
 
     const ranked = posts
-      .filter((p: any) => p.status === "published")
       .map((post: any) => {
         let score = 0;
 

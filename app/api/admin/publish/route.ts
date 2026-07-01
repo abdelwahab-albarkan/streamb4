@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { connectDB } from '@/lib/mongodb'
+import { Post } from '@/lib/models/Post'
+import { PublishLog } from '@/lib/models/PublishLog'
+import { PublishVersion } from '@/lib/models/PublishVersion'
+import { PublishAnalytics } from '@/lib/models/PublishAnalytics'
 
 // ─── SEO Validation ──────────────────────────────────────────────────────────
 
@@ -216,19 +219,9 @@ async function triggerIndexing(canonicalUrl: string, siteUrl: string): Promise<{
 
 // ─── Version History ─────────────────────────────────────────────────────────
 
-const VERSIONS_FILE = path.join(process.cwd(), 'data', 'publish-versions.json')
-
-function readVersions(): any[] {
+async function saveVersion(article: any, publishedTo: string[]): Promise<void> {
   try {
-    if (!fs.existsSync(VERSIONS_FILE)) { fs.writeFileSync(VERSIONS_FILE, '[]', 'utf8'); return [] }
-    return JSON.parse(fs.readFileSync(VERSIONS_FILE, 'utf8') || '[]')
-  } catch { return [] }
-}
-
-function saveVersion(article: any, publishedTo: string[]): void {
-  try {
-    const versions = readVersions()
-    versions.unshift({
+    await PublishVersion.create({
       id: `v_${Date.now()}`,
       articleSlug: article.slug,
       articleTitle: article.title,
@@ -236,85 +229,43 @@ function saveVersion(article: any, publishedTo: string[]): void {
       savedAt: new Date().toISOString(),
       snapshot: { ...article },
     })
-    const kept = versions.slice(0, 200)
-    fs.writeFileSync(VERSIONS_FILE, JSON.stringify(kept, null, 2), 'utf8')
+    // Keep only latest 200
+    const count = await PublishVersion.countDocuments()
+    if (count > 200) {
+      const oldest = await PublishVersion.find({}).sort({ savedAt: 1 }).limit(count - 200).select('_id')
+      await PublishVersion.deleteMany({ _id: { $in: oldest.map((d: any) => d._id) } })
+    }
   } catch (e) { console.error('saveVersion error:', e) }
 }
 
 // ─── Analytics ───────────────────────────────────────────────────────────────
 
-const ANALYTICS_FILE = path.join(process.cwd(), 'data', 'publish-analytics.json')
-
-function readAnalytics(): any {
+async function updateAnalytics(results: Record<string, any>, platforms: string[], durationMs: number): Promise<void> {
   try {
-    if (!fs.existsSync(ANALYTICS_FILE)) return {}
-    return JSON.parse(fs.readFileSync(ANALYTICS_FILE, 'utf8') || '{}')
-  } catch { return {} }
-}
-
-function updateAnalytics(results: Record<string, any>, platforms: string[], durationMs: number): void {
-  try {
-    const data = readAnalytics()
     const today = new Date().toISOString().slice(0, 10)
-    if (!data.byDate) data.byDate = {}
-    if (!data.byDate[today]) data.byDate[today] = { total: 0, success: 0, failed: 0, website: 0, blogger: 0, devto: 0, totalDuration: 0 }
-    const d = data.byDate[today]
-    d.total++
-    d.totalDuration = (d.totalDuration || 0) + durationMs
+    const inc: Record<string, number> = { total: 1, totalDuration: durationMs }
     for (const p of platforms) {
-      if (results[p]?.success) { d.success++; d[p] = (d[p] || 0) + 1 }
-      else d.failed++
+      if (results[p]?.success) { inc.success = (inc.success || 0) + 1; inc[p] = 1 }
+      else inc.failed = (inc.failed || 0) + 1
     }
-    if (!data.total) data.total = 0
-    data.total++
-    fs.writeFileSync(ANALYTICS_FILE, JSON.stringify(data, null, 2), 'utf8')
+    await PublishAnalytics.findOneAndUpdate(
+      { date: today },
+      { $inc: inc },
+      { upsert: true }
+    )
   } catch (e) { console.error('updateAnalytics error:', e) }
 }
 
-// ─── Publishing Queue ─────────────────────────────────────────────────────────
+// ─── Log helpers ──────────────────────────────────────────────────────────────
 
-const QUEUE_FILE = path.join(process.cwd(), 'data', 'publish-queue.json')
-
-function readQueue(): any[] {
-  try {
-    if (!fs.existsSync(QUEUE_FILE)) { fs.writeFileSync(QUEUE_FILE, '[]', 'utf8'); return [] }
-    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8') || '[]')
-  } catch { return [] }
-}
-
-function writeQueue(queue: any[]): void {
-  try { fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2), 'utf8') } catch {}
-}
-
-// ─── Log storage ─────────────────────────────────────────────────────────────
-
-const LOGS_FILE = path.join(process.cwd(), 'data', 'publish-logs.json')
-
-function readLogs(): any[] {
-  try {
-    if (!fs.existsSync(LOGS_FILE)) {
-      fs.mkdirSync(path.dirname(LOGS_FILE), { recursive: true })
-      fs.writeFileSync(LOGS_FILE, '[]', 'utf8')
-      return []
-    }
-    return JSON.parse(fs.readFileSync(LOGS_FILE, 'utf8') || '[]')
-  } catch {
-    return []
+async function addLog(entry: Omit<any, 'timestamp'>): Promise<void> {
+  await PublishLog.create({ ...entry, timestamp: new Date().toISOString() })
+  // Cap at 500
+  const count = await PublishLog.countDocuments()
+  if (count > 500) {
+    const oldest = await PublishLog.find({}).sort({ timestamp: 1 }).limit(count - 500).select('_id')
+    await PublishLog.deleteMany({ _id: { $in: oldest.map((d: any) => d._id) } })
   }
-}
-
-function writeLogs(logs: any[]): void {
-  try {
-    fs.mkdirSync(path.dirname(LOGS_FILE), { recursive: true })
-    fs.writeFileSync(LOGS_FILE, JSON.stringify(logs, null, 2), 'utf8')
-  } catch (e) {
-    console.error('publish-logs write error:', e)
-  }
-}
-
-function addLog(logs: any[], entry: Omit<any, 'timestamp'>): any[] {
-  const updated = [{ ...entry, timestamp: new Date().toISOString() }, ...logs]
-  return updated.slice(0, 500)
 }
 
 // ─── Markdown → HTML (for Blogger) ───────────────────────────────────────────
@@ -542,34 +493,20 @@ async function publishToDevTo(
 // ─── Website helper ───────────────────────────────────────────────────────────
 
 async function publishToWebsite(article: any): Promise<{ url: string }> {
-  const postsFile = path.join(process.cwd(), 'data', 'posts.json')
-  let posts: any[] = []
-
-  try {
-    if (fs.existsSync(postsFile)) {
-      posts = JSON.parse(fs.readFileSync(postsFile, 'utf8') || '[]')
-    }
-  } catch {}
-
   const now = new Date().toISOString()
-  const existing = posts.findIndex((p: any) => p.slug === article.slug)
 
-  if (existing !== -1) {
-    posts[existing] = { ...posts[existing], ...article, status: 'published', updatedAt: now }
-  } else {
-    posts.unshift({
+  await Post.findOneAndUpdate(
+    { slug: article.slug },
+    {
       ...article,
-      id:          article.id || Date.now().toString(),
-      status:      'published',
-      views:       0,
-      publishedAt: now,
-      createdAt:   now,
-      updatedAt:   now,
-    })
-  }
-
-  fs.mkdirSync(path.dirname(postsFile), { recursive: true })
-  fs.writeFileSync(postsFile, JSON.stringify(posts, null, 2), 'utf8')
+      id: article.id || Date.now().toString(),
+      status: 'published',
+      updatedAt: now,
+      publishedAt: article.publishedAt || now,
+      createdAt: article.createdAt || now,
+    },
+    { upsert: true, new: true }
+  )
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://streamb4.com'
   return { url: `${siteUrl}/blog/${article.slug}` }
@@ -594,13 +531,12 @@ export async function POST(req: NextRequest) {
     const siteUrl      = process.env.NEXT_PUBLIC_SITE_URL || 'https://streamb4.com'
     const canonicalUrl = `${siteUrl}/blog/${article.slug}`
 
+    await connectDB()
+
     // ── Read existing posts ───────────────────────────────────────────────────
     let existingPosts: any[] = []
     try {
-      const postsFile = path.join(process.cwd(), 'data', 'posts.json')
-      if (fs.existsSync(postsFile)) {
-        existingPosts = JSON.parse(fs.readFileSync(postsFile, 'utf8') || '[]')
-      }
+      existingPosts = await Post.find({ status: 'published' }).lean()
     } catch {}
 
     // ── SEO Validation ────────────────────────────────────────────────────────
@@ -622,9 +558,8 @@ export async function POST(req: NextRequest) {
     const enrichedArticle = { ...article, content: enrichResult.content }
 
     // ── Save version snapshot ─────────────────────────────────────────────────
-    saveVersion(article, platforms)
+    await saveVersion(article, platforms)
 
-    let logs    = readLogs()
     const results: Record<string, { success: boolean; url?: string; id?: any; error?: string }> = {}
     const platformTimings: Record<string, number> = {}
 
@@ -634,36 +569,37 @@ export async function POST(req: NextRequest) {
         if (platform === 'website') {
           const r = await publishToWebsite(enrichedArticle)
           results.website = { success: true, url: r.url }
-          logs = addLog(logs, { platform: 'website', status: 'success', article: article.title, url: r.url, message: 'Published to STREAMB4 website' })
+          await addLog({ platform: 'website', status: 'success', article: article.title, url: r.url, message: 'Published to STREAMB4 website' })
 
         } else if (platform === 'blogger') {
           const r = await publishToBlogger(enrichedArticle, canonicalUrl)
           results.blogger = { success: true, url: r.url, id: r.id }
-          logs = addLog(logs, { platform: 'blogger', status: 'success', article: article.title, url: r.url, message: 'Published to Google Blogger' })
+          await addLog({ platform: 'blogger', status: 'success', article: article.title, url: r.url, message: 'Published to Google Blogger' })
 
         } else if (platform === 'devto') {
           const r = await publishToDevTo(enrichedArticle, canonicalUrl)
           results.devto = { success: true, url: r.url, id: r.id }
-          logs = addLog(logs, { platform: 'devto', status: 'success', article: article.title, url: r.url, message: 'Published to DEV.to' })
+          await addLog({ platform: 'devto', status: 'success', article: article.title, url: r.url, message: 'Published to DEV.to' })
         }
 
       } catch (err: any) {
         const msg = err?.message || 'Unknown error'
         results[platform] = { success: false, error: msg }
-        logs = addLog(logs, { platform, status: 'error', article: article.title, message: `Failed: ${msg}` })
+        await addLog({ platform, status: 'error', article: article.title, message: `Failed: ${msg}` })
       }
       platformTimings[platform] = Date.now() - platformStart
     }
 
-    writeLogs(logs)
-
     // ── Post-publish pipeline ─────────────────────────────────────────────────
     const totalDuration = Date.now() - startTime
-    updateAnalytics(results, platforms, totalDuration)
+    await updateAnalytics(results, platforms, totalDuration)
     const indexingResult = await triggerIndexing(canonicalUrl, siteUrl)
     const socialContent  = generateSocialContent(article, canonicalUrl)
 
     const successCount = Object.values(results).filter(r => r.success).length
+
+    const recentLogs = await PublishLog.find({}).sort({ timestamp: -1 }).limit(30).lean()
+
     const finalReport = {
       articleTitle:       article.title,
       canonicalUrl,
@@ -685,7 +621,7 @@ export async function POST(req: NextRequest) {
       indexing:            indexingResult,
     }
 
-    return NextResponse.json({ results, logs: logs.slice(0, 30), canonicalUrl, finalReport, seoChecks, socialContent, duplicateWarning })
+    return NextResponse.json({ results, logs: recentLogs, canonicalUrl, finalReport, seoChecks, socialContent, duplicateWarning })
 
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Internal error' }, { status: 500 })
@@ -693,6 +629,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  const logs = readLogs()
+  await connectDB()
+  const logs = await PublishLog.find({}).sort({ timestamp: -1 }).limit(500).lean()
   return NextResponse.json({ logs })
 }
