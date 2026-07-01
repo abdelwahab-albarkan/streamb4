@@ -1,0 +1,63 @@
+/* STREAMB4 — humanstxt.org */
+/* The humans responsible for this website */
+
+
+/* TEAM */
+
+  Project: STREAMB4 Premium Streaming Platform
+  Contact: contact [at] streamb4 [dot] com
+  From: Worldwide
+
+  Role: Lead Developer
+  Contact: dev [at] streamb4 [dot] com
+
+  Role: UI / UX Designer
+  Contact: design [at] streamb4 [dot] com
+
+  Role: SEO Strategist
+  Contact: seo [at] streamb4 [dot] com
+
+  Role: Content & Editorial Team
+  Contact: content [at] streamb4 [dot] com
+
+
+/* THANKS */
+
+  Open-source libraries and tools that made this possible:
+    Next.js — https://nextjs.org
+    React — https://react.dev
+    Tailwind CSS — https://tailwindcss.com
+    Framer Motion — https://www.framer.com/motion
+    Lucide Icons — https://lucide.dev
+    Vercel — https://vercel.com
+    Anthropic Claude — https://anthropic.com
+
+
+/* SITE */
+
+  Website: https://streamb4.com
+  Description: Premium streaming platform with 50,000+ live channels and 180,000+ movies & series.
+  Last update: 2026/07/01
+  Standards: HTML5, CSS3, WCAG 2.1
+  Language: English
+
+
+/* TECHNOLOGY */
+
+  Frontend Framework: Next.js 15 (App Router)
+  UI Library: React 19
+  Language: TypeScript
+  Styling: Tailwind CSS
+  Animation: Framer Motion
+  Runtime: Node.js
+  Database: JSON / REST API
+  Deployment: Vercel / Edge Network
+  Icons: Lucide React
+  AI: Anthropic Claude API
+
+
+/* VERSION */
+
+  Version: 2.0.0
+  Build Date: 2026-07-01
+  Status: Production

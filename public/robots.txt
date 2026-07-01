@@ -1,0 +1,69 @@
+# STREAMB4 — robots.txt
+# https://streamb4.com/robots.txt
+# Updated: 2026-07-01
+
+# ──────────────────────────────────────────────────────────────────
+# Global crawl rules
+# ──────────────────────────────────────────────────────────────────
+User-agent: *
+Allow: /
+Allow: /blog?category=
+Allow: /blog?q=
+Disallow: /api/
+Disallow: /admin/
+Disallow: /offline
+Disallow: /_next/
+
+# ──────────────────────────────────────────────────────────────────
+# AI crawlers — explicitly allowed for llms.txt discovery
+# ──────────────────────────────────────────────────────────────────
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# ──────────────────────────────────────────────────────────────────
+# SEO crawl-rate hints
+# ──────────────────────────────────────────────────────────────────
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 10
+
+# ──────────────────────────────────────────────────────────────────
+# Sitemaps
+# ──────────────────────────────────────────────────────────────────
+Sitemap: https://streamb4.com/sitemap.xml
+
+# ──────────────────────────────────────────────────────────────────
+# AI / LLM discovery
+# See: https://streamb4.com/llms.txt
+# ──────────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────────
+# Security contact
+# See: https://streamb4.com/.well-known/security.txt
+# ──────────────────────────────────────────────────────────────────
