@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Inter } from 'next/font/google'
 import "./globals.css";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
-import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import MicrosoftClarity from '@/components/analytics/MicrosoftClarity'
 import Script from 'next/script'
@@ -84,7 +84,9 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/manifest.json",
-  // verification: { google: "YOUR_GSC_TOKEN_HERE" },  // uncomment and add GSC token
+  verification: {
+    google: "SmArIYxUGLB9ZZ3dF_ssAcaIqDLgHwUWgaBXd7LrptE",
+  },
 };
 
 // ─── JSON-LD Helpers ──────────────────────────────────────────────────────────
@@ -215,7 +217,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LayoutWrapper>
           {children}
         </LayoutWrapper>
-        <GoogleAnalytics />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA4_ID!} />
         <MetaPixel />
         <MicrosoftClarity />
         <Script id="register-sw" strategy="afterInteractive">
