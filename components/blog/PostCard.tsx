@@ -17,8 +17,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
     <Link href={`/blog/${post.slug}`}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
         className="group rounded-[24px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 h-full flex flex-col relative"
         style={{

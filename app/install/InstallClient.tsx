@@ -311,7 +311,7 @@ export default function InstallClient() {
         </motion.div>
 
         {/* ═══ VIDEO SECTION — matches reference image ═══ */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.div
             key={activeDevice}
             initial={{opacity:0, y:20}}
@@ -558,7 +558,7 @@ export default function InstallClient() {
         </AnimatePresence>
 
         {/* ═══ INSTALLATION STEPS ═══ */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.div
             key={`steps-${activeDevice}`}
             initial={{ opacity: 0, y: 24 }}

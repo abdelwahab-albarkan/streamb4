@@ -301,7 +301,7 @@ export default function PricingClient() {
         {/* ═══ PRICING CARDS ═══ */}
         <section className="px-4 sm:px-6 lg:px-8 mb-20">
           <div className="max-w-5xl mx-auto">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <motion.div
                 key={activeConnections}
                 initial={{ opacity: 0, y: 30 }}
