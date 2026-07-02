@@ -246,18 +246,22 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
         </div>
 
         {/* Featured Image */}
-        {post.featuredImage && (
-          <div className="aspect-video rounded-[28px] overflow-hidden border border-white/[0.06] max-h-[500px] relative">
-            <Image
-              src={post.featuredImage}
-              alt={post.title}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-              className="object-cover"
-            />
-          </div>
-        )}
+        {(post.featuredImage || post.category) && (() => {
+          const heroImg = post.featuredImage || getCategoryImage(post.category)
+          return (
+            <div className="aspect-video rounded-[28px] overflow-hidden border border-white/[0.06] max-h-[500px] relative">
+              <Image
+                src={heroImg}
+                alt={post.title}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                className="object-cover"
+                unoptimized={heroImg.startsWith('http')}
+              />
+            </div>
+          )
+        })()}
 
         {/* Grid Area: Content + TOC Sticky Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
