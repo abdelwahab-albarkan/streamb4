@@ -1,99 +1,96 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import type { TocItem } from '@/lib/tocUtils'
 
-interface TOCItem {
-  level: number
-  text: string
-  id: string
+interface Props {
+  toc: TocItem[]
 }
 
-interface TableOfContentsProps {
-  content: string
-}
-
-export function TableOfContents({ content }: TableOfContentsProps) {
+export function TableOfContents({ toc }: Props) {
   const [activeId, setActiveId] = useState<string>('')
-  const [headings, setHeadings] = useState<TOCItem[]>([])
 
   useEffect(() => {
-    if (!content) return
-    const matched = (content.match(/^#{2,4} .+/gm) || []).map((h) => {
-      const level = h.match(/^#+/)?.[0].length || 2
-      const text = h.replace(/^#+\s/, '')
-      const id = text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-      return { level, text, id }
-    })
-    setHeadings(matched)
-  }, [content])
+    if (toc.length === 0) return
 
-  useEffect(() => {
-    if (headings.length === 0) return
+    const elements = toc
+      .map(({ id }) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null)
 
-    const handleScroll = () => {
-      let currentActive = ''
-      for (const heading of headings) {
-        const el = document.getElementById(heading.id)
-        if (el) {
-          const rect = el.getBoundingClientRect()
-          // If the element is near the top of the viewport
-          if (rect.top <= 120) {
-            currentActive = heading.id
-          }
+    if (elements.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the topmost heading that is currently intersecting
+        const intersecting = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+
+        if (intersecting.length > 0) {
+          setActiveId(intersecting[0].target.id)
         }
+      },
+      {
+        // Trigger when heading enters the upper portion of the viewport
+        rootMargin: '-88px 0px -68% 0px',
+        threshold: 0,
       }
-      setActiveId(currentActive || headings[0].id)
+    )
+
+    elements.forEach((el) => observer.observe(el))
+
+    // Set initial active to the first heading
+    if (!activeId && elements.length > 0) {
+      setActiveId(elements[0].id)
     }
 
-    window.addEventListener('scroll', handleScroll)
-    handleScroll() // run once initially
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [headings])
+    return () => observer.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toc])
 
-  if (headings.length === 0) {
-    return <p className="text-gray-600 text-xs">No sections found</p>
-  }
+  const scrollTo = useCallback((id: string) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY - 96
+    window.scrollTo({ top, behavior: 'smooth' })
+  }, [])
 
-  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault()
-    const element = document.getElementById(id)
-    if (element) {
-      const offset = 90
-      const bodyRect = document.body.getBoundingClientRect().top
-      const elementRect = element.getBoundingClientRect().top
-      const elementPosition = elementRect - bodyRect
-      const offsetPosition = elementPosition - offset
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      })
-      setActiveId(id)
-    }
-  }
+  if (toc.length === 0) return null
 
   return (
-    <nav className="space-y-1">
-      <ul className="space-y-2">
-        {headings.map((h, i) => {
-          const isActive = activeId === h.id
+    <nav aria-label="Table of contents">
+      <ul className="space-y-0.5">
+        {toc.map(({ id, text, level }) => {
+          const isActive = activeId === id
+          const isH3 = level === 3
+
           return (
-            <li key={i} style={{ paddingLeft: `${(h.level - 2) * 12}px` }}>
-              <a
-                href={`#${h.id}`}
-                onClick={(e) => handleScrollTo(e, h.id)}
-                className={`text-xs transition-colors duration-150 leading-relaxed block py-0.5 truncate ${
+            <li key={id} className={isH3 ? 'pl-4' : ''}>
+              <button
+                onClick={() => scrollTo(id)}
+                title={text}
+                className={[
+                  'group relative w-full text-left py-1.5 px-3 rounded-lg',
+                  'transition-all duration-200 text-[11px] leading-snug',
+                  isH3 ? 'font-medium' : 'font-semibold tracking-wide',
                   isActive
-                    ? 'text-orange-500 font-black'
-                    : 'text-gray-500 hover:text-white font-medium'
-                }`}
+                    ? 'text-orange-400 bg-orange-500/[0.08]'
+                    : 'text-gray-500 hover:text-gray-200 hover:bg-white/[0.03]',
+                ].join(' ')}
               >
-                {h.level === 2 ? '▸ ' : '◦ '}
-                {h.text}
-              </a>
+                {/* Orange active indicator */}
+                <span
+                  aria-hidden
+                  className={[
+                    'absolute left-0 top-1/2 -translate-y-1/2 w-[2px] rounded-full',
+                    'transition-all duration-200',
+                    isActive ? 'h-4 bg-orange-500 opacity-100' : 'h-0 opacity-0',
+                  ].join(' ')}
+                />
+                <span className={isActive ? 'pl-1.5' : ''}>
+                  {text}
+                </span>
+              </button>
             </li>
           )
         })}
@@ -101,4 +98,5 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     </nav>
   )
 }
+
 export default TableOfContents

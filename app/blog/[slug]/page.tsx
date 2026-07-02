@@ -17,6 +17,7 @@ import { ContentBlock } from "@/components/blog/ContentBlocks";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
+import { extractToc } from "@/lib/tocUtils";
 
 async function getPost(slug: string) {
   try {
@@ -118,17 +119,8 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
   const relatedPosts = await getRelatedPosts(post.category, post.id);
 
-  // Generate Table of Contents
-  const headings = post.content.match(/^#{2,3} .+/gm) || [];
-  const toc = headings.map((h: string) => {
-    const level = h.match(/^#+/)?.[0].length || 2;
-    const text = h.replace(/^#+\s/, "");
-    const id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    return { level, text, id };
-  });
+  // Generate Table of Contents (uses github-slugger algorithm to match rehype-slug output)
+  const toc = extractToc(post.content);
 
   const articleFaqs: { question: string; answer: string }[] = Array.isArray(post.faqs) && post.faqs.length > 0
     ? post.faqs
@@ -197,7 +189,6 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(faqJsonLd) }} />
       )}
       <ViewIncrementTrigger slug={slug} />
-      <MobileTOC toc={toc} />
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 flex-1 w-full space-y-12">
@@ -267,6 +258,9 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
           {/* Content */}
           <div className="lg:col-span-2 space-y-12">
+            {/* Mobile TOC — collapsible card, hidden on desktop */}
+            <MobileTOC toc={toc} />
+
             <article className="prose prose-base md:prose-lg prose-invert prose-orange max-w-none text-gray-300 leading-relaxed space-y-6">
               <MarkdownPreview source={post.content} />
             </article>
@@ -292,7 +286,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             {toc.length > 0 && (
               <div className="p-6 rounded-[24px] border border-white/[0.06] bg-white/[0.01] hidden lg:block">
                 <h4 className="font-anton text-sm text-white uppercase tracking-wider mb-4">Contents</h4>
-                <TableOfContents content={post.content} />
+                <TableOfContents toc={toc} />
               </div>
             )}
 
