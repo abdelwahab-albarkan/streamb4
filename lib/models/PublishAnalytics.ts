@@ -20,6 +20,6 @@ const PublishAnalyticsSchema = new Schema<IPublishAnalytics>({
   blogger: { type: Number, default: 0 },
   devto: { type: Number, default: 0 },
   totalDuration: { type: Number, default: 0 },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const PublishAnalytics: Model<IPublishAnalytics> = mongoose.models.PublishAnalytics || mongoose.model<IPublishAnalytics>('PublishAnalytics', PublishAnalyticsSchema)

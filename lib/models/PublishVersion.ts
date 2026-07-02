@@ -16,6 +16,6 @@ const PublishVersionSchema = new Schema<IPublishVersion>({
   publishedTo: [String],
   savedAt: { type: String, default: '' },
   snapshot: { type: Schema.Types.Mixed, default: {} },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const PublishVersion: Model<IPublishVersion> = mongoose.models.PublishVersion || mongoose.model<IPublishVersion>('PublishVersion', PublishVersionSchema)

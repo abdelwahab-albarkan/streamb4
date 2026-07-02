@@ -20,6 +20,6 @@ const UserSchema = new Schema<IUser>({
   avatar: { type: String, default: '' },
   createdAt: { type: String, default: '' },
   lastLogin: { type: String, default: '' },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)

@@ -16,6 +16,6 @@ const SubscriberSchema = new Schema<ISubscriber>({
   status: { type: String, default: 'active' },
   subscribedAt: { type: String, default: '' },
   source: { type: String, default: 'website' },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const Subscriber: Model<ISubscriber> = mongoose.models.Subscriber || mongoose.model<ISubscriber>('Subscriber', SubscriberSchema)

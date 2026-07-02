@@ -62,6 +62,6 @@ const PostSchema = new Schema<IPost>({
   publishedAt: { type: String, default: '' },
   updatedAt: { type: String, default: '' },
   createdAt: { type: String, default: '' },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const Post: Model<IPost> = mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)

@@ -8,6 +8,6 @@ export interface ISetting extends Document {
 const SettingSchema = new Schema<ISetting>({
   key: { type: String, required: true, unique: true },
   value: { type: Schema.Types.Mixed },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const Setting: Model<ISetting> = mongoose.models.Setting || mongoose.model<ISetting>('Setting', SettingSchema)

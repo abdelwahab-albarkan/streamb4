@@ -24,6 +24,6 @@ const CommentSchema = new Schema<IComment>({
   createdAt: { type: String, default: '' },
   likes: { type: Number, default: 0 },
   avatar: { type: String, default: '' },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const Comment: Model<IComment> = mongoose.models.Comment || mongoose.model<IComment>('Comment', CommentSchema)

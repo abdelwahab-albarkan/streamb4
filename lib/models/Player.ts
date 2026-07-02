@@ -50,6 +50,6 @@ const PlayerSchema = new Schema<IPlayer>({
   website: { type: String, default: '' },
   lastUpdated: { type: String, default: '' },
   order: { type: Number, default: 0 },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const Player: Model<IPlayer> = mongoose.models.Player || mongoose.model<IPlayer>('Player', PlayerSchema)

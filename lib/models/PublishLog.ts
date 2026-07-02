@@ -16,6 +16,6 @@ const PublishLogSchema = new Schema<IPublishLog>({
   article: { type: String, default: '' },
   message: { type: String, default: '' },
   url: { type: String, default: '' },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const PublishLog: Model<IPublishLog> = mongoose.models.PublishLog || mongoose.model<IPublishLog>('PublishLog', PublishLogSchema)

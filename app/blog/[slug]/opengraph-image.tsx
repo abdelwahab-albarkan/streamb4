@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { serializeDoc } from "@/lib/serialize";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -9,7 +10,8 @@ export const contentType = "image/jpeg";
 async function getPost(slug: string) {
   try {
     await connectDB();
-    return await Post.findOne({ slug, status: "published" }).lean() || null;
+    const doc = await Post.findOne({ slug, status: "published" }).lean();
+    return doc ? serializeDoc(doc as any) : null;
   } catch {
     return null;
   }

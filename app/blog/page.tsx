@@ -10,6 +10,7 @@ import { NewsletterSection } from "@/components/blog/NewsletterSection";
 import { getCategoryImage } from "@/lib/blogImages";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { serializeDocs } from "@/lib/serialize";
 
 export const metadata: Metadata = {
   title: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog",
@@ -66,7 +67,10 @@ const blogBreadcrumbSchema = {
 async function getPosts() {
   try {
     await connectDB();
-    return await Post.find({ status: "published" }).sort({ publishedAt: -1 }).lean();
+    const docs = await Post.find({ status: "published" }).sort({ publishedAt: -1 }).lean();
+    // serializeDocs converts every ObjectId → hex string and Date → ISO string in one pass,
+    // making all documents safe for React Server Component payload serialization.
+    return serializeDocs(docs as any[]);
   } catch (err) {
     return [];
   }

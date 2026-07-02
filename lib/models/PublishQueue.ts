@@ -20,6 +20,6 @@ const PublishQueueSchema = new Schema<IPublishQueue>({
   status: { type: String, default: 'pending' },
   result: { type: Schema.Types.Mixed, default: null },
   priority: { type: Number, default: 0 },
-}, { timestamps: false })
+}, { timestamps: false, versionKey: false })
 
 export const PublishQueue: Model<IPublishQueue> = mongoose.models.PublishQueue || mongoose.model<IPublishQueue>('PublishQueue', PublishQueueSchema)

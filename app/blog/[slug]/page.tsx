@@ -16,6 +16,7 @@ import { ArticleFAQ } from "@/components/blog/ArticleFAQ";
 import { ContentBlock } from "@/components/blog/ContentBlocks";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { serializeDoc, serializeDocs } from "@/lib/serialize";
 
 async function getPost(slug: string) {
   try {
@@ -31,7 +32,9 @@ async function getPost(slug: string) {
       ) || null;
     }
 
-    return post || null;
+    // serializeDoc converts every ObjectId → hex string and Date → ISO string in one pass.
+    // This is required for React Server Component payload safety on client navigation.
+    return post ? serializeDoc(post) : null;
   } catch (error) {
     console.error("getPost error:", error);
     return null;
@@ -41,7 +44,8 @@ async function getPost(slug: string) {
 async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
-    return await Post.find({ category, id: { $ne: currentId }, status: "published" }).limit(3).lean();
+    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).limit(3).lean();
+    return serializeDocs(docs as any[]);
   } catch (err) {
     return [];
   }
