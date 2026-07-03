@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { MediaLibraryModal } from "./MediaLibraryModal";
 
 interface PublishPanelProps {
   post: any;
@@ -11,22 +12,21 @@ interface PublishPanelProps {
 }
 
 export default function PublishPanel({ post, setPost, wordCount, readingTime }: PublishPanelProps) {
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     const tagsArray = val.split(",").map((t) => t.trim());
     setPost((p: any) => ({ ...p, tags: tagsArray }));
   };
 
-  const triggerUploadMock = () => {
-    // Mock image picker / library selector
-    const mockImageUrls = [
-      "/devices/iPhone-14-PRO- (2).png",
-      "/devices/iPhone-14-PRO- (3).png",
-      "/devices/iPhone-14-PRO- (4).png",
-      "/og-image.jpg",
-    ];
-    const randomImg = mockImageUrls[Math.floor(Math.random() * mockImageUrls.length)];
-    setPost((p: any) => ({ ...p, featuredImage: randomImg, ogImage: randomImg }));
+  const handleImageSelect = (url: string) => {
+    setPost((p: any) => ({
+      ...p,
+      featuredImage: url,
+      ogImage: p.ogImage || url,
+    }));
+    setShowMediaLibrary(false);
   };
 
   return (
@@ -140,25 +140,46 @@ export default function PublishPanel({ post, setPost, wordCount, readingTime }: 
         <label className="text-white font-bold text-xs uppercase tracking-wider block">Featured Image</label>
 
         {post.featuredImage ? (
-          <div className="relative rounded-xl overflow-hidden aspect-video border border-white/[0.08]">
+          <div
+            className="relative rounded-xl overflow-hidden aspect-video border border-white/[0.08] cursor-pointer group"
+            onClick={() => setShowMediaLibrary(true)}
+            title="Click to change image"
+          >
             <img src={post.featuredImage} alt="Featured thumbnail" className="w-full h-full object-cover" />
+            {/* Overlay: change / remove */}
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+              <span className="text-white text-xs font-bold bg-white/10 px-3 py-1.5 rounded-lg">
+                Change
+              </span>
+            </div>
             <button
               type="button"
-              onClick={() => setPost((p: any) => ({ ...p, featuredImage: "" }))}
-              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPost((p: any) => ({ ...p, featuredImage: "" }));
+              }}
+              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors z-10"
             >
               ×
             </button>
           </div>
         ) : (
           <div
-            onClick={triggerUploadMock}
+            onClick={() => setShowMediaLibrary(true)}
             className="border-2 border-dashed rounded-xl aspect-video flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-orange-500/40 transition-colors"
             style={{ borderColor: "rgba(255,255,255,0.08)" }}
           >
             <span className="text-gray-600 text-2xl">🖼</span>
             <span className="text-gray-600 text-xs font-semibold">Click to pick from library</span>
           </div>
+        )}
+
+        {/* Media Library Modal (React Portal) */}
+        {showMediaLibrary && (
+          <MediaLibraryModal
+            onSelect={handleImageSelect}
+            onClose={() => setShowMediaLibrary(false)}
+          />
         )}
       </div>
 
