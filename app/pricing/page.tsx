@@ -27,7 +27,47 @@ function safeJsonLd(data: object): string {
     .replace(/&/g, '\\u0026')
 }
 
-// Shared offer definitions — used by both Product and OfferCatalog
+// ─── Shared digital-delivery shipping + return policy ─────────────────────────
+// Required by Google Merchant Listings for Product/Offer schema.
+// For digital subscriptions: no physical shipment, instant delivery, no returns.
+
+const DIGITAL_SHIPPING = {
+  "@type": "OfferShippingDetails",
+  "@id": "https://streamb4.com/#digital-shipping",
+  "shippingRate": {
+    "@type": "MonetaryAmount",
+    "value": "0",
+    "currency": "USD"
+  },
+  "shippingDestination": {
+    "@type": "DefinedRegion",
+    "addressCountry": "US"
+  },
+  "deliveryTime": {
+    "@type": "ShippingDeliveryTime",
+    "handlingTime": {
+      "@type": "QuantitativeValue",
+      "minValue": "0",
+      "maxValue": "0",
+      "unitCode": "DAY"
+    },
+    "transitTime": {
+      "@type": "QuantitativeValue",
+      "minValue": "0",
+      "maxValue": "0",
+      "unitCode": "DAY"
+    }
+  }
+};
+
+const DIGITAL_RETURN_POLICY = {
+  "@type": "MerchantReturnPolicy",
+  "@id": "https://streamb4.com/#return-policy",
+  "applicableCountry": "US",
+  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+};
+
+// ─── Shared offer definitions — used by both Product and OfferCatalog ─────────
 const IPTV_OFFERS = [
   {
     "@type": "Offer",
@@ -39,7 +79,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -51,7 +93,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -63,7 +107,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -75,7 +121,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -87,7 +135,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -99,7 +149,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   },
   {
     "@type": "Offer",
@@ -111,7 +163,9 @@ const IPTV_OFFERS = [
     "url": "https://streamb4.com/pricing",
     "priceValidUntil": "2027-01-01",
     "seller": { "@id": "https://streamb4.com/#organization" },
-    "category": "IPTV Subscription"
+    "category": "IPTV Subscription",
+    "shippingDetails": DIGITAL_SHIPPING,
+    "hasMerchantReturnPolicy": DIGITAL_RETURN_POLICY
   }
 ];
 
