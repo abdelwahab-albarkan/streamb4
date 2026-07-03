@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import MouseGlow from "@/components/ui/MouseGlow";
 import TawkChat from "@/components/common/TawkChat";
 import PageTransition from "@/components/ui/PageTransition";
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion, domMax } from "framer-motion";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }
 
   return (
-    <LazyMotion features={domAnimation}>
+    <LazyMotion features={domMax}>
       <MouseGlow />
       <Navbar />
       <PageTransition>
