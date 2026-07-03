@@ -13,11 +13,21 @@ export async function POST(request: Request) {
     const postData = await request.json();
     await connectDB();
 
+    // Use caller-supplied id (from client persistPost) or generate one
+    const id = postData.id?.trim() || String(Date.now());
+
+    // Guarantee required fields pass schema validation
+    const title = postData.title?.trim() || "Untitled Draft";
+    const slug  = postData.slug?.trim()  || `draft-${id}`;
+
     const newPost = {
       ...postData,
-      id: String(Date.now()),
-      views: 0,
-      date: new Date().toISOString().split("T")[0],
+      id,
+      title,
+      slug,
+      status: postData.status || "draft",
+      views:  0,
+      date:   new Date().toISOString().split("T")[0],
     };
 
     await new Post(newPost).save();

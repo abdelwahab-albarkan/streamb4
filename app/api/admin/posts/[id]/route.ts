@@ -20,9 +20,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const postData = await request.json();
     await connectDB();
 
+    // Never blank out required fields during an update
+    const updatePayload: Record<string, any> = { ...postData, id };
+    if (!updatePayload.title?.trim()) delete updatePayload.title;
+    if (!updatePayload.slug?.trim())  delete updatePayload.slug;
+
     const updatedPost = await Post.findOneAndUpdate(
       { id },
-      { ...postData, id },
+      updatePayload,
       { new: true }
     ).lean();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -10,8 +10,26 @@ import { SEOPanel, SchemaPanel } from "@/components/admin/editor/SEOPanel";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
+/** Generate a URL-safe slug from a title string */
+function makeSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Ensure a draft has the minimum fields needed to pass the Post schema */
+function ensureDraftFields(post: any, fallbackId: string): any {
+  return {
+    ...post,
+    title: post.title?.trim() || "Untitled Draft",
+    slug:  post.slug?.trim()  || `draft-${fallbackId}`,
+  };
+}
+
 export default function NewPostPage() {
   const router = useRouter();
+
   const [post, setPost] = useState<any>({
     title: "",
     slug: "",
@@ -32,75 +50,76 @@ export default function NewPostPage() {
     scheduledAt: null,
   });
 
-  const [seoScore, setSeoScore] = useState(0);
-  const [wordCount, setWordCount] = useState(0);
-  const [readingTime, setReadingTime] = useState(0);
-  const [autoSaveStatus, setAutoSaveStatus] = useState("saved");
-  const [activePanel, setActivePanel] = useState("publish");
-  const [isSaving, setIsSaving] = useState(false);
+  const [seoScore, setSeoScore]           = useState(0);
+  const [wordCount, setWordCount]         = useState(0);
+  const [readingTime, setReadingTime]     = useState(0);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"saved" | "saving">("saved");
+  const [activePanel, setActivePanel]     = useState("publish");
+  const [isSaving, setIsSaving]           = useState(false);
 
-  // Auto-generate slug from title (only if slug is not set, to avoid overwriting AI-generated slugs)
+  /**
+   * Track the `id` field (string, Date.now()) assigned by the API on first
+   * save.  Undefined means "not yet persisted to MongoDB".
+   */
+  const [savedPostId, setSavedPostId] = useState<string | undefined>(undefined);
+  const savedPostIdRef = useRef<string | undefined>(undefined);
+  savedPostIdRef.current = savedPostId;
+
+  // Keep a stable ref to `post` for the auto-save interval
+  const postRef = useRef(post);
+  postRef.current = post;
+
+  // ── Auto-generate slug from title ──────────────────────────────────────────
   useEffect(() => {
     if (post.title && !post.slug) {
-      const slug = post.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-      setPost((p: any) => ({ ...p, slug }));
+      setPost((p: any) => ({ ...p, slug: makeSlug(post.title) }));
     }
   }, [post.title, post.slug]);
 
-  // Load content from AI writer on mount
+  // ── Load from AI Writer ────────────────────────────────────────────────────
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const fromAI = params.get("from") === "ai-writer";
-      if (fromAI) {
-        const saved = localStorage.getItem("ai_generated_post");
-        if (saved) {
-          try {
-            const aiPost = JSON.parse(saved);
-            setPost((prev: any) => ({
-              ...prev,
-              title: aiPost.title || "",
-              slug: aiPost.slug || "",
-              content: aiPost.content || "",
-              excerpt: aiPost.excerpt || "",
-              seoTitle: aiPost.seoTitle || "",
-              metaDescription: aiPost.metaDescription || "",
-              focusKeyword: aiPost.focusKeyword || "",
-              featuredImage: aiPost.featuredImage || "",
-              ogImage: aiPost.ogImage || "",
-              category: aiPost.category || "",
-              tags: aiPost.tags || [],
-              seoScore: aiPost.seoScore || 0,
-              readingTime: aiPost.readingTime || 0,
-            }));
-            localStorage.removeItem("ai_generated_post");
-          } catch (e) {
-            console.error("Failed to load AI post:", e);
-          }
-        }
-      }
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("from") !== "ai-writer") return;
+
+    const saved = localStorage.getItem("ai_generated_post");
+    if (!saved) return;
+    try {
+      const aiPost = JSON.parse(saved);
+      setPost((prev: any) => ({
+        ...prev,
+        title:           aiPost.title           || "",
+        slug:            aiPost.slug            || "",
+        content:         aiPost.content         || "",
+        excerpt:         aiPost.excerpt         || "",
+        seoTitle:        aiPost.seoTitle        || "",
+        metaDescription: aiPost.metaDescription || "",
+        focusKeyword:    aiPost.focusKeyword    || "",
+        featuredImage:   aiPost.featuredImage   || "",
+        ogImage:         aiPost.ogImage         || "",
+        category:        aiPost.category        || "",
+        tags:            aiPost.tags            || [],
+        seoScore:        aiPost.seoScore        || 0,
+        readingTime:     aiPost.readingTime     || 0,
+      }));
+      localStorage.removeItem("ai_generated_post");
+    } catch (e) {
+      console.error("Failed to load AI post:", e);
     }
   }, []);
 
-  // Calculate word count + reading time
+  // ── Word count + reading time ──────────────────────────────────────────────
   useEffect(() => {
-    const text = post.content || "";
-    const words = text
-      .replace(/[#*`\[\]()]/g, "")
-      .split(/\s+/)
-      .filter(Boolean).length;
+    const text  = post.content || "";
+    const words = text.replace(/[#*`\[\]()]/g, "").split(/\s+/).filter(Boolean).length;
     setWordCount(words);
     setReadingTime(Math.max(1, Math.ceil(words / 200)));
   }, [post.content]);
 
-  // Calculate SEO score live
+  // ── SEO score ─────────────────────────────────────────────────────────────
   useEffect(() => {
     let score = 0;
     const kw = (post.focusKeyword || "").toLowerCase();
-
     if ((post.seoTitle || "").length >= 30 && (post.seoTitle || "").length <= 60) score += 15;
     if (kw && (post.seoTitle || "").toLowerCase().includes(kw)) score += 15;
     if ((post.metaDescription || "").length >= 120 && (post.metaDescription || "").length <= 155) score += 15;
@@ -109,108 +128,149 @@ export default function NewPostPage() {
     if (kw && (post.content || "").toLowerCase().includes(kw)) score += 10;
     if (post.featuredImage) score += 10;
     if (kw && (post.slug || "").includes(kw.replace(/\s+/g, "-"))) score += 10;
-
     setSeoScore(score);
   }, [post, wordCount]);
 
-  // Auto-save every 30s
+  // ── Auto-save every 30 s → API (after first save) or localStorage ─────────
   useEffect(() => {
-    const timer = setInterval(() => {
-      setAutoSaveStatus("saving...");
-      localStorage.setItem("streamb4_draft_post", JSON.stringify(post));
-      setTimeout(() => setAutoSaveStatus("saved"), 800);
+    const timer = setInterval(async () => {
+      const currentPost = postRef.current;
+      const currentId   = savedPostIdRef.current;
+
+      if (currentId) {
+        // Already in MongoDB — keep it up to date silently
+        setAutoSaveStatus("saving");
+        try {
+          await fetch(`/api/admin/posts/${currentId}`, {
+            method:  "PUT",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ ...currentPost, status: currentPost.status || "draft" }),
+          });
+        } catch { /* silent */ }
+        setAutoSaveStatus("saved");
+      } else {
+        // Not yet saved — fall back to localStorage only
+        localStorage.setItem("streamb4_draft_post", JSON.stringify(currentPost));
+        setAutoSaveStatus("saving");
+        setTimeout(() => setAutoSaveStatus("saved"), 500);
+      }
     }, 30000);
     return () => clearInterval(timer);
-  }, [post]);
+  }, []); // mount-only; refs keep values current
 
-  const saveDraft = () => {
-    setAutoSaveStatus("saving...");
-    localStorage.setItem("streamb4_draft_post", JSON.stringify(post));
-    setTimeout(() => setAutoSaveStatus("saved"), 500);
-  };
+  // ── Persist to API ─────────────────────────────────────────────────────────
+  /**
+   * Core save function.
+   * - If never saved: POST (creates new document).
+   * - If already saved: PUT (updates existing).
+   * - `statusOverride` lets "Save Draft" force `status:"draft"` and
+   *   "Publish" force `status:"published"` regardless of panel state.
+   */
+  const persistPost = async (statusOverride: "draft" | "published"): Promise<boolean> => {
+    const fallbackId = String(Date.now());
+    const payload = ensureDraftFields(
+      { ...post, status: statusOverride },
+      fallbackId,
+    );
 
-  const handleFormat = (formatType: string) => {
-    let tag = "";
-    switch (formatType) {
-      case "H1":
-        tag = "\n# ";
-        break;
-      case "H2":
-        tag = "\n## ";
-        break;
-      case "H3":
-        tag = "\n### ";
-        break;
-      case "Bold":
-        tag = "**BoldText**";
-        break;
-      case "Italic":
-        tag = "*ItalicText*";
-        break;
-      case "Strike":
-        tag = "~~Strikethrough~~";
-        break;
-      case "Code":
-        tag = "`CodeBlock`";
-        break;
-      case "Bullet":
-        tag = "\n- Item";
-        break;
-      case "Numbered":
-        tag = "\n1. Item";
-        break;
-      case "Quote":
-        tag = "\n> Quote text";
-        break;
-      case "Link":
-        tag = "[Link Title](https://streamb4.com)";
-        break;
-      case "Image":
-        tag = "![Alt Description](/og-image.jpg)";
-        break;
-      case "Table":
-        tag = "\n| Header 1 | Header 2 |\n|---|---|\n| Cell 1 | Cell 2 |";
-        break;
-      case "Divider":
-        tag = "\n\n---\n\n";
-        break;
-      case "FAQ":
-        tag = "\n\n### FAQ Section\n- **Q: Question?**\n  A: Answer.";
-        break;
-      case "CTA":
-        tag = "\n\n> **GET STREAMB4 NOW** - Experience 50,000+ live channels in 4K UHD. Click here to subscribe.";
-        break;
-      case "Callout":
-        tag = "\n\n> [!NOTE]\n> Essential requirements, critical steps, or must-know information";
-        break;
-      case "Columns":
-        tag = "\n\n<div className=\"grid grid-cols-2 gap-4\">\n<div>Column 1</div>\n<div>Column 2</div>\n</div>\n\n";
-        break;
-      default:
-        break;
+    const currentId = savedPostIdRef.current;
+
+    let res: Response;
+    if (currentId) {
+      // Update existing document
+      res = await fetch(`/api/admin/posts/${currentId}`, {
+        method:  "PUT",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload),
+      });
+    } else {
+      // Create new document
+      const idToUse = fallbackId;
+      res = await fetch("/api/admin/posts", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ ...payload, id: idToUse }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // data.post.id is the id we just stored
+        const newId = data.post?.id ?? idToUse;
+        setSavedPostId(newId);
+        savedPostIdRef.current = newId;
+        // Sync slug/title back to form state in case we generated fallbacks
+        setPost((p: any) => ({
+          ...p,
+          title: payload.title,
+          slug:  payload.slug,
+        }));
+      }
     }
-    setPost((p: any) => ({ ...p, content: (p.content || "") + tag }));
+
+    return res.ok;
   };
 
+  // ── Save Draft button ──────────────────────────────────────────────────────
+  const saveDraft = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    setAutoSaveStatus("saving");
+    try {
+      const ok = await persistPost("draft");
+      if (!ok) console.error("[Save Draft] API returned non-OK response");
+    } catch (err) {
+      console.error("[Save Draft] fetch error:", err);
+    } finally {
+      setIsSaving(false);
+      setAutoSaveStatus("saved");
+    }
+  };
+
+  // ── Publish button ────────────────────────────────────────────────────────
   const handlePublish = async () => {
+    if (isSaving) return;
     setIsSaving(true);
     try {
-      const res = await fetch("/api/admin/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
-      });
-      if (res.ok) {
+      const ok = await persistPost("published");
+      if (ok) {
         router.push("/admin");
         router.refresh();
       }
     } catch (err) {
-      console.error(err);
+      console.error("[Publish] fetch error:", err);
     } finally {
       setIsSaving(false);
     }
   };
 
+  // ── Toolbar formatter ──────────────────────────────────────────────────────
+  const handleFormat = (formatType: string) => {
+    let tag = "";
+    switch (formatType) {
+      case "H1":       tag = "\n# ";                                                                           break;
+      case "H2":       tag = "\n## ";                                                                          break;
+      case "H3":       tag = "\n### ";                                                                         break;
+      case "Bold":     tag = "**BoldText**";                                                                    break;
+      case "Italic":   tag = "*ItalicText*";                                                                    break;
+      case "Strike":   tag = "~~Strikethrough~~";                                                              break;
+      case "Code":     tag = "`CodeBlock`";                                                                    break;
+      case "Bullet":   tag = "\n- Item";                                                                       break;
+      case "Numbered": tag = "\n1. Item";                                                                      break;
+      case "Quote":    tag = "\n> Quote text";                                                                  break;
+      case "Link":     tag = "[Link Title](https://streamb4.com)";                                             break;
+      case "Image":    tag = "![Alt Description](/og-image.jpg)";                                              break;
+      case "Table":    tag = "\n| Header 1 | Header 2 |\n|---|---|\n| Cell 1 | Cell 2 |";                      break;
+      case "Divider":  tag = "\n\n---\n\n";                                                                    break;
+      case "FAQ":      tag = "\n\n### FAQ Section\n- **Q: Question?**\n  A: Answer.";                         break;
+      case "CTA":      tag = "\n\n> **GET STREAMB4 NOW** - Experience 50,000+ live channels in 4K UHD. Click here to subscribe."; break;
+      case "Callout":  tag = "\n\n> [!NOTE]\n> Essential requirements, critical steps, or must-know information"; break;
+      case "Columns":  tag = "\n\n<div className=\"grid grid-cols-2 gap-4\">\n<div>Column 1</div>\n<div>Column 2</div>\n</div>\n\n"; break;
+      default: break;
+    }
+    setPost((p: any) => ({ ...p, content: (p.content || "") + tag }));
+  };
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden -m-8">
       {/* LEFT — MAIN EDITOR */}
@@ -218,10 +278,7 @@ export default function NewPostPage() {
         {/* Editor Topbar */}
         <div
           className="flex items-center justify-between px-8 py-4 border-b shrink-0"
-          style={{
-            borderColor: "rgba(255,255,255,0.06)",
-            background: "rgba(5,5,5,0.9)",
-          }}
+          style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(5,5,5,0.9)" }}
         >
           <div className="flex items-center gap-4">
             <button
@@ -233,14 +290,16 @@ export default function NewPostPage() {
             <span className="text-gray-700">/</span>
             <span className="text-gray-400 text-sm font-semibold">New Post</span>
 
-            {/* Auto-save indicator */}
+            {/* Save indicator */}
             <div className="flex items-center gap-1.5 text-gray-500 text-xs">
               <div
                 className={`w-1.5 h-1.5 rounded-full ${
                   autoSaveStatus === "saved" ? "bg-green-500" : "bg-orange-500 animate-pulse"
                 }`}
               />
-              {autoSaveStatus === "saved" ? "All changes saved" : "Saving..."}
+              {autoSaveStatus === "saved"
+                ? savedPostId ? "Draft saved to database" : "Not yet saved"
+                : "Saving…"}
             </div>
           </div>
 
@@ -256,9 +315,10 @@ export default function NewPostPage() {
 
             <button
               onClick={saveDraft}
-              className="px-4 py-2 rounded-xl text-gray-300 text-sm font-bold border border-white/[0.08] hover:border-orange-500/30 transition-all duration-200 cursor-pointer"
+              disabled={isSaving}
+              className="px-4 py-2 rounded-xl text-gray-300 text-sm font-bold border border-white/[0.08] hover:border-orange-500/30 transition-all duration-200 cursor-pointer disabled:opacity-50"
             >
-              Save Draft
+              {isSaving ? "Saving…" : savedPostId ? "Save Draft" : "Save Draft"}
             </button>
 
             <motion.button
@@ -266,13 +326,13 @@ export default function NewPostPage() {
               disabled={isSaving}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-2 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer"
+              className="px-6 py-2 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer disabled:opacity-60"
               style={{
                 background: "linear-gradient(135deg,#ff7a00,#ffb300)",
                 boxShadow: "0 0 20px rgba(255,122,0,0.3)",
               }}
             >
-              {isSaving ? "Publishing..." : "Publish ⚡"}
+              {isSaving ? "Saving…" : "Publish ⚡"}
             </motion.button>
           </div>
         </div>
@@ -315,11 +375,7 @@ export default function NewPostPage() {
                 onChange={(v) => setPost((p: any) => ({ ...p, content: v || "" }))}
                 height={500}
                 preview="edit"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  fontSize: "16px",
-                }}
+                style={{ background: "transparent", border: "none", fontSize: "16px" }}
                 textareaProps={{
                   placeholder: "Start writing your article...\n\nTip: Use formatting shortcuts above.",
                   style: {
@@ -336,10 +392,7 @@ export default function NewPostPage() {
             {/* EXCERPT */}
             <div
               className="p-6 rounded-[20px]"
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
+              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
             >
               <div className="flex items-center justify-between mb-3">
                 <label className="text-white font-bold text-sm">Excerpt</label>
@@ -361,10 +414,7 @@ export default function NewPostPage() {
       {/* RIGHT SIDEBAR */}
       <div
         className="w-[340px] flex-shrink-0 flex flex-col border-l overflow-y-auto"
-        style={{
-          borderColor: "rgba(255,255,255,0.06)",
-          background: "rgba(8,8,8,0.98)",
-        }}
+        style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(8,8,8,0.98)" }}
       >
         {/* Sidebar tabs */}
         <div className="flex border-b shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
@@ -373,7 +423,9 @@ export default function NewPostPage() {
               key={tab}
               onClick={() => setActivePanel(tab)}
               className={`flex-1 py-3.5 text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
-                activePanel === tab ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-600 hover:text-gray-400"
+                activePanel === tab
+                  ? "text-orange-500 border-b-2 border-orange-500"
+                  : "text-gray-600 hover:text-gray-400"
               }`}
             >
               {tab}
@@ -381,7 +433,6 @@ export default function NewPostPage() {
           ))}
         </div>
 
-        {/* Panel content */}
         <div className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             {activePanel === "publish" && (
