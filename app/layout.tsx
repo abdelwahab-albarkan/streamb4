@@ -217,7 +217,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LayoutWrapper>
           {children}
         </LayoutWrapper>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA4_ID!} />
+        <GoogleAnalytics gaId="G-RJ6T9RBRL8" />
         <MetaPixel />
         <MicrosoftClarity />
         <Script id="register-sw" strategy="afterInteractive">
