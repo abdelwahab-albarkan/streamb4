@@ -9,17 +9,43 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  console.log("POST /api/admin/posts started");
+
+  let postData: any;
   try {
-    const postData = await request.json();
-    await connectDB();
+    postData = await request.json();
+    console.log("Body parsed. Keys:", Object.keys(postData));
+    console.log("title:", postData.title);
+    console.log("slug:",  postData.slug);
+    console.log("id:",    postData.id);
+    console.log("status:", postData.status);
+  } catch (parseErr: any) {
+    console.error("POST ERROR — failed to parse request body:", parseErr?.message);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to parse request body: " + (parseErr?.message ?? String(parseErr)),
+        stack: process.env.NODE_ENV !== "production"
+          ? parseErr instanceof Error ? parseErr.stack : undefined
+          : undefined,
+      },
+      { status: 400 }
+    );
+  }
 
-    // Use caller-supplied id (from client persistPost) or generate one
-    const id = postData.id?.trim() || String(Date.now());
-
-    // Guarantee required fields pass schema validation
+  try {
+    // ── Resolve id, title, slug ──────────────────────────────────────────────
+    const id    = postData.id?.trim()    || String(Date.now());
     const title = postData.title?.trim() || "Untitled Draft";
     const slug  = postData.slug?.trim()  || `draft-${id}`;
+    console.log("Resolved id:", id, "| title:", title, "| slug:", slug);
 
+    // ── Connect to MongoDB ───────────────────────────────────────────────────
+    console.log("Connecting to MongoDB…");
+    await connectDB();
+    console.log("MongoDB connected");
+
+    // ── Build document ───────────────────────────────────────────────────────
     const newPost = {
       ...postData,
       id,
@@ -29,11 +55,26 @@ export async function POST(request: Request) {
       views:  0,
       date:   new Date().toISOString().split("T")[0],
     };
+    console.log("Creating Post document");
 
-    await new Post(newPost).save();
+    // ── Save ─────────────────────────────────────────────────────────────────
+    console.log("Saving Post to MongoDB…");
+    const doc = await new Post(newPost).save();
+    console.log("Post saved. _id:", doc._id?.toString(), "| id:", doc.id);
 
     return NextResponse.json({ success: true, post: newPost });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  } catch (error: any) {
+    console.error("POST /api/admin/posts ERROR:", error?.message ?? error);
+    console.error(error instanceof Error ? error.stack : String(error));
+    return NextResponse.json(
+      {
+        success: false,
+        message: error instanceof Error ? error.message : String(error),
+        stack: process.env.NODE_ENV !== "production"
+          ? error instanceof Error ? error.stack : undefined
+          : undefined,
+      },
+      { status: 500 }
+    );
   }
 }
