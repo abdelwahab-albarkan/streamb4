@@ -20,15 +20,54 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const postData = await request.json();
     await connectDB();
 
-    // Never blank out required fields during an update
-    const updatePayload: Record<string, any> = { ...postData, id };
-    if (!updatePayload.title?.trim()) delete updatePayload.title;
-    if (!updatePayload.slug?.trim())  delete updatePayload.slug;
+    // Build an update payload with only known Post schema fields.
+    // Never blank out required fields; keep the existing DB value if the
+    // incoming value is empty.
+    const update: Record<string, unknown> = {};
+
+    const str = (v: unknown, fallback?: string) =>
+      typeof v === "string" && v.trim() ? v.trim() : fallback;
+
+    // Required fields: only set if non-empty (skip to keep existing DB value)
+    const t = str(postData.title); if (t) update.title = t;
+    const s = str(postData.slug);  if (s) update.slug  = s;
+
+    // Status: always honour the caller's intent
+    if (typeof postData.status === "string") update.status = postData.status;
+
+    // Optional string fields
+    const optStr: (keyof typeof update)[] = [
+      "content", "excerpt", "seoTitle", "metaDescription", "focusKeyword",
+      "featuredImage", "ogTitle", "ogDescription", "keywordDensity",
+      "author", "category", "publishedAt",
+    ];
+    for (const key of optStr) {
+      if (typeof postData[key] === "string") update[key] = postData[key];
+    }
+
+    // Array fields
+    const optArr: (keyof typeof update)[] = [
+      "secondaryKeywords", "lsiKeywords", "faqs", "internalLinks", "tags",
+    ];
+    for (const key of optArr) {
+      if (Array.isArray(postData[key])) update[key] = postData[key];
+    }
+
+    // Numeric fields
+    const optNum: (keyof typeof update)[] = [
+      "seoScore", "readabilityScore", "readingTime", "views", "likes",
+    ];
+    for (const key of optNum) {
+      if (typeof postData[key] === "number") update[key] = postData[key];
+    }
+
+    // Mixed field (renamed from "schema" to avoid shadowing doc.schema)
+    if (postData.schemaMarkup != null) update.schemaMarkup = postData.schemaMarkup;
 
     const updatedPost = await Post.findOneAndUpdate(
       { id },
-      updatePayload,
-      { new: true }
+      update,
+      { new: true },
     ).lean();
 
     if (!updatedPost) {
@@ -36,8 +75,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     return NextResponse.json({ success: true, post: updatedPost });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  } catch (error: any) {
+    console.error("PUT /api/admin/posts/[id] FAILED:", error?.message);
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : String(error) },
+      { status: 500 },
+    );
   }
 }
 
@@ -53,7 +96,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }

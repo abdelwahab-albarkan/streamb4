@@ -16,7 +16,7 @@ export interface IPost extends Document {
   ogDescription: string
   faqs: any[]
   internalLinks: any[]
-  schema: any
+  schemaMarkup: any
   category: string
   tags: string[]
   author: string
@@ -48,7 +48,7 @@ const PostSchema = new Schema<IPost>({
   ogDescription: { type: String, default: '' },
   faqs: { type: Schema.Types.Mixed, default: [] },
   internalLinks: { type: Schema.Types.Mixed, default: [] },
-  schema: { type: Schema.Types.Mixed, default: {} },
+  schemaMarkup: { type: Schema.Types.Mixed, default: {} },
   category: { type: String, default: 'General' },
   tags: [String],
   author: { type: String, default: 'STREAMB4 Editorial Team' },

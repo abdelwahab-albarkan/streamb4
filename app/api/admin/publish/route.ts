@@ -42,7 +42,7 @@ function validateSEO(article: any): SEOCheck[] {
   const hasSlug = !!article.slug
   checks.push({ id: 'canonical', label: 'Canonical URL', status: hasSlug ? 'pass' : 'fail', message: hasSlug ? `/blog/${article.slug}` : 'Missing slug', blocking: !hasSlug })
 
-  const hasSchema = !!(article.schema && typeof article.schema === 'object' && Object.keys(article.schema).length > 0)
+  const hasSchema = !!(article.schemaMarkup && typeof article.schemaMarkup === 'object' && Object.keys(article.schemaMarkup).length > 0)
   checks.push({ id: 'schema', label: 'Schema Markup', status: hasSchema ? 'pass' : 'warn', message: hasSchema ? 'Schema present' : 'No schema found', blocking: false })
 
   const kw = (article.focusKeyword || '').toLowerCase()

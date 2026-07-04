@@ -357,7 +357,7 @@ function AIWriterPage() {
       ogDescription:       generatedArticle.seo?.openGraph?.description || '',
       faqs:                article?.faq || [],
       internalLinks:       generatedArticle.internalLinks || [],
-      schema:              generatedArticle.schema || {},
+      schemaMarkup: generatedArticle.schemaMarkup || {},
       category:            settings.category,
       tags:                article?.tags || [],
       author:              generatedArticle.author || 'STREAMB4 Editorial Team',
@@ -396,7 +396,7 @@ function AIWriterPage() {
       faqs: article?.faq || [],
       internalLinks: generatedArticle.internalLinks || [],
       externalLinks: generatedArticle.externalLinks || [],
-      schema: generatedArticle.schema || {},
+      schemaMarkup: generatedArticle.schemaMarkup || {},
       category: settings.category,
       tags: article?.tags || [],
       author: generatedArticle.author || 'STREAMB4 Editorial Team',
@@ -434,7 +434,7 @@ function AIWriterPage() {
       faqs: article?.faq || [],
       internalLinks: generatedArticle.internalLinks || [],
       externalLinks: generatedArticle.externalLinks || [],
-      schema: generatedArticle.schema || {},
+      schemaMarkup: generatedArticle.schemaMarkup || {},
       category: settings.category,
       tags: article?.tags || [],
       status: 'published',
@@ -1554,7 +1554,7 @@ function AIWriterPage() {
                   )}
 
                   {/* Schema validation */}
-                  {generatedArticle.schema && (
+                  {generatedArticle.schemaMarkup && (
                     <div
                       className="p-6 rounded-[24px]"
                       style={{
@@ -1571,8 +1571,8 @@ function AIWriterPage() {
                           { key: 'organization', label: 'Organization', fallback: null },
                         ].map(({ key, label, fallback }) => {
                           const exists = !!(
-                            generatedArticle.schema[key] ||
-                            (fallback && generatedArticle.schema[fallback])
+                            generatedArticle.schemaMarkup[key] ||
+                            (fallback && generatedArticle.schemaMarkup[fallback])
                           )
                           return (
                             <div key={key} className="flex items-center gap-2">
