@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "STREAMB4 — Premium IPTV | 50,000+ Live Channels in 4K",
     description: "Stream 50,000+ live channels and 180,000+ on-demand titles in 4K Ultra HD. Instant activation. Plans from $39.99. No contracts.",
     images: [{
-      url: "/og-image.jpg",
+      url: "/opengraph-image",
       width: 1200,
       height: 630,
       alt: "STREAMB4 — Premium IPTV Streaming Service with 50,000+ Channels",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     creator: "@streamb4t",
     title: "STREAMB4 — Premium IPTV | 50,000+ Live Channels in 4K",
     description: "Stream 50,000+ live channels in 4K. Instant activation. Plans from $39.99.",
-    images: ["/og-image.jpg"],
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
@@ -79,9 +79,15 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/icon", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+    other: [
+      { rel: "mask-icon", url: "/favicon.ico" },
+    ],
   },
   manifest: "/manifest.json",
   verification: {
@@ -110,11 +116,16 @@ const orgSchema = {
     "@id": "https://streamb4.com/#logo",
     "url": "https://streamb4.com/logo.png",
     "contentUrl": "https://streamb4.com/logo.png",
-    "width": 200,
-    "height": 60,
+    "width": 400,
+    "height": 120,
     "caption": "STREAMB4"
   },
-  "image": { "@id": "https://streamb4.com/#logo" },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://streamb4.com/opengraph-image",
+    "width": 1200,
+    "height": 630
+  },
   "brand": {
     "@type": "Brand",
     "name": "STREAMB4",

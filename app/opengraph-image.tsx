@@ -110,7 +110,7 @@ export default async function OgImage() {
 
         {/* Pill tags */}
         <div style={{ display: "flex", gap: 12 }}>
-          {["No Contracts", "Free 24hr Trial", "All Devices"].map((tag) => (
+          {["No Contracts", "Cancel Anytime", "All Devices"].map((tag) => (
             <div
               key={tag}
               style={{
