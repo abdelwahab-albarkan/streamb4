@@ -1,18 +1,105 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, MessageCircle, Clock, Send, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
+import { Mail, MessageCircle, Clock, Send, ShieldCheck, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
 
+// ── Inline toast (self-contained, no provider needed on public pages) ─────────
+type ToastState = { message: string; type: "success" | "error" } | null;
+
+function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
+  if (!toast) return null;
+  const isSuccess = toast.type === "success";
+  return (
+    <AnimatePresence>
+      <motion.div
+        key={toast.message + toast.type}
+        initial={{ opacity: 0, y: 24, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.95 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3.5 rounded-2xl min-w-[280px] max-w-sm"
+        style={{
+          background: isSuccess ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
+          border: `1px solid ${isSuccess ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}`,
+          boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+        }}
+      >
+        <span className={`text-lg font-bold ${isSuccess ? "text-green-400" : "text-red-400"}`}>
+          {isSuccess ? "✓" : "✗"}
+        </span>
+        <p className="text-white text-sm font-semibold flex-1">{toast.message}</p>
+        <button
+          onClick={onClose}
+          className="text-gray-500 hover:text-white transition-colors ml-2"
+          aria-label="Dismiss notification"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ── Form field types ───────────────────────────────────────────────────────────
+interface FormFields {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+const emptyForm: FormFields = { name: "", email: "", subject: "", message: "" };
+
 export default function ContactClient() {
   const [success, setSuccess] = useState(false);
+  const [form, setForm] = useState<FormFields>(emptyForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState<ToastState>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  function showToast(message: string, type: "success" | "error") {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSuccess(true);
+
+    const { name, email, subject, message } = form;
+    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
+      showToast("Please fill in all required fields.", "error");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setSuccess(true);
+        setForm(emptyForm);
+        showToast("Your message has been sent successfully.", "success");
+      } else {
+        showToast(data.message ?? "Something went wrong. Please try again.", "error");
+      }
+    } catch {
+      showToast("Network error. Please check your connection and try again.", "error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -182,20 +269,28 @@ export default function ContactClient() {
                       <label htmlFor="contact-name" className="text-xs text-gray-500 font-bold block mb-2 uppercase">Your Name</label>
                       <input
                         id="contact-name"
+                        name="name"
                         required
                         type="text"
                         placeholder="John Doe"
-                        className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors"
+                        value={form.name}
+                        onChange={handleChange}
+                        disabled={submitting}
+                        className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors disabled:opacity-60"
                       />
                     </div>
                     <div>
                       <label htmlFor="contact-email" className="text-xs text-gray-500 font-bold block mb-2 uppercase">Email Address</label>
                       <input
                         id="contact-email"
+                        name="email"
                         required
                         type="email"
                         placeholder="john@example.com"
-                        className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors"
+                        value={form.email}
+                        onChange={handleChange}
+                        disabled={submitting}
+                        className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors disabled:opacity-60"
                       />
                     </div>
                   </div>
@@ -203,25 +298,46 @@ export default function ContactClient() {
                     <label htmlFor="contact-subject" className="text-xs text-gray-500 font-bold block mb-2 uppercase">Subject</label>
                     <input
                       id="contact-subject"
+                      name="subject"
                       required
                       type="text"
                       placeholder="Pre-sales enquiry / Technical setup support"
-                      className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors"
+                      value={form.subject}
+                      onChange={handleChange}
+                      disabled={submitting}
+                      className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors disabled:opacity-60"
                     />
                   </div>
                   <div>
                     <label htmlFor="contact-message" className="text-xs text-gray-500 font-bold block mb-2 uppercase">Message</label>
                     <textarea
                       id="contact-message"
+                      name="message"
                       required
                       rows={5}
                       placeholder="Describe your question or issue in detail..."
-                      className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors resize-none"
+                      value={form.message}
+                      onChange={handleChange}
+                      disabled={submitting}
+                      className="w-full bg-[#0A0A0A] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-lg py-3 px-4 text-sm text-white focus:outline-none transition-colors resize-none disabled:opacity-60"
                     />
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
-                    <Button type="submit" className="w-full sm:w-auto gap-2">
-                      <Send className="w-4 h-4" aria-hidden="true" /> Send Message
+                    <Button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full sm:w-auto gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {submitting ? (
+                        <>
+                          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" aria-hidden="true" />
+                          Sending…
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" aria-hidden="true" /> Send Message
+                        </>
+                      )}
                     </Button>
                     <span className="text-xs text-gray-500 flex items-center gap-1.5">
                       <MessageCircle className="w-4 h-4 text-[#FF6B00]" aria-hidden="true" /> Or use Instant Live Chat
@@ -233,6 +349,9 @@ export default function ContactClient() {
           </div>
         </div>
       </section>
+
+      {/* Toast notification */}
+      <Toast toast={toast} onClose={() => setToast(null)} />
     </main>
   );
 }
