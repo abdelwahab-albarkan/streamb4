@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   Monitor, Zap, Globe, Unlock, Headphones, Smartphone,
   Server, Shield, Clock, Users, Wifi, Play,
@@ -203,16 +204,20 @@ export default function FeaturesClient() {
             READY TO <span className="text-[#FF6B00]">EXPERIENCE</span> IT?
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-            Start your 24-hour free trial today and see every feature in action.
+            Choose a plan and start streaming today with full access to every feature.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="gap-2 text-base">
-              <Play className="w-5 h-5 fill-current" />
-              Start Free Trial
-            </Button>
-            <Button variant="outline" size="lg" className="gap-2 text-base">
-              View Plans
-            </Button>
+            <Link href="/pricing">
+              <Button size="lg" className="gap-2 text-base">
+                <Play className="w-5 h-5 fill-current" />
+                View Pricing
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button variant="outline" size="lg" className="gap-2 text-base">
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

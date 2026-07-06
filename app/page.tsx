@@ -142,14 +142,6 @@ const homepageFaqSchema = {
     },
     {
       "@type": "Question",
-      "name": "Is there a free trial for STREAMB4?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. STREAMB4 offers a free 24-hour trial with full access to all channels and VOD content. No credit card is required to start your trial."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "How quickly is my IPTV account activated?",
       "acceptedAnswer": {
         "@type": "Answer",

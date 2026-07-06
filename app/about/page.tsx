@@ -120,11 +120,11 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/free-trial"
+                href="/pricing"
                 className="px-8 py-4 rounded-xl font-black text-black text-sm uppercase tracking-wider"
                 style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
               >
-                Start Free Trial
+                View Pricing
               </Link>
               <Link
                 href="/contact"
@@ -280,15 +280,15 @@ export default function AboutPage() {
               READY TO EXPERIENCE <span className="text-[#FF6B00]">STREAMB4</span>?
             </h2>
             <p className="text-gray-400 mb-8 leading-relaxed">
-              Join thousands of customers who have ditched cable. Start with a free 24-hour trial — no credit card required.
+              Join thousands of customers who have ditched cable. No contracts. Cancel anytime.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/free-trial"
+                href="/pricing"
                 className="px-8 py-4 rounded-xl font-black text-black text-sm uppercase"
                 style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
               >
-                Start Free Trial
+                View Pricing
               </Link>
               <Link
                 href="/pricing"

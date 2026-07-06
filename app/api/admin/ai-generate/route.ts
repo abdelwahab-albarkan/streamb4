@@ -105,7 +105,7 @@ Use these premium callout types throughout: tip | warning | important | note | p
 INTERNAL LINKS TO RECOMMEND
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Recommend ${internalLinksCount} internal links using these STREAMB4 pages:
-/pricing, /features, /devices, /install, /free-trial, /reseller, /blog, /contact, /faq, /restream
+/pricing, /features, /devices, /install, /reseller, /blog, /contact, /faq, /restream
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SCHEMA REQUIREMENTS
@@ -222,7 +222,6 @@ Use this EXACT JSON structure:
           ["Max Connections", "6", "2", "1", "2"],
           ["4K Support", "✓ Included", "Extra Fee", "✗", "Extra Fee"],
           ["Anti-Freeze", "✓", "✗", "✗", "✗"],
-          ["Free Trial", "24 Hours", "✗", "✗", "7 Days"],
           ["Contract", "None", "Monthly", "Annual", "Monthly"]
         ]
       },
@@ -277,7 +276,7 @@ Use this EXACT JSON structure:
       {"stat": "50,000+", "label": "Live TV Channels", "source": "STREAMB4 Database 2026"},
       {"stat": "180,000+", "label": "Movies & Series (VOD)", "source": "STREAMB4 VOD System"},
       {"stat": "99.99%", "label": "Uptime Guarantee", "source": "STREAMB4 SLA"},
-      {"stat": "24hrs", "label": "Free Trial Access", "source": "STREAMB4"},
+      {"stat": "24/7", "label": "Customer Support", "source": "STREAMB4"},
       {"stat": "4K HDR", "label": "Maximum Streaming Quality", "source": "STREAMB4 Tech Specs"}
     ],
     "troubleshootingGuide": {
@@ -335,15 +334,15 @@ Use this EXACT JSON structure:
       "topRecommendations": [
         {"rank": 1, "item": "STREAMB4 Solo Plan", "reason": "Best for individuals and solo streamers", "link": "/pricing"},
         {"rank": 2, "item": "STREAMB4 Family Plan", "reason": "Best value for households", "link": "/pricing"},
-        {"rank": 3, "item": "Free 24-Hour Trial", "reason": "Best way to test before committing", "link": "/free-trial"}
+        {"rank": 3, "item": "STREAMB4 Duo Plan", "reason": "Best value for couples and small households", "link": "/pricing"}
       ]
     },
-    "conclusion": "Strong 3-paragraph conclusion. Paragraph 1: recap the most important insights from the article. Paragraph 2: address any remaining doubts and reinforce trust. Paragraph 3: powerful CTA urging the reader to try STREAMB4's free 24-hour trial with a sense of urgency.",
+    "conclusion": "Strong 3-paragraph conclusion. Paragraph 1: recap the most important insights from the article. Paragraph 2: address any remaining doubts and reinforce trust. Paragraph 3: powerful CTA urging the reader to choose STREAMB4 with a sense of urgency.",
     "strongCTA": {
       "headline": "Compelling CTA headline",
       "subtext": "Supporting CTA subtext with value proposition",
-      "primaryAction": "Start Free Trial",
-      "primaryUrl": "/free-trial",
+      "primaryAction": "View Pricing Plans",
+      "primaryUrl": "/pricing",
       "secondaryAction": "View Pricing Plans",
       "secondaryUrl": "/pricing"
     },
@@ -357,7 +356,7 @@ Use this EXACT JSON structure:
     {"anchor": "anchor text 2", "url": "/features", "context": "Context for placement"},
     {"anchor": "anchor text 3", "url": "/install", "context": "Context for placement"},
     {"anchor": "anchor text 4", "url": "/devices", "context": "Context for placement"},
-    {"anchor": "anchor text 5", "url": "/free-trial", "context": "Context for placement"},
+    {"anchor": "anchor text 5", "url": "/reseller", "context": "Context for placement"},
     {"anchor": "anchor text 6", "url": "/faq", "context": "Context for placement"},
     {"anchor": "anchor text 7", "url": "/blog", "context": "Context for placement"},
     {"anchor": "anchor text 8", "url": "/contact", "context": "Context for placement"}
@@ -531,7 +530,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
         `${keyword} vs competitors`,
         `how to install ${keyword}`,
         `${keyword} price`,
-        `${keyword} free trial`
+        `${keyword} pricing plans`
       ],
       longTail: [
         `how to set up ${keyword} on Android TV box`,
@@ -568,7 +567,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
         `how to cancel ${keyword} subscription`,
         `${keyword} customer support`,
         `${keyword} device compatibility`,
-        `${keyword} free trial details`
+        `${keyword} subscription details`
       ],
       titleVariations: [
         `The Complete ${uKey} Guide for 2026`,
@@ -587,9 +586,9 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           `${keyword} delivers a complete cable TV replacement with 50,000+ live channels at a fraction of the cost`,
           'STREAMB4 is the top-rated provider with 99.99% uptime and anti-freeze technology built in',
           'Setup takes under 10 minutes on any device including Firestick, Android TV, Smart TV, iOS, and Windows',
-          'Pricing starts at just $9/month with no contracts, no IP locks, and a free 24-hour trial',
+          'Pricing starts at just $9/month with no contracts, no IP locks, and instant activation',
           'Key features include 4K HDR support, EPG TV guide, Catch-Up TV, and VPN compatibility',
-          'Always test a provider with a free trial before purchasing a long-term subscription'
+          'Always compare providers carefully before purchasing a long-term subscription'
         ]
       },
       tableOfContents: [
@@ -655,7 +654,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           callout: {
             type: 'important',
             title: 'Critical for Beginners',
-            content: `Always test any provider with a free trial before purchasing a subscription. STREAMB4 offers a free 24-hour trial with full access to all 50,000+ channels and the complete VOD library. Never pay without testing first.`
+            content: `Always research a provider carefully before purchasing a subscription. STREAMB4 offers transparent pricing with no hidden fees, no contracts, and instant account activation. Check the full channel list and features before committing.`
           },
           imagePrompt: {
             prompt: `Beginner getting started with streaming service, person holding TV remote in cozy living room, dark ambiance with orange glow from large TV screen showing multiple channels, modern apartment setting, no text`,
@@ -666,7 +665,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           numberedList: [
             'Check your internet speed at fast.com — minimum 25 Mbps required',
             'Choose your device (Firestick, Android TV, Smart TV, iPhone, PC)',
-            'Sign up for STREAMB4\'s free 24-hour trial at streamb4.com',
+            'Sign up for a STREAMB4 plan at streamb4.com',
             'Download the recommended app for your device',
             'Enter your STREAMB4 credentials or M3U URL',
             'Browse 50,000+ channels and enjoy your first stream'
@@ -700,7 +699,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
             'Set DNS to 8.8.8.8 or 1.1.1.1 for faster channel loading',
             'Use TiviMate Premium on Android TV for the best EPG experience',
             'Enable hardware decoding in your media player for smoother 4K playback',
-            'Test your connection with STREAMB4\'s free trial before committing',
+            'Review STREAMB4\'s channel list and features before committing',
             'Use a VPN on public networks but disable it at home for better speeds',
             'Clear your app cache weekly to prevent performance degradation'
           ],
@@ -709,7 +708,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
         {
           id: 'common-mistakes',
           h2: 'Common Mistakes to Avoid',
-          content: `Understanding what not to do is as valuable as knowing best practices. These are the most common mistakes we see new users make — and how to avoid every single one of them.\n\nThe biggest mistake by far is choosing a provider based on price alone. Providers offering 20,000+ channels for $2/month are using unstable, overcrowded servers that will buffer constantly during peak hours. The $7-$10 price difference between budget and premium providers like STREAMB4 represents a fundamentally different infrastructure investment.\n\nThe second most common mistake is not testing before buying. Every legitimate provider offers a free trial. If a provider won't let you test before you pay, that's a serious red flag. STREAMB4's 24-hour free trial gives you access to the full channel library so you can verify the service works perfectly on your specific devices before spending any money.`,
+          content: `Understanding what not to do is as valuable as knowing best practices. These are the most common mistakes we see new users make — and how to avoid every single one of them.\n\nThe biggest mistake by far is choosing a provider based on price alone. Providers offering 20,000+ channels for $2/month are using unstable, overcrowded servers that will buffer constantly during peak hours. The $7-$10 price difference between budget and premium providers like STREAMB4 represents a fundamentally different infrastructure investment.\n\nThe second most common mistake is not researching before buying. Check the channel list, read reviews, and verify device compatibility before purchasing. STREAMB4 provides full transparency on features and pricing at streamb4.com so you can make an informed decision.`,
           h3s: [
             {
               id: 'technical-mistakes',
@@ -724,7 +723,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           },
           bulletList: [
             'Mistake: Choosing the cheapest provider available — Cost: Constant buffering and poor support',
-            'Mistake: Not testing with a free trial first — Cost: Paying for a service that doesn\'t work on your devices',
+            'Mistake: Not researching device compatibility before buying — Cost: Paying for a service that doesn\'t work on your devices',
             'Mistake: Using Wi-Fi for a main TV — Cost: Unnecessary buffering during peak hours',
             'Mistake: Ignoring app updates — Cost: Compatibility issues and crashes',
             'Mistake: Sharing credentials outside household — Cost: Account suspension',
@@ -749,7 +748,6 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
             ['EPG Guide', '✓', '✓', '✗', '✓'],
             ['Catch-Up TV', '✓', '✗', '✗', 'Extra Fee'],
             ['VPN Compatible', '✓', '✗', '✓', 'N/A'],
-            ['Free Trial', '24 Hours', '✗', '✗', '✗'],
             ['Contract', 'None', 'Monthly', 'Annual', '12-24 Month'],
             ['Customer Support', '24/7 Live', 'Email Only', 'Limited', 'Phone/Chat'],
             ['Setup Time', '< 10 min', '30-60 min', '60+ min', 'Technician Req.']
@@ -791,7 +789,6 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           'Zero contracts, zero IP locks — cancel or change plans anytime',
           'Anti-freeze technology ensures smooth playback even during high-traffic events',
           '4K HDR quality on all supported channels at no extra cost',
-          'Free 24-hour trial with full access — test before you commit',
           '24/7 customer support via live chat and ticketing system'
         ],
         cons: [
@@ -805,7 +802,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
         { stat: '180,000+', label: 'Movies & Series (VOD)', source: 'STREAMB4 VOD System' },
         { stat: '99.99%', label: 'Uptime Guarantee', source: 'STREAMB4 Service Level Agreement' },
         { stat: '$117B', label: 'Global IPTV Market by 2026', source: 'Grand View Research' },
-        { stat: '24 Hours', label: 'Free Trial — Full Access', source: 'STREAMB4' }
+        { stat: '24/7', label: 'Live Customer Support', source: 'STREAMB4' }
       ],
       troubleshootingGuide: {
         title: 'Troubleshooting Guide — Fix Any Issue Fast',
@@ -864,8 +861,8 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           answer: `Enable Developer Options on your Firestick (Settings > My Fire TV > Developer Options). Download the Downloader app from the Amazon Store. Use Downloader to install IPTV Smarters Pro. Open the app and enter your STREAMB4 username, password, and server URL from your welcome email. Your full channel list loads automatically within 2 minutes.`
         },
         {
-          question: `Does STREAMB4 offer a free trial?`,
-          answer: `Yes — STREAMB4 offers a completely free 24-hour trial with full access to all 50,000+ live channels and the 180,000+ VOD library. No credit card is required. Simply visit streamb4.com, request your trial, and start streaming within 5 minutes. This lets you verify the service works perfectly on all your devices before purchasing.`
+          question: `How do I get started with STREAMB4?`,
+          answer: `Getting started with STREAMB4 is simple. Visit streamb4.com, choose a plan that fits your needs, and your account is activated instantly. No contracts, no hidden fees. You can start streaming within 5 minutes of purchasing.`
         },
         {
           question: `How many screens can I use simultaneously?`,
@@ -901,12 +898,12 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
           { rank: 3, item: 'TiviMate Premium + STREAMB4', reason: 'The ultimate streaming setup — STREAMB4\'s channels delivered through TiviMate\'s superior interface', link: '/devices' }
         ]
       },
-      conclusion: `${keyword} has evolved from a niche tech enthusiast pursuit into the mainstream entertainment solution chosen by tens of millions of households worldwide. The evidence is compelling: better content variety, dramatically lower costs, and the flexibility to watch anything, anywhere, on any device.\n\nSTREAMB4 stands out in this crowded market because of what it doesn't compromise on: server reliability, channel quality, customer support, and transparent pricing with no hidden fees or locked contracts. Whether you're a first-time cord-cutter or an experienced streamer looking for a more dependable provider, the 24-hour free trial removes every barrier to trying the service.\n\nDon't spend another month paying $80-120 for a cable subscription with 200 channels when STREAMB4 delivers 50,000+ channels at a fraction of the cost. Start your free trial today — no credit card required, full access, instant setup.`,
+      conclusion: `${keyword} has evolved from a niche tech enthusiast pursuit into the mainstream entertainment solution chosen by tens of millions of households worldwide. The evidence is compelling: better content variety, dramatically lower costs, and the flexibility to watch anything, anywhere, on any device.\n\nSTREAMB4 stands out in this crowded market because of what it doesn't compromise on: server reliability, channel quality, customer support, and transparent pricing with no hidden fees or locked contracts. Whether you're a first-time cord-cutter or an experienced streamer looking for a more dependable provider, STREAMB4 delivers everything you need at a fraction of cable costs.\n\nDon't spend another month paying $80-120 for a cable subscription with 200 channels when STREAMB4 delivers 50,000+ channels at a fraction of the cost. View pricing plans today — no contracts required, instant activation, setup in under 10 minutes.`,
       strongCTA: {
-        headline: 'Ready to Cut the Cable? Start Free Today.',
-        subtext: 'Join thousands of satisfied streamers. Full access to 50,000+ channels, 180,000+ VOD titles, 4K quality. No credit card required.',
-        primaryAction: 'Start Free 24-Hour Trial',
-        primaryUrl: '/free-trial',
+        headline: 'Ready to Cut the Cable? Get Started Today.',
+        subtext: 'Join thousands of satisfied streamers. Full access to 50,000+ channels, 180,000+ VOD titles, 4K quality. No contracts required.',
+        primaryAction: 'View Pricing Plans',
+        primaryUrl: '/pricing',
         secondaryAction: 'View Pricing Plans',
         secondaryUrl: '/pricing'
       },
@@ -929,7 +926,7 @@ function buildEnterpriseMock(keyword: string, category: string, length: string, 
       { anchor: 'STREAMB4 features overview', url: '/features', context: 'Add when listing platform capabilities and streaming features' },
       { anchor: 'compatible streaming devices', url: '/devices', context: 'Add in the device compatibility section' },
       { anchor: 'installation guide', url: '/install', context: 'Add in the step-by-step setup tutorial section' },
-      { anchor: 'start your free 24-hour trial', url: '/free-trial', context: 'Add in the CTA sections and when mentioning the free trial' },
+      { anchor: 'view STREAMB4 pricing and plans', url: '/pricing', context: 'Add in the CTA sections and when mentioning subscription options' },
       { anchor: 'STREAMB4 blog', url: '/blog', context: 'Add in the related articles section and conclusion' },
       { anchor: 'frequently asked questions', url: '/faq', context: 'Add when mentioning common user questions' },
       { anchor: 'contact STREAMB4 support', url: '/contact', context: 'Add in the troubleshooting section' },

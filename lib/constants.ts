@@ -208,10 +208,6 @@ export const FAQ_ITEMS: FAQItem[] = [
     answer: "STREAMB4 works on virtually every device: Amazon Firestick, Android TV, Smart TVs (Samsung, LG, Sony), iOS and Android phones/tablets, Windows and Mac computers, MAG boxes, Formuler devices, and more.",
   },
   {
-    question: "Do you offer a free trial?",
-    answer: "Yes! We offer a 24-hour free trial so you can test our service before committing. No credit card required — just sign up and start watching.",
-  },
-  {
     question: "Can I use my subscription on multiple devices?",
     answer: "Yes, depending on your plan. Our plans support 1 to 6 simultaneous connections. Choose the plan that fits your household needs.",
   },
@@ -345,7 +341,6 @@ export const NAV_LINKS = [
 export const MORE_LINKS = [
   { label: "Devices", href: "/devices" },
   { label: "Affiliate", href: "/affiliate" },
-  { label: "Free Trial", href: "/free-trial" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Legal", href: "/legal/terms" },
@@ -426,10 +421,5 @@ export const SEO_META = {
     title: "Reseller Program — Build Your Business | STREAMB4",
     description: "Resell premium streaming with high profit margins. Scalable packages from 25 to 1,000+ connections.",
     canonical: "https://streamb4.com/reseller",
-  },
-  freeTrial: {
-    title: "Free Trial — Try STREAMB4 Free for 24 Hours",
-    description: "Start your free 24-hour STREAMB4 trial. No credit card required.",
-    canonical: "https://streamb4.com/free-trial",
   },
 };

@@ -393,7 +393,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.45 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 mb-6 w-full"
           >
-            <Link href="/free-trial" className="w-full sm:w-auto">
+            <Link href="/pricing" className="w-full sm:w-auto">
               <motion.div
                 whileHover={{ scale: 1.03, y: -1 }}
                 whileTap={{ scale: 0.98 }}
@@ -413,7 +413,7 @@ export function HeroSection() {
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" stroke="currentColor" strokeWidth="1.5">
                   <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
                 </svg>
-                START FREE TRIAL
+                VIEW PRICING
               </motion.div>
             </Link>
 

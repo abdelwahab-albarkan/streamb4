@@ -344,16 +344,16 @@ export default async function BlogListingPage({
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <p className="text-white font-black text-sm mb-1">Try STREAMB4 Free</p>
-                <p className="text-gray-600 text-xs mb-4">24-hour trial. No credit card.</p>
+                <p className="text-white font-black text-sm mb-1">Get STREAMB4</p>
+                <p className="text-gray-600 text-xs mb-4">View plans. No contracts. Cancel anytime.</p>
                 <Link
-                  href="/free-trial"
+                  href="/pricing"
                   className="w-full py-2.5 rounded-xl text-black text-xs font-black uppercase cursor-pointer block"
                   style={{
                     background: "linear-gradient(135deg, #ff7a00, #ffb300)",
                   }}
                 >
-                  Start Free Trial
+                  View Pricing
                 </Link>
               </div>
             </aside>

@@ -12,10 +12,6 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
         answer: "STREAMB4 is a premium IPTV streaming service providing reliable access to 50,000+ live TV channels and 180,000+ movies, series, and sports packages in 4K Ultra HD over your internet connection."
       },
       {
-        question: "Is there a free trial available?",
-        answer: "Yes. Our 24-hour free trial requires no credit card, no contract, and no hidden obligations. You get full access to all channels and VOD content for 24 hours completely free."
-      },
-      {
         question: "How many devices can I use simultaneously?",
         answer: "Plans range from 1 to 3 simultaneous connections. Solo plan supports 1 screen, Duo supports 2 screens, and Family supports 3 screens — all usable on different devices at the same time."
       },

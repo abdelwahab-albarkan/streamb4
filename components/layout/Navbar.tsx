@@ -410,8 +410,8 @@ export function Navbar() {
           {/* ═══ CTA BUTTONS — DESKTOP ═══ */}
           <div className="hidden lg:flex items-center gap-3">
 
-            {/* FREE TRIAL */}
-            <Link href="/free-trial">
+            {/* VIEW PRICING */}
+            <Link href="/pricing">
               <motion.div
                 whileHover={{ scale: 1.04, y: -1 }}
                 whileTap={{ scale: 0.97 }}
@@ -427,7 +427,7 @@ export function Navbar() {
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="black">
                     <path d="M13 2L4.09 12.26a1 1 0 00.91 1.64l5.5-.78-1 8.62L20 11.74a1 1 0 00-.91-1.64l-5.5.78L13 2z"/>
                   </svg>
-                  FREE TRIAL
+                  VIEW PRICING
                 </span>
               </motion.div>
             </Link>
@@ -624,7 +624,7 @@ export function Navbar() {
               {/* Mobile CTAs */}
               <div className="px-4 pb-8 pt-4 space-y-3"
                 style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <Link href="/free-trial" onClick={() => setMobileOpen(false)}>
+                <Link href="/pricing" onClick={() => setMobileOpen(false)}>
                   <motion.div
                     whileTap={{ scale: 0.97 }}
                     className="w-full py-3.5 rounded-[14px] font-black
@@ -637,7 +637,7 @@ export function Navbar() {
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="black">
                       <path d="M13 2L4.09 12.26a1 1 0 00.91 1.64l5.5-.78-1 8.62L20 11.74a1 1 0 00-.91-1.64l-5.5.78L13 2z"/>
                     </svg>
-                    FREE TRIAL
+                    VIEW PRICING
                   </motion.div>
                 </Link>
 

@@ -463,7 +463,7 @@ export function CompareSection() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/free-trial">
+            <Link href="/pricing">
               <motion.div
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
@@ -474,7 +474,7 @@ export function CompareSection() {
                   boxShadow: "0 0 30px rgba(255,138,0,0.35)",
                 }}
               >
-                ⚡ START FREE TRIAL
+                ⚡ VIEW PRICING
               </motion.div>
             </Link>
 

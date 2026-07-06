@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   keywords: [
     "iptv service", "best iptv", "live tv streaming", "iptv subscription",
     "4k iptv", "streamb4", "premium streaming", "iptv channels",
-    "fire tv iptv", "smart tv iptv", "iptv free trial"
+    "fire tv iptv", "smart tv iptv", "iptv streaming"
   ],
   authors: [{ name: "STREAMB4", url: "https://streamb4.com" }],
   creator: "STREAMB4",

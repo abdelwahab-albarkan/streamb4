@@ -575,32 +575,32 @@ export default function PricingClient() {
 
                 <h2 className="font-anton uppercase leading-tight mb-4"
                   style={{ fontSize: 'clamp(2rem,5vw,3.5rem)', fontFamily: 'var(--font-anton), Anton, sans-serif' }}>
-                  <span className="text-white">TRY </span>
+                  <span className="text-white">GET </span>
                   <span style={{
                     background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
-                  }}>FREE</span>
-                  <span className="text-white"> FIRST.</span>
+                  }}>STARTED</span>
+                  <span className="text-white"> TODAY.</span>
                 </h2>
 
                 <p className="text-[#A1A1AA] text-lg mb-10 max-w-xl mx-auto font-semibold">
-                  Try STREAMB4 free for 24 hours. Full access. No credit card required.
+                  Choose a plan and start streaming instantly. No contracts. Cancel anytime.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/free-trial">
+                  <Link href="/pricing#plans">
                     <motion.div
                       whileHover={{ scale: 1.04, y: -3 }}
                       whileTap={{ scale: 0.97 }}
-                      aria-label="Start your free 24-hour trial"
+                      aria-label="View pricing plans"
                       className="flex items-center justify-center gap-2.5 px-10 py-5 rounded-[16px] font-black text-black text-base uppercase tracking-wider cursor-pointer"
                       style={{
                         background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                         boxShadow: '0 0 40px rgba(255,140,0,0.4)'
                       }}>
                       <Zap size={18} strokeWidth={2.5} aria-hidden="true" />
-                      Start Free Trial
+                      View Plans
                     </motion.div>
                   </Link>
 

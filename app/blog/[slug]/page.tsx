@@ -292,11 +292,11 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
             {/* CTA card */}
             <div className="p-6 rounded-[24px] border border-orange-500/20 bg-gradient-to-b from-orange-500/[0.02] to-transparent text-center space-y-4">
-              <h4 className="font-anton text-lg text-white uppercase tracking-wider">Try STREAMB4 Free</h4>
-              <p className="text-gray-500 text-xs">Test our channels free for 24 hours. No credit card required.</p>
-              <Link href="/free-trial" className="block">
+              <h4 className="font-anton text-lg text-white uppercase tracking-wider">Get STREAMB4</h4>
+              <p className="text-gray-500 text-xs">View pricing plans. No contracts. Cancel anytime.</p>
+              <Link href="/pricing" className="block">
                 <span className="w-full py-3 rounded-xl font-black text-black text-xs uppercase tracking-wider bg-gradient-to-r from-[#ff7a00] to-[#ffb300] cursor-pointer inline-block">
-                  Start Free Trial ⚡
+                  View Pricing ⚡
                 </span>
               </Link>
             </div>

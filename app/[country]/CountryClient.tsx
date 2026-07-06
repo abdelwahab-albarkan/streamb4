@@ -102,12 +102,12 @@ export default function CountryClient({ countryCode, config }: CountryClientProp
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/free-trial"
+                href="/pricing"
                 className="px-8 py-4 rounded-xl font-black text-black text-sm uppercase tracking-wider"
                 style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
               >
                 <Play className="inline w-4 h-4 mr-2" aria-hidden="true" />
-                Start Free Trial
+                View Pricing
               </Link>
               <Link
                 href="/pricing"
@@ -173,11 +173,11 @@ export default function CountryClient({ countryCode, config }: CountryClientProp
                 </li>
               </ul>
               <Link
-                href="/free-trial"
+                href="/pricing"
                 className="inline-block px-8 py-4 rounded-xl font-black text-black text-sm uppercase tracking-wider"
                 style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
               >
-                Try Free for 24 Hours
+                View Pricing Plans
               </Link>
             </div>
 
@@ -249,11 +249,11 @@ export default function CountryClient({ countryCode, config }: CountryClientProp
           <p className="text-gray-400 mb-8">Get instant access to all {config.channels} channels. No contracts. Cancel anytime.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/free-trial"
+              href="/pricing"
               className="px-8 py-4 rounded-xl font-black text-black text-sm uppercase"
               style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
             >
-              Start Free Trial
+              View Pricing
             </Link>
             <Link
               href="/pricing"

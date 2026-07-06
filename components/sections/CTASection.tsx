@@ -55,7 +55,7 @@ export function CTASection() {
         {/* Description text */}
         <ScrollReveal delay={0.3}>
           <p className="text-gray-400 text-lg mb-10">
-            24-hour free trial · No credit card · Cancel anytime · Setup in 5 minutes
+            No contracts · Cancel anytime · Setup in 5 minutes · Instant access
           </p>
         </ScrollReveal>
 
@@ -63,7 +63,7 @@ export function CTASection() {
         <ScrollReveal delay={0.4}>
           <div className="flex flex-wrap gap-4 justify-center">
             {/* Primary Button */}
-            <Link href="/free-trial">
+            <Link href="/pricing">
               <MagneticButton
                 className="px-10 py-5 rounded-full font-black text-black text-lg uppercase tracking-wide hover:scale-105 hover:shadow-[0_0_60px_rgba(255,122,0,0.6)] transition-all duration-300 cursor-pointer"
                 style={{
@@ -71,7 +71,7 @@ export function CTASection() {
                   boxShadow: "0 0 40px rgba(255,122,0,0.4)",
                 }}
               >
-                ⚡ CLAIM YOUR FREE TRIAL
+                ⚡ VIEW PRICING PLANS
               </MagneticButton>
             </Link>
 

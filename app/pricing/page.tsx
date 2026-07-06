@@ -225,14 +225,6 @@ const pricingFaqSchema = {
     },
     {
       "@type": "Question",
-      "name": "Is there a free trial before I buy?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. STREAMB4 offers a free 24-hour trial with full channel access. No credit card is required to start your trial."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Can I cancel my STREAMB4 subscription?",
       "acceptedAnswer": {
         "@type": "Answer",

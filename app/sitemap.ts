@@ -7,8 +7,7 @@ const BASE = "https://streamb4.com";
 const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE}`,               lastModified: new Date(), changeFrequency: "weekly",  priority: 1.0 },
   { url: `${BASE}/pricing`,       lastModified: new Date(), changeFrequency: "weekly",  priority: 0.95 },
-  { url: `${BASE}/free-trial`,    lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
-  { url: `${BASE}/features`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+{ url: `${BASE}/features`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE}/install`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
   { url: `${BASE}/devices`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE}/blog`,          lastModified: new Date(), changeFrequency: "daily",   priority: 0.75 },

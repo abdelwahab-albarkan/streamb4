@@ -43,7 +43,7 @@ const PROCESS_STEPS = [
   {
     step: "02",
     title: "Access Dashboard",
-    description: "Access your easy-to-use, white-label reseller panel where you can manage all users and free trials.",
+    description: "Access your easy-to-use, white-label reseller panel where you can manage all users and accounts.",
   },
   {
     step: "03",
@@ -60,7 +60,7 @@ const PROCESS_STEPS = [
 const RESELLER_FAQS = [
   {
     question: "What is the IPTV Reseller program?",
-    answer: "Our reseller program lets you sell our premium Streaming subscriptions to your customers. You will receive a specialized control panel where you can generate new accounts, manage existing users, and issue free trial codes. You buy credits from us and sell subscriptions at your own pricing.",
+    answer: "Our reseller program lets you sell our premium Streaming subscriptions to your customers. You will receive a specialized control panel where you can generate new accounts and manage existing users. You buy credits from us and sell subscriptions at your own pricing.",
   },
   {
     question: "How do credit points work?",

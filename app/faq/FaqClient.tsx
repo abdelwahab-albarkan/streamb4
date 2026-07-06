@@ -103,11 +103,11 @@ export default function FaqClient() {
             <p className="text-gray-400 text-sm mb-6">Our support team is online 24/7 and ready to help you within minutes.</p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/free-trial"
+                href="/pricing"
                 className="px-6 py-3 rounded-xl font-black text-black text-sm uppercase tracking-wider"
                 style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
               >
-                Start Free Trial
+                View Pricing
               </Link>
               <Link
                 href="/contact"

@@ -35,13 +35,6 @@
   ],
   "shortcuts": [
     {
-      "name": "Free Trial",
-      "short_name": "Free Trial",
-      "url": "/free-trial",
-      "description": "Start your 24-hour free IPTV trial",
-      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
-    },
-    {
       "name": "Pricing Plans",
       "short_name": "Pricing",
       "url": "/pricing",
