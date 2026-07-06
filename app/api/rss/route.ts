@@ -4,7 +4,7 @@ import { Post } from "@/lib/models/Post";
 
 export async function GET() {
   await connectDB();
-  const posts = await Post.find({ status: "published" }).sort({ publishedAt: -1 }).limit(20).lean();
+  const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).limit(20).lean();
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

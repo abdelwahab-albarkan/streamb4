@@ -67,7 +67,7 @@ const blogBreadcrumbSchema = {
 async function getPosts() {
   try {
     await connectDB();
-    const docs = await Post.find({ status: "published" }).sort({ publishedAt: -1 }).lean();
+    const docs = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
     // serializeDocs converts every ObjectId → hex string and Date → ISO string in one pass,
     // making all documents safe for React Server Component payload serialization.
     return serializeDocs(docs as any[]);
@@ -241,9 +241,11 @@ export default async function BlogListingPage({
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      {filteredPosts.map((post: any, i: number) => (
-                        <PostCard key={post.id} post={post} index={i} />
-                      ))}
+                      {filteredPosts
+                        .filter((p: any) => category || q || !featuredPost || p.id !== featuredPost.id)
+                        .map((post: any, i: number) => (
+                          <PostCard key={post.id} post={post} index={i} />
+                        ))}
                     </div>
                   </div>
                 </>

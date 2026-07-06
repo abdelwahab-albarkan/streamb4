@@ -39,7 +39,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const optStr: (keyof typeof update)[] = [
       "content", "excerpt", "seoTitle", "metaDescription", "focusKeyword",
       "featuredImage", "ogTitle", "ogDescription", "keywordDensity",
-      "author", "category", "publishedAt",
+      "author", "category", "publishedAt", "scheduledAt", "updatedAt",
     ];
     for (const key of optStr) {
       if (typeof postData[key] === "string") update[key] = postData[key];
@@ -59,6 +59,18 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     ];
     for (const key of optNum) {
       if (typeof postData[key] === "number") update[key] = postData[key];
+    }
+
+    // Boolean fields
+    const optBool = ["featured", "isFeatured", "isSticky"];
+    for (const key of optBool) {
+      if (typeof postData[key] === "boolean") update[key] = postData[key];
+    }
+    // Synchronize featured and isFeatured if one of them is changed
+    if (typeof postData.featured === "boolean" && typeof postData.isFeatured !== "boolean") {
+      update.isFeatured = postData.featured;
+    } else if (typeof postData.isFeatured === "boolean" && typeof postData.featured !== "boolean") {
+      update.featured = postData.isFeatured;
     }
 
     // Mixed field (renamed from "schema" to avoid shadowing doc.schema)

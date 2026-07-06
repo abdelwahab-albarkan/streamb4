@@ -6,7 +6,7 @@ import { Post } from "@/lib/models/Post";
 
 export async function GET() {
   await connectDB();
-  const posts = await Post.find({}).lean();
+  const posts = await Post.find({}).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
   return NextResponse.json({ success: true, posts });
 }
 
@@ -41,6 +41,10 @@ export async function POST(request: Request) {
     // but doc.schema was shadowed to a plain {} by the schema-field named
     // "schema" (now renamed to "schemaMarkup").  Even after that rename,
     // explicitly picking known fields is the correct defence.
+    const isFeaturedVal = typeof postData.isFeatured === "boolean"
+      ? postData.isFeatured
+      : (typeof postData.featured === "boolean" ? postData.featured : false);
+    const nowIso = new Date().toISOString();
     const newPost = {
       id,
       title,
@@ -69,6 +73,12 @@ export async function POST(request: Request) {
       views:               0,
       likes:               0,
       publishedAt:         typeof postData.publishedAt         === "string" ? postData.publishedAt         : "",
+      createdAt:           typeof postData.createdAt           === "string" && postData.createdAt          ? postData.createdAt          : nowIso,
+      updatedAt:           typeof postData.updatedAt           === "string" && postData.updatedAt          ? postData.updatedAt          : nowIso,
+      featured:            isFeaturedVal,
+      isFeatured:          isFeaturedVal,
+      isSticky:            typeof postData.isSticky            === "boolean"                               ? postData.isSticky           : false,
+      scheduledAt:         typeof postData.scheduledAt         === "string"                                ? postData.scheduledAt        : "",
     };
 
     await new Post(newPost).save();

@@ -26,7 +26,7 @@ async function getPost(slug: string) {
 
     if (!post) {
       // Partial slug match fallback
-      const posts = await Post.find({ status: "published" }).lean() as any[];
+      const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean() as any[];
       post = posts.find(
         (p: any) =>
           p.slug?.includes(slug) || slug?.includes(p.slug)
@@ -45,7 +45,7 @@ async function getPost(slug: string) {
 async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
-    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).limit(3).lean();
+    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).limit(3).lean();
     return serializeDocs(docs as any[]);
   } catch (err) {
     return [];

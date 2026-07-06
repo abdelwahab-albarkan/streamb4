@@ -30,6 +30,10 @@ export interface IPost extends Document {
   publishedAt: string
   updatedAt: string
   createdAt: string
+  featured?: boolean
+  isFeatured?: boolean
+  isSticky?: boolean
+  scheduledAt?: string
 }
 
 const PostSchema = new Schema<IPost>({
@@ -62,6 +66,10 @@ const PostSchema = new Schema<IPost>({
   publishedAt: { type: String, default: '' },
   updatedAt: { type: String, default: '' },
   createdAt: { type: String, default: '' },
+  featured: { type: Boolean, default: false },
+  isFeatured: { type: Boolean, default: false },
+  isSticky: { type: Boolean, default: false },
+  scheduledAt: { type: String, default: '' },
 }, { timestamps: false, versionKey: false })
 
 export const Post: Model<IPost> = mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)

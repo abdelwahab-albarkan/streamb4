@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     await connectDB();
 
-    const posts = await Post.find({ status: "published" }).lean();
+    const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
     const q = query.toLowerCase();
 
     const ranked = posts
@@ -34,7 +34,22 @@ export async function GET(request: Request) {
         return { ...post, searchScore: score };
       })
       .filter((p: any) => p.searchScore > 0)
-      .sort((a: any, b: any) => b.searchScore - a.searchScore)
+      .sort((a: any, b: any) => {
+        if (b.searchScore !== a.searchScore) {
+          return b.searchScore - a.searchScore;
+        }
+        if (!!b.featured !== !!a.featured) {
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+        }
+        const bPub = b.publishedAt || "";
+        const aPub = a.publishedAt || "";
+        if (bPub !== aPub) {
+          return bPub.localeCompare(aPub) * -1;
+        }
+        const bCreat = b.createdAt || "";
+        const aCreat = a.createdAt || "";
+        return bCreat.localeCompare(aCreat) * -1;
+      })
       .slice(0, 10)
       .map((p: any) => ({
         id: p.id,
