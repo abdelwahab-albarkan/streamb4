@@ -105,9 +105,7 @@ export default async function BlogListingPage({
   }
 
   const featuredPost = posts.find((p: any) => p.isFeatured) || posts[0] || null;
-  const trendingPosts = [...posts]
-    .sort((a: any, b: any) => (b.views || 0) - (a.views || 0))
-    .slice(0, 4);
+  const recentPosts = [...posts].slice(0, 4);
 
   return (
     <>
@@ -254,7 +252,7 @@ export default async function BlogListingPage({
 
             {/* RIGHT — Sidebar */}
             <aside className="space-y-6">
-              {/* Popular Posts */}
+              {/* Recent Posts */}
               <div
                 className="p-6 rounded-[24px]"
                 style={{
@@ -263,10 +261,10 @@ export default async function BlogListingPage({
                 }}
               >
                 <h3 className="text-white font-black text-sm uppercase tracking-wider mb-5">
-                  Popular Posts
+                  Recent Posts
                 </h3>
                 <div className="space-y-4">
-                  {trendingPosts.map((post: any) => (
+                  {recentPosts.map((post: any) => (
                     <Link
                       key={post.id}
                       href={`/blog/${post.slug}`}
@@ -287,7 +285,7 @@ export default async function BlogListingPage({
                           {post.title}
                         </p>
                         <p className="text-gray-600 text-[10px]">
-                          {(post.views || 0).toLocaleString()} views · {post.readingTime || 3} min
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Draft'} · {post.readingTime || 3} min
                         </p>
                       </div>
                     </Link>
