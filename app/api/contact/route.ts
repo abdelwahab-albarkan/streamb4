@@ -1,50 +1,86 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-// ── In-memory rate limiter: 3 submissions per hour per IP ─────────────────────
+// ── In-memory rate limiter: 5 submissions per hour per IP ─────────────────────
+// In-memory is fine for a contact form — resets on cold start (acceptable).
+// Vercel warm instances share the map across requests on the same container.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now >= entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return { allowed: true };
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
-  }
-
-  entry.count += 1;
-  return { allowed: true };
-}
-
-// Periodically prune expired entries to avoid unbounded map growth
-setInterval(() => {
+// Lazily prune stale entries on each request (no setInterval — bad in serverless)
+function pruneExpired() {
   const now = Date.now();
   for (const [key, val] of rateLimitMap.entries()) {
     if (now >= val.resetAt) rateLimitMap.delete(key);
   }
-}, RATE_LIMIT_WINDOW_MS);
+}
+
+function getClientIp(req: NextRequest): string {
+  // Vercel always sets x-forwarded-for on production; x-real-ip as fallback
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  const xri = req.headers.get("x-real-ip");
+  if (xri) return xri.trim();
+  return "unknown";
+}
+
+function checkRateLimit(ip: string): { allowed: boolean; retryAfterSecs: number } {
+  // Skip rate limiting for localhost / private network / development unknowns.
+  // "unknown" only occurs when there is no forwarding header — i.e. local dev.
+  if (
+    ip === "unknown" ||
+    ip === "127.0.0.1" ||
+    ip === "::1" ||
+    ip.startsWith("192.168.") ||
+    ip.startsWith("10.") ||
+    ip.startsWith("172.16.") ||
+    ip.startsWith("172.17.") ||
+    ip.startsWith("172.18.") ||
+    ip.startsWith("172.19.") ||
+    ip.startsWith("172.2") ||
+    ip.startsWith("172.30.") ||
+    ip.startsWith("172.31.")
+  ) {
+    return { allowed: true, retryAfterSecs: 0 };
+  }
+
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  // No entry or window has expired → start a fresh window
+  if (!entry || now >= entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, retryAfterSecs: 0 };
+  }
+
+  // Within the window and under the limit → increment
+  if (entry.count < RATE_LIMIT_MAX) {
+    entry.count += 1;
+    return { allowed: true, retryAfterSecs: 0 };
+  }
+
+  // Limit exceeded
+  return { allowed: false, retryAfterSecs: Math.ceil((entry.resetAt - now) / 1000) };
+}
 
 // ── POST /api/contact ─────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  // Determine client IP
-  const forwardedFor = req.headers.get("x-forwarded-for");
-  const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
+  // Prune stale map entries on each request (lazy cleanup, safe in serverless)
+  pruneExpired();
+
+  // Resolve client IP
+  const ip = getClientIp(req);
 
   // Rate limit
-  const { allowed, retryAfter } = checkRateLimit(ip);
+  const { allowed, retryAfterSecs } = checkRateLimit(ip);
   if (!allowed) {
+    const minutes = Math.ceil(retryAfterSecs / 60);
     return NextResponse.json(
-      { success: false, message: `Too many requests. Please try again in ${Math.ceil((retryAfter ?? 3600) / 60)} minutes.` },
+      { success: false, message: `Too many requests. Please try again in ${minutes} minute${minutes !== 1 ? "s" : ""}.` },
       {
         status: 429,
-        headers: { "Retry-After": String(retryAfter ?? 3600) },
+        headers: { "Retry-After": String(retryAfterSecs) },
       },
     );
   }
@@ -92,7 +128,12 @@ export async function POST(req: NextRequest) {
   const smtpPass = process.env.SMTP_PASS;
 
   if (!smtpHost || !smtpUser || !smtpPass) {
-    console.error("[contact] SMTP environment variables are not configured.");
+    console.error(
+      "[contact] SMTP not configured. Missing:",
+      [!smtpHost && "SMTP_HOST", !smtpUser && "SMTP_USER", !smtpPass && "SMTP_PASS"]
+        .filter(Boolean)
+        .join(", "),
+    );
     return NextResponse.json(
       { success: false, message: "Email service is not configured. Please contact us directly." },
       { status: 500 },
@@ -161,7 +202,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Your message has been sent successfully." });
   } catch (err: unknown) {
-    console.error("[contact] Failed to send email:", err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error("[contact] Nodemailer error:", errMsg);
     return NextResponse.json(
       { success: false, message: "Failed to send your message. Please try again later." },
       { status: 500 },
