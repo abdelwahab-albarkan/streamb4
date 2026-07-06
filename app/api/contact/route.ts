@@ -126,6 +126,7 @@ export async function POST(req: NextRequest) {
   const smtpPort = parseInt(process.env.SMTP_PORT ?? "587", 10);
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
+  const smtpFrom = process.env.SMTP_FROM ?? `STREAMB4 <${smtpUser}>`;
 
   if (!smtpHost || !smtpUser || !smtpPass) {
     console.error(
@@ -192,7 +193,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `"STREAMB4 Contact" <${smtpUser}>`,
+      from: smtpFrom,
       to: smtpUser,
       replyTo: `"${name}" <${email}>`,
       subject: `New Contact Message - STREAMB4 | ${subject}`,
