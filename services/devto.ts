@@ -42,12 +42,37 @@ function headers(apiKey: string) {
 }
 
 /**
+ * Find an existing DEV.to article by canonical URL.
+ * Searches the authenticated user's articles for a matching canonical_url.
+ */
+export async function findDevToArticleByCanonicalUrl(
+  apiKey: string,
+  canonicalUrl: string,
+): Promise<number | null> {
+  try {
+    // Fetch up to 1000 articles in pages of 100
+    for (let page = 1; page <= 10; page++) {
+      const res = await fetch(`${DEV_TO_BASE}/articles/me/all?per_page=100&page=${page}`, {
+        headers: { 'api-key': apiKey },
+      })
+      if (!res.ok) break
+      const articles: Array<{ id: number; canonical_url?: string }> = await res.json()
+      if (!articles.length) break
+      const match = articles.find(a => a.canonical_url === canonicalUrl)
+      if (match) return match.id
+    }
+  } catch { /* ignore */ }
+  return null
+}
+
+/**
  * Create a new article on DEV.to.
+ * If 422 "Canonical url has already been taken", auto-finds the existing article and updates it.
  */
 export async function publishToDevTo(
   apiKey: string,
   article: DevToArticleInput,
-): Promise<DevToPublishResult> {
+): Promise<DevToPublishResult & { recovered?: boolean }> {
   try {
     const res = await fetch(`${DEV_TO_BASE}/articles`, {
       method: 'POST',
@@ -55,9 +80,41 @@ export async function publishToDevTo(
       body: JSON.stringify({ article }),
     })
 
+    if (res.status === 422 && article.canonical_url) {
+      // Canonical URL already taken — find the existing article and update it
+      const body = await res.text()
+      if (body.toLowerCase().includes('canonical')) {
+        const existingId = await findDevToArticleByCanonicalUrl(apiKey, article.canonical_url)
+        if (existingId) {
+          const updateResult = await updateOnDevTo(apiKey, existingId, article)
+          return { ...updateResult, recovered: true }
+        }
+        // If we couldn't find the existing article, retry without canonical URL
+        const { canonical_url: _removed, ...articleWithoutCanonical } = article
+        const retryRes = await fetch(`${DEV_TO_BASE}/articles`, {
+          method: 'POST',
+          headers: headers(apiKey),
+          body: JSON.stringify({ article: articleWithoutCanonical }),
+        })
+        if (retryRes.ok) {
+          const data: DevToArticleResult = await retryRes.json()
+          return {
+            success: true,
+            id: data.id,
+            url: data.url,
+            publishedAt: data.published_at ?? new Date().toISOString(),
+            recovered: true,
+          }
+        }
+        const retryErr = await retryRes.text()
+        return { success: false, error: `DEV.to publish failed (${retryRes.status}): ${retryErr}` }
+      }
+      return { success: false, error: `DEV.to API error 422: ${body}` }
+    }
+
     if (!res.ok) {
       const err = await res.text()
-      return { success: false, error: `DEV.to API error ${res.status}: ${err}` }
+      return { success: false, error: `DEV.to publish failed (${res.status}): ${err}` }
     }
 
     const data: DevToArticleResult = await res.json()
@@ -89,7 +146,7 @@ export async function updateOnDevTo(
 
     if (!res.ok) {
       const err = await res.text()
-      return { success: false, error: `DEV.to update error ${res.status}: ${err}` }
+      return { success: false, error: `DEV.to update failed (${res.status}): ${err}` }
     }
 
     const data: DevToArticleResult = await res.json()
