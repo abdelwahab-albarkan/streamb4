@@ -4,18 +4,23 @@ import { PublishRecord } from '@/lib/models/PublishRecord'
 
 /**
  * GET /api/admin/publish/history?postId=xxx
- * Returns all publish records for a given post.
+ * GET /api/admin/publish/history?postId=all   — returns all records (last 200)
+ *
+ * Returns publish records sorted newest-first.
  */
 export async function GET(req: NextRequest) {
   try {
     const postId = req.nextUrl.searchParams.get('postId')
-    if (!postId) {
-      return NextResponse.json({ success: false, error: 'postId is required' }, { status: 400 })
-    }
+    const limit  = Math.min(Number(req.nextUrl.searchParams.get('limit') ?? '200'), 500)
 
     await connectDB()
-    const records = await PublishRecord.find({ postId })
+
+    const query = (!postId || postId === 'all') ? {} : { postId }
+
+    const records = await PublishRecord
+      .find(query)
       .sort({ attemptedAt: -1 })
+      .limit(limit)
       .lean()
 
     return NextResponse.json({ success: true, records })
