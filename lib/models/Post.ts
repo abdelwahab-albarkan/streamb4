@@ -34,6 +34,30 @@ export interface IPost extends Document {
   isFeatured?: boolean
   isSticky?: boolean
   scheduledAt?: string
+  // ── Platform publish tracking ──────────────────────────────────────────────
+  devtoId?: number
+  devtoUrl?: string
+  devtoPublishedAt?: string
+  devtoStatus?: string          // 'published' | 'failed' | 'pending' | ''
+  devtoError?: string
+  bloggerPostId?: string
+  bloggerUrl?: string
+  bloggerPublishedAt?: string
+  bloggerStatus?: string        // 'published' | 'failed' | 'pending' | ''
+  bloggerError?: string
+  lastSyncAt?: string
+  // ── AI Studio metadata ─────────────────────────────────────────────────────
+  tone?: string
+  writingStyle?: string
+  targetAudience?: string
+  ctaStyle?: string
+  country?: string
+  language?: string
+  imagePrompts?: string[]
+  featuredImagePrompt?: string
+  socialDescription?: string
+  eeatScore?: number
+  outline?: string
 }
 
 const PostSchema = new Schema<IPost>({
@@ -70,6 +94,30 @@ const PostSchema = new Schema<IPost>({
   isFeatured: { type: Boolean, default: false },
   isSticky: { type: Boolean, default: false },
   scheduledAt: { type: String, default: '' },
+  // Platform publish tracking
+  devtoId: { type: Number, default: 0 },
+  devtoUrl: { type: String, default: '' },
+  devtoPublishedAt: { type: String, default: '' },
+  devtoStatus: { type: String, default: '' },
+  devtoError: { type: String, default: '' },
+  bloggerPostId: { type: String, default: '' },
+  bloggerUrl: { type: String, default: '' },
+  bloggerPublishedAt: { type: String, default: '' },
+  bloggerStatus: { type: String, default: '' },
+  bloggerError: { type: String, default: '' },
+  lastSyncAt: { type: String, default: '' },
+  // AI Studio metadata
+  tone: { type: String, default: '' },
+  writingStyle: { type: String, default: '' },
+  targetAudience: { type: String, default: '' },
+  ctaStyle: { type: String, default: '' },
+  country: { type: String, default: '' },
+  language: { type: String, default: '' },
+  imagePrompts: [String],
+  featuredImagePrompt: { type: String, default: '' },
+  socialDescription: { type: String, default: '' },
+  eeatScore: { type: Number, default: 0 },
+  outline: { type: String, default: '' },
 }, { timestamps: false, versionKey: false })
 
 export const Post: Model<IPost> = mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)
