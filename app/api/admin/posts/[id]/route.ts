@@ -39,11 +39,38 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const optStr: (keyof typeof update)[] = [
       "content", "excerpt", "seoTitle", "metaDescription", "focusKeyword",
       "featuredImage", "ogTitle", "ogDescription", "keywordDensity",
-      "author", "category", "publishedAt", "scheduledAt", "updatedAt",
+      "author", "category", "scheduledAt", "updatedAt",
+      // NOTE: publishedAt is intentionally excluded — handled separately below
     ];
     for (const key of optStr) {
       if (typeof postData[key] === "string") update[key] = postData[key];
     }
+
+    // ── publishedAt — critical for sort order ─────────────────────────────────
+    // Rules:
+    //  1. Transitioning to published → stamp now ONLY if DB has no publishedAt yet.
+    //  2. If the caller sent a non-empty explicit date → respect it (admin override).
+    //  3. Anything else (save draft, update draft) → do NOT touch publishedAt.
+    //     This preserves the original publish date when a post is drafted then re-published.
+    const newStatus     = typeof postData.status === "string" ? postData.status : null;
+    const callerDate    = typeof postData.publishedAt === "string" ? postData.publishedAt.trim() : "";
+
+    if (newStatus === "published") {
+      if (callerDate) {
+        // Admin explicitly supplied a date — use it
+        update.publishedAt = callerDate;
+      } else {
+        // No date supplied: stamp now only if the existing record has none.
+        // We do a lightweight projection-only read to avoid over-fetching.
+        const existing = await Post.findOne({ id }, { publishedAt: 1 }).lean() as any | null;
+        const existingDate: string = existing?.publishedAt ?? "";
+        if (!existingDate) {
+          update.publishedAt = new Date().toISOString();
+        }
+        // If existing has a date, leave it alone (no-op — keep original publish date)
+      }
+    }
+    // status !== "published" → publishedAt left untouched in the DB
 
     // Array fields
     const optArr: (keyof typeof update)[] = [

@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const format = searchParams.get('format') || 'json'
 
   await connectDB()
-  const posts = await Post.find({}).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean()
+  const posts = await Post.find({}).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean()
 
   if (format === 'csv') {
     const headers = [

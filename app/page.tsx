@@ -10,6 +10,10 @@ import { PricingSection } from "@/components/sections/PricingSection";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { CompareSection } from "@/components/sections/CompareSection";
 import { ReviewsSection } from "@/components/sections/ReviewsSection";
+import { LatestBlogPosts } from "@/components/sections/LatestBlogPosts";
+import { connectDB } from "@/lib/mongodb";
+import { Post } from "@/lib/models/Post";
+import { serializeDocs } from "@/lib/serialize";
 import { OffersSection } from "@/components/sections/OffersSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
@@ -183,7 +187,24 @@ const homepageFaqSchema = {
   ]
 };
 
-export default function Home() {
+// Fetch exactly 3 newest published posts for the homepage section.
+// Done server-side with .limit(3) — never slice a large array on the client.
+async function getLatestPosts() {
+  try {
+    await connectDB();
+    const docs = await Post.find({ status: "published" })
+      .sort({ publishedAt: -1, createdAt: -1 })
+      .limit(3)
+      .lean();
+    return serializeDocs(docs as any[]);
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const latestPosts = await getLatestPosts();
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema) }} />
@@ -203,6 +224,7 @@ export default function Home() {
         <CompareSection />
         <ReviewsSection />
         <OffersSection />
+        <LatestBlogPosts posts={latestPosts as any} />
         <FAQSection />
         <CTASection />
       </main>

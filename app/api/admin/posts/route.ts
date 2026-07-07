@@ -72,7 +72,14 @@ export async function POST(request: Request) {
       readingTime:         typeof postData.readingTime         === "number" ? postData.readingTime         : 0,
       views:               0,
       likes:               0,
-      publishedAt:         typeof postData.publishedAt         === "string" ? postData.publishedAt         : "",
+      // publishedAt: stamp now when first published; never overwrite with empty.
+      // Drafts get "". Published posts get caller's date or now if caller omitted it.
+      publishedAt: (() => {
+        const callerDate = typeof postData.publishedAt === "string" ? postData.publishedAt.trim() : "";
+        const status     = typeof postData.status === "string" ? postData.status : "draft";
+        if (status === "published") return callerDate || nowIso;
+        return ""; // drafts have no publishedAt until they are published
+      })(),
       createdAt:           typeof postData.createdAt           === "string" && postData.createdAt          ? postData.createdAt          : nowIso,
       updatedAt:           typeof postData.updatedAt           === "string" && postData.updatedAt          ? postData.updatedAt          : nowIso,
       featured:            isFeaturedVal,
