@@ -26,7 +26,7 @@ async function getPost(slug: string) {
 
     if (!post) {
       // Partial slug match fallback
-      const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean() as any[];
+      const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean() as any[];
       post = posts.find(
         (p: any) =>
           p.slug?.includes(slug) || slug?.includes(p.slug)
@@ -45,7 +45,7 @@ async function getPost(slug: string) {
 async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
-    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).limit(3).lean();
+    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).limit(3).lean();
     return serializeDocs(docs as any[]);
   } catch (err) {
     return [];
@@ -138,8 +138,8 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
       "@id": `https://streamb4.com/blog/${slug}`
     },
     "isPartOf": { "@id": "https://streamb4.com/blog#blog" },
-    "datePublished": post.date || post.createdAt || "",
-    "dateModified": post.updatedAt || post.date || "",
+    "datePublished": post.publishedAt || post.createdAt || "",
+    "dateModified": post.updatedAt || post.publishedAt || post.createdAt || "",
     "author": {
       "@type": "Person",
       "name": post.author || "STREAMB4 Editorial Team"
@@ -223,7 +223,21 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             <div className="flex items-center gap-6 text-gray-500 text-xs font-semibold">
               <span>By {post.author || "Admin"}</span>
               <span>·</span>
-              <span>{post.date}</span>
+              <span>
+                {post.publishedAt
+                  ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : post.createdAt
+                  ? new Date(post.createdAt).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : ""}
+              </span>
               <span>·</span>
               <span>{(post.views || 0).toLocaleString()} views</span>
             </div>

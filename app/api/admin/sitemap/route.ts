@@ -5,7 +5,7 @@ import { Post } from "@/lib/models/Post";
 export async function POST() {
   try {
     await connectDB();
-    const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
 
     const urls = [
       { url: "https://streamb4.com", priority: "1.0", lastmod: new Date().toISOString().split("T")[0] },

@@ -4,7 +4,7 @@ import { Post } from "@/lib/models/Post";
 
 export async function GET() {
   await connectDB();
-  const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).limit(20).lean();
+  const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).limit(20).lean();
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -23,7 +23,7 @@ export async function GET() {
       <link>https://streamb4.com/blog/${post.slug}</link>
       <guid>https://streamb4.com/blog/${post.slug}</guid>
       <description><![CDATA[${post.excerpt}]]></description>
-      <pubDate>${new Date((post as any).date || Date.now()).toUTCString()}</pubDate>
+      <pubDate>${new Date(post.publishedAt || (post as any).createdAt || Date.now()).toUTCString()}</pubDate>
       <category>${post.category}</category>
     </item>`
       )

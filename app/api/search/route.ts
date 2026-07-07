@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     await connectDB();
 
-    const posts = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
     const q = query.toLowerCase();
 
     const ranked = posts

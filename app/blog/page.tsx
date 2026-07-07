@@ -67,7 +67,7 @@ const blogBreadcrumbSchema = {
 async function getPosts() {
   try {
     await connectDB();
-    const docs = await Post.find({ status: "published" }).sort({ featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    const docs = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
     // serializeDocs converts every ObjectId → hex string and Date → ISO string in one pass,
     // making all documents safe for React Server Component payload serialization.
     return serializeDocs(docs as any[]);
@@ -104,7 +104,8 @@ export default async function BlogListingPage({
     );
   }
 
-  const featuredPost = posts.find((p: any) => p.isFeatured) || posts[0] || null;
+  // Honour both isFeatured and featured fields (schema has both); fall back to newest post
+  const featuredPost = posts.find((p: any) => p.isFeatured || p.featured) || posts[0] || null;
   const recentPosts = [...posts].slice(0, 4);
 
   return (
