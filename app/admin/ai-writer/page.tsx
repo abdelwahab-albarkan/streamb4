@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, FileText, CheckCircle2, Zap, BarChart2 } from "lucide-react";
 import { useToast } from "@/components/admin/ui/Toast";
 import StudioStepper from "@/components/admin/studio/StudioStepper";
 import PublishCenterModal from "@/components/admin/publish/PublishCenterModal";
+import CalendarModal from "@/components/admin/content-calendar/CalendarModal";
 import { analyzeContent, type SeoAnalysis } from "@/services/seo";
+import { computeStats, type CalendarTopic, type CalendarStats } from "@/lib/types/content-calendar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -94,13 +97,155 @@ const GENERATION_STEPS = [
   "Running enterprise quality check…",
 ];
 
+// ─── Auto-fill helpers ────────────────────────────────────────────────────────
+
+/** Derive language from country name */
+function deriveLanguage(country: string): string {
+  const map: Record<string, string> = {
+    france: "French", germany: "German", spain: "Spanish", morocco: "French",
+    brasil: "Portuguese", brazil: "Portuguese", portugal: "Portuguese",
+    japan: "English", china: "English", india: "English",
+  };
+  return map[country.toLowerCase()] ?? "English";
+}
+
+/** Derive writing style from blog title */
+function deriveWritingStyle(title: string): string {
+  const t = title.toLowerCase();
+  if (t.includes("how to") || t.includes("how-to"))       return "How-To Guide";
+  if (t.includes("best ") || t.includes("top "))          return "Listicle";
+  if (t.includes(" vs ") || t.includes(" versus "))       return "Comparison";
+  if (t.includes("review"))                                return "Review";
+  if (t.includes("tutorial") || t.includes("step by step")) return "Tutorial";
+  if (t.includes("why ") || t.includes("is "))            return "Informative";
+  return "Informative";
+}
+
+/** Derive writing tone from search intent */
+function deriveTone(intent: string): string {
+  const map: Record<string, string> = {
+    informational: "Professional",
+    commercial:    "Persuasive",
+    transactional: "Persuasive",
+    navigational:  "Authoritative",
+    tutorial:      "Conversational",
+  };
+  return map[intent.toLowerCase()] ?? "Professional";
+}
+
+/** Derive CTA style from search intent */
+function deriveCta(intent: string): string {
+  const map: Record<string, string> = {
+    commercial:    "Free Trial",
+    transactional: "Free Trial",
+    informational: "Learn More",
+    navigational:  "Learn More",
+  };
+  return map[intent.toLowerCase()] ?? "Free Trial";
+}
+
+/** Normalise country names from Excel to the COUNTRIES dropdown */
+function normaliseCountry(country: string): string {
+  const map: Record<string, string> = {
+    "united states": "US",
+    "united kingdom": "UK",
+    "us": "US", "usa": "US",
+    "uk": "UK", "gb": "UK",
+    "au": "Australia", "australia": "Australia",
+    "ca": "Canada", "canada": "Canada",
+    "fr": "France", "france": "France",
+    "de": "Germany", "germany": "Germany",
+    "es": "Spain", "spain": "Spain",
+    "ma": "Morocco", "morocco": "Morocco",
+    "ae": "UAE", "uae": "UAE",
+  };
+  return map[country.toLowerCase()] ?? country;
+}
+
+/** Build a rich content brief from all Excel fields */
+function buildBrief(t: CalendarTopic): string {
+  const lines: string[] = [];
+  if (t.notes)        lines.push(`Brief: ${t.notes}`);
+  if (t.searchIntent) lines.push(`Search Intent: ${t.searchIntent}`);
+  if (t.cluster)      lines.push(`Content Cluster: ${t.cluster}`);
+  if (t.country)      lines.push(`Target Market: ${t.country}`);
+  if (t.difficulty)   lines.push(`Keyword Difficulty: ${t.difficulty}`);
+  if (t.month && t.week) lines.push(`Scheduled: ${t.month} Week ${t.week}`);
+  return lines.join("\n");
+}
+
+// ─── Dashboard strip ──────────────────────────────────────────────────────────
+
+function DashboardStrip({ stats }: { stats: CalendarStats }) {
+  const items = [
+    { label: "Total",        value: stats.total,              color: "#aaa",    icon: FileText    },
+    { label: "Remaining",    value: stats.pending + stats.inProgress, color: "#888",    icon: Calendar    },
+    { label: "Generated",    value: stats.generated,          color: "#818cf8", icon: Zap         },
+    { label: "Published",    value: stats.published,          color: "#22c55e", icon: CheckCircle2},
+    { label: "This Week",    value: stats.remainingThisWeek,  color: "#FF7A00", icon: BarChart2   },
+    { label: "This Month",   value: stats.remainingThisMonth, color: "#ff4d4d", icon: BarChart2   },
+  ];
+
+  const completed = stats.generated + stats.published;
+  const pct       = stats.total > 0 ? Math.round((completed / stats.total) * 100) : 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl p-4 mb-6"
+      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[10px] font-black text-gray-600 uppercase tracking-[0.15em]">Content Calendar Progress</p>
+        <span className="text-xs font-black text-orange-400">{pct}% complete</span>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden mb-4">
+        <motion.div
+          className="h-full rounded-full"
+          style={{ background: "linear-gradient(90deg,#FF7A00,#22c55e)" }}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        />
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+        {items.map(({ label, value, color, icon: Icon }) => (
+          <div key={label} className="flex flex-col items-center py-2 rounded-xl"
+            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <Icon size={11} style={{ color }} className="mb-1 opacity-60" />
+            <span className="font-black text-sm" style={{ color }}>{value}</span>
+            <span className="text-[9px] text-gray-700 font-semibold uppercase tracking-wide mt-0.5">{label}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AIWriterPage() {
   const { addToast } = useToast();
 
-  const [currentStep,    setCurrentStep]    = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  // ── UI state ───────────────────────────────────────────────────────────────
+
+  const [currentStep,     setCurrentStep]     = useState(1);
+  const [completedSteps,  setCompletedSteps]  = useState<number[]>([]);
+  const [calendarOpen,    setCalendarOpen]    = useState(false);
+  const [publishModalOpen,setPublishModalOpen]= useState(false);
+
+  // Sourced topic ID — used to update status in calendar after generation
+  const [sourcedTopicId,  setSourcedTopicId]  = useState<string | null>(null);
+
+  // Calendar stats for the dashboard strip
+  const [calendarStats, setCalendarStats] = useState<CalendarStats | null>(null);
+
+  // ── Form state ─────────────────────────────────────────────────────────────
 
   const [promptConfig, setPromptConfig] = useState<PromptConfig>({
     prompt:            "",
@@ -134,7 +279,6 @@ export default function AIWriterPage() {
   const [article,       setArticle]       = useState<GeneratedArticle | null>(null);
   const [analysis,      setAnalysis]      = useState<SeoAnalysis | null>(null);
   const [editedContent, setEditedContent] = useState("");
-  const [publishModalOpen, setPublishModalOpen] = useState(false);
 
   const [loadingSeo,     setLoadingSeo]     = useState(false);
   const [loadingOutline, setLoadingOutline] = useState(false);
@@ -143,6 +287,103 @@ export default function AIWriterPage() {
   const [genProgress,    setGenProgress]    = useState(0);
 
   const genTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // ── Load calendar stats on mount ──────────────────────────────────────────
+
+  useEffect(() => {
+    fetch("/api/admin/content-calendar")
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && d.topics?.length) {
+          setCalendarStats(computeStats(d.topics));
+        }
+      })
+      .catch(() => {/* ignore — dashboard is optional */});
+  }, []);
+
+  // ── Auto-fill from Content Calendar ──────────────────────────────────────
+
+  const handleImportTopic = useCallback((topic: CalendarTopic) => {
+    const country      = normaliseCountry(topic.country || "US");
+    const language     = deriveLanguage(topic.country || "");
+    const writingStyle = deriveWritingStyle(topic.blogTitle || topic.topic || "");
+    const tone         = deriveTone(topic.searchIntent || "");
+    const ctaStyle     = deriveCta(topic.searchIntent || "");
+    const wordCount    = Number(topic.wordCount) > 0 ? Number(topic.wordCount) : 3500;
+    const brief        = buildBrief(topic);
+    const displayTitle = topic.blogTitle || topic.topic || "";
+    const cat          = CATEGORIES.find(c => c.toLowerCase() === (topic.category ?? "").toLowerCase())
+                       ?? topic.category
+                       ?? "General";
+
+    setPromptConfig({
+      prompt:            brief,
+      topic:             displayTitle,
+      primaryKeyword:    topic.primaryKeyword,
+      secondaryKeywords: topic.secondaryKeywords,
+      country,
+      language,
+      tone,
+      writingStyle,
+      wordCount,
+      category:          cat,
+      tags:              topic.tags,
+      targetAudience:    `${country} ${cat} readers`,
+      ctaStyle,
+    });
+
+    setSeoConfig(prev => ({
+      ...prev,
+      slug:         topic.slug || "",
+      focusKeyword: topic.primaryKeyword,
+      // Let AI generate seoTitle / metaDescription — reset them
+      seoTitle:         "",
+      metaDescription:  "",
+    }));
+
+    setSourcedTopicId(topic._id);
+
+    // Reset to step 1 with a clean slate
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setArticle(null);
+    setAnalysis(null);
+    setEditedContent("");
+    setOutline([]);
+
+    addToast(`Loaded: ${displayTitle || "topic"}`, "success");
+  }, [addToast]);
+
+  // ── Mark topic as Generated in calendar ──────────────────────────────────
+
+  const markTopicGenerated = useCallback(async (topicId: string) => {
+    try {
+      await fetch(`/api/admin/content-calendar/${topicId}`, {
+        method:  "PUT",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ status: "Generated" }),
+      });
+      // Refresh stats
+      const res = await fetch("/api/admin/content-calendar");
+      const d   = await res.json();
+      if (d.success) setCalendarStats(computeStats(d.topics ?? []));
+    } catch {/* non-critical */}
+  }, []);
+
+  // ── Mark topic as Published in calendar ──────────────────────────────────
+
+  const markTopicPublished = useCallback(async (topicId: string) => {
+    try {
+      await fetch(`/api/admin/content-calendar/${topicId}`, {
+        method:  "PUT",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ status: "Published" }),
+      });
+      const res = await fetch("/api/admin/content-calendar");
+      const d   = await res.json();
+      if (d.success) setCalendarStats(computeStats(d.topics ?? []));
+    } catch {/* non-critical */}
+  }, []);
 
   // ── Navigation ─────────────────────────────────────────────────────────────
 
@@ -181,7 +422,7 @@ export default function AIWriterPage() {
         setSeoConfig({
           seoTitle:          data.seo.seoTitle          ?? "",
           metaDescription:   data.seo.metaDescription   ?? "",
-          slug:              data.seo.slug               ?? "",
+          slug:              seoConfig.slug || (data.seo.slug ?? ""),
           ogTitle:           data.seo.ogTitle            ?? "",
           ogDescription:     data.seo.ogDescription      ?? "",
           socialDescription: data.seo.socialDescription  ?? "",
@@ -306,6 +547,10 @@ export default function AIWriterPage() {
       });
       setAnalysis(clientAnalysis);
       completeStep(4);
+
+      // Update calendar status → Generated
+      if (sourcedTopicId) markTopicGenerated(sourcedTopicId);
+
     } catch (err) {
       if (genTimer.current) clearInterval(genTimer.current);
       setGenProgress(0);
@@ -313,7 +558,7 @@ export default function AIWriterPage() {
       setCurrentStep(3);
       setCompletedSteps(prev => prev.filter(s => s !== 3));
     } finally { setGenerating(false); }
-  }, [promptConfig, seoConfig, outline, addToast]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [promptConfig, seoConfig, outline, addToast, sourcedTopicId, markTopicGenerated]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Step 5 → 6: Save & Open Publish Modal ────────────────────────────────
 
@@ -364,6 +609,9 @@ export default function AIWriterPage() {
       addToast("Article saved — opening Publish Center", "success");
       completeStep(5);
       setPublishModalOpen(true);
+
+      // Update calendar status → Published (after saving, before multi-platform publish)
+      if (sourcedTopicId) markTopicPublished(sourcedTopicId);
     } catch (err) { addToast(err instanceof Error ? err.message : "Save failed", "error"); }
   };
 
@@ -371,15 +619,40 @@ export default function AIWriterPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
+      {/* ── Page header ─────────────────────────────────────────────────────── */}
+      <div className="mb-6">
         <p className="text-[#FF7A00] font-black text-xs uppercase tracking-[0.3em] mb-2">ENTERPRISE CONTENT STUDIO</p>
-        <h1 className="text-white font-black text-3xl sm:text-4xl uppercase tracking-tight">
-          AI <span style={{ color: "#FF7A00" }}>WRITER</span>
-        </h1>
-        <p className="text-gray-500 text-sm mt-2">
-          6-step AI-powered article creation with enterprise SEO analysis and multi-platform publishing.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-white font-black text-3xl sm:text-4xl uppercase tracking-tight">
+              AI <span style={{ color: "#FF7A00" }}>WRITER</span>
+            </h1>
+            <p className="text-gray-500 text-sm mt-2">
+              6-step AI-powered article creation with enterprise SEO analysis and multi-platform publishing.
+            </p>
+          </div>
+
+          {/* 📅 Import button */}
+          <button
+            onClick={() => setCalendarOpen(true)}
+            className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer"
+            style={{
+              background: "linear-gradient(135deg,rgba(255,122,0,0.15),rgba(255,122,0,0.08))",
+              border:     "1px solid rgba(255,122,0,0.3)",
+              color:      "#FF7A00",
+            }}
+          >
+            <Calendar size={14} />
+            <span className="hidden sm:inline">Import from Calendar</span>
+            <span className="sm:hidden">Calendar</span>
+          </button>
+        </div>
       </div>
+
+      {/* ── Calendar dashboard strip ─────────────────────────────────────────── */}
+      {calendarStats && calendarStats.total > 0 && (
+        <DashboardStrip stats={calendarStats} />
+      )}
 
       <StudioStepper currentStep={currentStep} completedSteps={completedSteps} onStepClick={goToStep} />
 
@@ -388,6 +661,24 @@ export default function AIWriterPage() {
         {/* ── STEP 1: PROMPT ─────────────────────────────────────────────── */}
         {currentStep === 1 && (
           <StepCard key="step1" title="Prompt & Configuration" icon="✏️">
+            {/* Imported topic notice */}
+            {sourcedTopicId && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 p-3 rounded-xl mb-4 text-xs"
+                style={{ background: "rgba(255,122,0,0.06)", border: "1px solid rgba(255,122,0,0.18)" }}
+              >
+                <Calendar size={12} className="text-orange-400 flex-shrink-0" />
+                <span className="text-orange-300 font-semibold">
+                  Auto-filled from Content Calendar — review and click Next to continue.
+                </span>
+                <button
+                  onClick={() => setSourcedTopicId(null)}
+                  className="ml-auto text-gray-600 hover:text-gray-400 transition-colors cursor-pointer text-lg leading-none"
+                >×</button>
+              </motion.div>
+            )}
+
             <div className="space-y-5">
               <Field label="Content Brief / Prompt">
                 <textarea
@@ -616,7 +907,6 @@ export default function AIWriterPage() {
                 </div>
               )}
 
-              {/* Issues */}
               {analysis && analysis.issues.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Issues & Suggestions</p>
@@ -632,7 +922,6 @@ export default function AIWriterPage() {
                 </div>
               )}
 
-              {/* Heading structure */}
               {analysis && analysis.headingStructure.length > 0 && (
                 <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Heading Structure</p>
@@ -647,7 +936,6 @@ export default function AIWriterPage() {
                 </div>
               )}
 
-              {/* Google Snippet Preview */}
               <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
                 <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-3 font-bold">Google Snippet Preview</p>
                 <p className="text-xs text-gray-500">https://streamb4.com › blog › {seoConfig.slug}</p>
@@ -655,7 +943,6 @@ export default function AIWriterPage() {
                 <p className="text-gray-400 text-xs mt-1">{analysis?.snippetPreview.description || seoConfig.metaDescription}</p>
               </div>
 
-              {/* Content editor */}
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Article Content (Markdown)</p>
                 <textarea value={editedContent} onChange={e => setEditedContent(e.target.value)} rows={20}
@@ -663,7 +950,6 @@ export default function AIWriterPage() {
                   style={{ background: "rgba(255,255,255,0.01)" }} />
               </div>
 
-              {/* FAQs */}
               {article.faqs.length > 0 && (
                 <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">FAQ Schema ({article.faqs.length} items)</p>
@@ -679,7 +965,6 @@ export default function AIWriterPage() {
                 </div>
               )}
 
-              {/* Internal links */}
               {article.internalLinks.length > 0 && (
                 <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Internal Link Suggestions ({article.internalLinks.length})</p>
@@ -714,7 +999,11 @@ export default function AIWriterPage() {
                   View Article ↗
                 </a>
                 <button
-                  onClick={() => { setCurrentStep(1); setCompletedSteps([]); setArticle(null); setAnalysis(null); setEditedContent(""); setOutline([]); }}
+                  onClick={() => {
+                    setCurrentStep(1); setCompletedSteps([]); setArticle(null);
+                    setAnalysis(null); setEditedContent(""); setOutline([]);
+                    setSourcedTopicId(null);
+                  }}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white transition-colors border border-white/[0.08]">
                   Write Another Article
                 </button>
@@ -725,7 +1014,14 @@ export default function AIWriterPage() {
 
       </AnimatePresence>
 
-      {/* Publish Center Modal */}
+      {/* ── Content Calendar Modal ─────────────────────────────────────────── */}
+      <CalendarModal
+        open={calendarOpen}
+        onClose={() => setCalendarOpen(false)}
+        onSelect={handleImportTopic}
+      />
+
+      {/* ── Publish Center Modal ───────────────────────────────────────────── */}
       {article && (
         <PublishCenterModal
           open={publishModalOpen}
@@ -739,7 +1035,7 @@ export default function AIWriterPage() {
   );
 }
 
-// ─── Shared primitives ────────────────────────────────────────────────────────
+// ─── Shared primitives (unchanged) ───────────────────────────────────────────
 
 function StepCard({ children, title, icon }: { children: React.ReactNode; title: string; icon: string }) {
   return (
@@ -791,7 +1087,7 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
 function OrangeButton({ onClick, loading, children, disabled }: { onClick: () => void; loading?: boolean; children: React.ReactNode; disabled?: boolean }) {
   return (
     <button onClick={onClick} disabled={loading || disabled}
-      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black text-black disabled:opacity-50 transition-opacity"
+      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black text-black disabled:opacity-50 transition-opacity cursor-pointer"
       style={{ background: "linear-gradient(135deg, #FF7A00, #ffb300)" }}>
       {loading && <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />}
       {children}
