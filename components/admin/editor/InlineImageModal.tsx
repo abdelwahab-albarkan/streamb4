@@ -304,7 +304,8 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
   // URL tab
   const [urlInput, setUrlInput] = useState('')
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef     = useRef<HTMLInputElement>(null)
+  const openPickerAfterStep = useRef(false)
 
   // Mount + scroll lock
   useEffect(() => {
@@ -319,6 +320,15 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
     document.addEventListener('keydown', fn)
     return () => document.removeEventListener('keydown', fn)
   }, [onClose])
+
+  // After transitioning to 'pick', auto-open the native file picker if requested
+  useEffect(() => {
+    if (step === 'pick' && openPickerAfterStep.current) {
+      openPickerAfterStep.current = false
+      // rAF gives AnimatePresence time to mount the tab content before we click
+      requestAnimationFrame(() => fileInputRef.current?.click())
+    }
+  }, [step])
 
   // Load media library when tab is switched to 'library' or from choice selection
   const loadMediaLibrary = useCallback(async () => {
@@ -560,7 +570,11 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
                 
                 <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
                   <button
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => {
+                      openPickerAfterStep.current = true
+                      setActiveTab('upload')
+                      setStep('pick')
+                    }}
                     className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/[0.01] border border-white/[0.06] hover:border-orange-500/40 hover:bg-orange-500/[0.03] transition-all cursor-pointer space-y-2 group"
                   >
                     <span className="text-3xl group-hover:scale-110 transition-all duration-200">⬆️</span>
@@ -816,18 +830,6 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
                   </AnimatePresence>
                 </div>
                 
-                {/* Hidden File input */}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={e => {
-                    const file = e.target.files?.[0]
-                    if (file) void uploadFile(file)
-                    e.target.value = ''
-                  }}
-                />
               </motion.div>
             )}
 
@@ -1048,7 +1050,23 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
     </div>
   )
 
-  return createPortal(modal, document.body)
+  // Always-rendered hidden file input — must be outside AnimatePresence so the
+  // ref is never null, regardless of which modal step is currently active.
+  const hiddenFileInput = (
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={e => {
+        const file = e.target.files?.[0]
+        if (file) void uploadFile(file)
+        e.target.value = ''
+      }}
+    />
+  )
+
+  return createPortal(<>{modal}{hiddenFileInput}</>, document.body)
 }
 
 // ─── Helper sub-component ─────────────────────────────────────────────────────
