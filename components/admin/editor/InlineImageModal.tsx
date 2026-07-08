@@ -386,16 +386,9 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
       if (data.success) {
         const autoAlt = webpFile.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')
         const newCfg = { ...DEFAULT_CONFIG, url: data.item.url, alt: data.item.altText || autoAlt }
-        
-        // If not in edit mode, insert immediately!
-        if (!editMode) {
-          onInsert(generateFigureHTML(newCfg), newCfg)
-          onClose()
-        } else {
-          setConfig(newCfg)
-          setMediaItems(prev => [data.item, ...prev])
-          setStep('configure')
-        }
+        setConfig(newCfg)
+        setMediaItems(prev => [data.item, ...prev])
+        setStep('configure')
       } else {
         setUploadError(data.error ?? 'Upload failed')
       }
@@ -425,28 +418,20 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
 
   const handleLibraryInsert = () => {
     if (!selectedItem) return
-    const cfg = {
-      ...DEFAULT_CONFIG,
+    setConfig(c => ({
+      ...c,
       url: selectedItem.url,
       alt: selectedItem.altText || selectedItem.filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')
-    }
-    onInsert(generateFigureHTML(cfg), cfg)
-    onClose()
+    }))
+    setStep('configure')
   }
 
   // ── URL continue ──────────────────────────────────────────────────────────
   const handleUrlContinue = () => {
     const url = urlInput.trim()
     if (!url) return
-    const cfg = { ...DEFAULT_CONFIG, url }
-    
-    if (!editMode) {
-      onInsert(generateFigureHTML(cfg), cfg)
-      onClose()
-    } else {
-      setConfig(cfg)
-      setStep('configure')
-    }
+    setConfig(c => ({ ...c, url }))
+    setStep('configure')
   }
 
   // ── Insert / Update ────────────────────────────────────────────────────────
@@ -781,7 +766,7 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
                               onClick={handleLibraryInsert}
                               className="px-4 py-2 rounded-xl text-black text-xs font-black cursor-pointer flex-shrink-0 bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg transition-all"
                             >
-                              Insert Image
+                              Configure →
                             </button>
                           </div>
                         )}

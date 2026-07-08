@@ -98,6 +98,9 @@ export default function EditPostPage() {
   const postRef = useRef<any>(null);
   postRef.current = post;
 
+  // Saved cursor position so the image always inserts at the right spot
+  const savedCursorRef = useRef<number>(0);
+
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
   // ── Fetch post ─────────────────────────────────────────────────────────────
@@ -582,12 +585,13 @@ export default function EditPostPage() {
   const insertAtCursor = useCallback((markdown: string) => {
     const ta = getEditorTextarea();
     const currentContent = postRef.current?.content || "";
+    // Use the saved cursor position from when the modal was opened
+    const start = savedCursorRef.current;
+    const end   = start;
     if (!ta) {
       setPost((p: any) => ({ ...p, content: currentContent + markdown }));
       return;
     }
-    const start = ta.selectionStart ?? currentContent.length;
-    const end   = ta.selectionEnd   ?? currentContent.length;
     const newContent = currentContent.slice(0, start) + markdown + currentContent.slice(end);
     setPost((p: any) => ({ ...p, content: newContent }));
     requestAnimationFrame(() => {
@@ -607,6 +611,9 @@ export default function EditPostPage() {
 
   // ── Image modal handlers ──────────────────────────────────────────────────
   const openInsertModal = useCallback(() => {
+    // Snapshot cursor before the modal steals focus
+    const ta = getEditorTextarea();
+    savedCursorRef.current = ta?.selectionStart ?? 0;
     setImageEditConfig(undefined);
     setImageEditRange(null);
     setIsEditMode(false);
