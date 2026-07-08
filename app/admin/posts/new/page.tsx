@@ -121,9 +121,13 @@ export default function NewPostPage() {
   const postRef = useRef(post);
   postRef.current = post;
 
-  // Saved cursor position so the image always inserts at the right spot
-  // even though the editor loses focus when the modal opens.
+  // Saved cursor position — snapshotted when the image modal opens because
+  // the textarea loses its selection when focus moves to the dialog.
   const savedCursorRef = useRef<number>(0);
+
+  // Debounce timers — avoids O(n) main-thread work on every keystroke
+  const wordCountTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const seoTimerRef       = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -159,28 +163,42 @@ export default function NewPostPage() {
     }
   }, []);
 
-  // ── Word count + reading time ─────────────────────────────────────────────
+  // ── Word count + reading time (debounced 300 ms) ─────────────────────────
+  // Running replace/split/filter on the full content string synchronously on
+  // every keystroke blocks the main thread for large articles.
   useEffect(() => {
-    const text  = post.content || "";
-    const words = text.replace(/[#*`\[\]()]/g, "").split(/\s+/).filter(Boolean).length;
-    setWordCount(words);
-    setReadingTime(Math.max(1, Math.ceil(words / 200)));
+    clearTimeout(wordCountTimerRef.current);
+    wordCountTimerRef.current = setTimeout(() => {
+      const text  = post.content || "";
+      const words = text.replace(/[#*`\[\]()]/g, "").split(/\s+/).filter(Boolean).length;
+      setWordCount(words);
+      setReadingTime(Math.max(1, Math.ceil(words / 200)));
+    }, 300);
+    return () => clearTimeout(wordCountTimerRef.current);
   }, [post.content]);
 
-  // ── SEO score ─────────────────────────────────────────────────────────────
+  // ── SEO score (debounced 500 ms, specific deps) ───────────────────────────
+  // Using [post] as a dep caused this to re-run on every state update, including
+  // unrelated fields (tags, status, etc.). Specific deps + debounce prevents
+  // expensive string operations on every keystroke.
   useEffect(() => {
-    let score = 0;
-    const kw = (post.focusKeyword || "").toLowerCase();
-    if ((post.seoTitle || "").length >= 30 && (post.seoTitle || "").length <= 60) score += 15;
-    if (kw && (post.seoTitle || "").toLowerCase().includes(kw)) score += 15;
-    if ((post.metaDescription || "").length >= 120 && (post.metaDescription || "").length <= 155) score += 15;
-    if (kw && (post.metaDescription || "").toLowerCase().includes(kw)) score += 10;
-    if (wordCount >= 800) score += 15;
-    if (kw && (post.content || "").toLowerCase().includes(kw)) score += 10;
-    if (post.featuredImage) score += 10;
-    if (kw && (post.slug || "").includes(kw.replace(/\s+/g, "-"))) score += 10;
-    setSeoScore(score);
-  }, [post, wordCount]);
+    clearTimeout(seoTimerRef.current);
+    seoTimerRef.current = setTimeout(() => {
+      let score = 0;
+      const kw = (post.focusKeyword || "").toLowerCase();
+      if ((post.seoTitle || "").length >= 30 && (post.seoTitle || "").length <= 60) score += 15;
+      if (kw && (post.seoTitle || "").toLowerCase().includes(kw)) score += 15;
+      if ((post.metaDescription || "").length >= 120 && (post.metaDescription || "").length <= 155) score += 15;
+      if (kw && (post.metaDescription || "").toLowerCase().includes(kw)) score += 10;
+      if (wordCount >= 800) score += 15;
+      if (kw && (post.content || "").toLowerCase().includes(kw)) score += 10;
+      if (post.featuredImage) score += 10;
+      if (kw && (post.slug || "").includes(kw.replace(/\s+/g, "-"))) score += 10;
+      setSeoScore(score);
+    }, 500);
+    return () => clearTimeout(seoTimerRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post.seoTitle, post.metaDescription, post.focusKeyword, post.content, post.featuredImage, post.slug, wordCount]);
 
   // ── Auto-save every 30 s ──────────────────────────────────────────────────
   useEffect(() => {
@@ -206,33 +224,56 @@ export default function NewPostPage() {
   }, []);
 
   // ── Cursor-in-image detector ──────────────────────────────────────────────
+  // Bugs fixed:
+  //  1. Double-attach race: if the initial attach() fails, the timeout fires
+  //     listeners that the old cleanup never removed. Now a single cleanup
+  //     function handles both paths via a closure flag.
+  //  2. checkCursor debounced 150 ms — detectImageAtCursor runs a regex scan
+  //     over the full content on every keyup, blocking the main thread.
   useEffect(() => {
+    let attached = false;
+    let attachTimerId: ReturnType<typeof setTimeout>;
+    let checkTimerId: ReturnType<typeof setTimeout>;
+
     const checkCursor = () => {
-      const ta = getEditorTextarea();
-      if (!ta) return;
-      const result = detectImageAtCursor(ta.value, ta.selectionStart);
-      setImageAtCursor(!!result);
+      clearTimeout(checkTimerId);
+      checkTimerId = setTimeout(() => {
+        const ta = getEditorTextarea();
+        if (!ta) return;
+        const result = detectImageAtCursor(ta.value, ta.selectionStart);
+        setImageAtCursor(!!result);
+      }, 150);
     };
-    const attach = () => {
+
+    const doAttach = () => {
       const ta = getEditorTextarea();
       if (!ta) return false;
       ta.addEventListener("click",  checkCursor);
       ta.addEventListener("keyup",  checkCursor);
       ta.addEventListener("select", checkCursor);
+      attached = true;
       return true;
     };
-    // Retry until MDEditor mounts
-    if (!attach()) {
-      const t = setTimeout(() => attach(), 1200);
-      return () => clearTimeout(t);
-    }
-    return () => {
+
+    const doDetach = () => {
+      clearTimeout(checkTimerId);
       const ta = getEditorTextarea();
-      if (ta) {
+      if (ta && attached) {
         ta.removeEventListener("click",  checkCursor);
         ta.removeEventListener("keyup",  checkCursor);
         ta.removeEventListener("select", checkCursor);
+        attached = false;
       }
+    };
+
+    // MDEditor mounts asynchronously; retry once if not yet in DOM
+    if (!doAttach()) {
+      attachTimerId = setTimeout(doAttach, 1200);
+    }
+
+    return () => {
+      clearTimeout(attachTimerId);
+      doDetach();
     };
   }, []);
 
@@ -357,6 +398,19 @@ export default function NewPostPage() {
     return () => document.removeEventListener("paste", handlePaste);
   }, [uploadAndInsertImage]);
 
+  // ── Reset dragOverPage on drag-cancel / drop-outside ─────────────────────
+  // Without this, cancelling a drag (Escape or dropping outside the window)
+  // never triggers onDragLeave, leaving the overlay stuck permanently.
+  useEffect(() => {
+    const reset = () => setDragOverPage(false);
+    document.addEventListener("dragend", reset);
+    document.addEventListener("drop",    reset);
+    return () => {
+      document.removeEventListener("dragend", reset);
+      document.removeEventListener("drop",    reset);
+    };
+  }, []);
+
   // ── Page Drag & Drop handlers ──────────────────────────────────────────────
   const handlePageDragOver = (e: React.DragEvent) => {
     const file = e.dataTransfer.items?.[0];
@@ -367,7 +421,10 @@ export default function NewPostPage() {
   };
 
   const handlePageDragLeave = (e: React.DragEvent) => {
-    if (e.relatedTarget === null) {
+    // relatedTarget === null only when cursor leaves the browser window.
+    // Check container containment instead so that moving to a sibling element
+    // outside the editor container also correctly resets the overlay.
+    if (!editorContainerRef.current?.contains(e.relatedTarget as Node)) {
       setDragOverPage(false);
     }
   };
@@ -459,19 +516,20 @@ export default function NewPostPage() {
     setIsEditMode(false);
   }, [imageEditRange]);
 
-  // ── Insert image markdown at cursor ──────────────────────────────────────
-  const insertAtCursor = useCallback((markdown: string) => {
+  // ── Insert text at a specific position ───────────────────────────────────
+  // `posOverride` lets callers (toolbar, keyboard shortcuts) supply the live
+  // cursor position they read before calling, so the text lands in the right
+  // spot. When omitted (modal path), we fall back to savedCursorRef which
+  // was snapshotted when the modal opened (before the textarea lost focus).
+  const insertAtCursor = useCallback((markdown: string, posOverride?: number) => {
     const ta = getEditorTextarea();
     const currentContent = postRef.current?.content || "";
-    // Use the saved cursor position from when the modal was opened, because
-    // the textarea loses its selection the moment the modal's dialog gains focus.
-    const start = savedCursorRef.current;
-    const end   = start;
+    const start = posOverride !== undefined ? posOverride : savedCursorRef.current;
     if (!ta) {
       setPost((p: any) => ({ ...p, content: currentContent + markdown }));
       return;
     }
-    const newContent = currentContent.slice(0, start) + markdown + currentContent.slice(end);
+    const newContent = currentContent.slice(0, start) + markdown + currentContent.slice(start);
     setPost((p: any) => ({ ...p, content: newContent }));
     requestAnimationFrame(() => {
       ta.focus();
@@ -601,6 +659,9 @@ export default function NewPostPage() {
 
   // ── Toolbar format handler (non-image formats) ─────────────────────────────
   const handleFormat = (formatType: string) => {
+    // Read live cursor position NOW (before any state update), not the stale
+    // savedCursorRef which is only valid during modal-insert flows.
+    const liveCursor = getEditorTextarea()?.selectionStart ?? savedCursorRef.current;
     let tag = "";
     switch (formatType) {
       case "H1":       tag = "\n# ";                                                                                        break;
@@ -622,7 +683,7 @@ export default function NewPostPage() {
       case "Columns":  tag = "\n\n<div className=\"grid grid-cols-2 gap-4\">\n<div>Column 1</div>\n<div>Column 2</div>\n</div>\n\n"; break;
       default: break;
     }
-    if (tag) insertAtCursor(tag);
+    if (tag) insertAtCursor(tag, liveCursor);
   };
 
   // ── Custom event handlers for Editor Textarea ──────────────────────────────

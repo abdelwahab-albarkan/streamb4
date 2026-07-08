@@ -98,8 +98,12 @@ export default function EditPostPage() {
   const postRef = useRef<any>(null);
   postRef.current = post;
 
-  // Saved cursor position so the image always inserts at the right spot
+  // Saved cursor position — snapshotted when the image modal opens
   const savedCursorRef = useRef<number>(0);
+
+  // Debounce timers — avoids O(n) main-thread work on every keystroke
+  const wordCountTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const seoTimerRef       = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -119,30 +123,39 @@ export default function EditPostPage() {
     })();
   }, [postId]);
 
-  // ── Word count + reading time ──────────────────────────────────────────────
+  // ── Word count + reading time (debounced 300 ms) ─────────────────────────
   useEffect(() => {
     if (!post) return;
-    const text  = post.content || "";
-    const words = text.replace(/[#*`\[\]()]/g, "").split(/\s+/).filter(Boolean).length;
-    setWordCount(words);
-    setReadingTime(Math.max(1, Math.ceil(words / 200)));
-  }, [post?.content]);
+    clearTimeout(wordCountTimerRef.current);
+    wordCountTimerRef.current = setTimeout(() => {
+      const text  = post.content || "";
+      const words = text.replace(/[#*`\[\]()]/g, "").split(/\s+/).filter(Boolean).length;
+      setWordCount(words);
+      setReadingTime(Math.max(1, Math.ceil(words / 200)));
+    }, 300);
+    return () => clearTimeout(wordCountTimerRef.current);
+  }, [post?.content]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── SEO score ─────────────────────────────────────────────────────────────
+  // ── SEO score (debounced 500 ms, specific deps) ───────────────────────────
   useEffect(() => {
     if (!post) return;
-    let score = 0;
-    const kw = (post.focusKeyword || "").toLowerCase();
-    if ((post.seoTitle || "").length >= 30 && (post.seoTitle || "").length <= 60) score += 15;
-    if (kw && (post.seoTitle || "").toLowerCase().includes(kw)) score += 15;
-    if ((post.metaDescription || "").length >= 120 && (post.metaDescription || "").length <= 155) score += 15;
-    if (kw && (post.metaDescription || "").toLowerCase().includes(kw)) score += 10;
-    if (wordCount >= 800) score += 15;
-    if (kw && (post.content || "").toLowerCase().includes(kw)) score += 10;
-    if (post.featuredImage) score += 10;
-    if (kw && (post.slug || "").includes(kw.replace(/\s+/g, "-"))) score += 10;
-    setSeoScore(score);
-  }, [post, wordCount]);
+    clearTimeout(seoTimerRef.current);
+    seoTimerRef.current = setTimeout(() => {
+      let score = 0;
+      const kw = (post.focusKeyword || "").toLowerCase();
+      if ((post.seoTitle || "").length >= 30 && (post.seoTitle || "").length <= 60) score += 15;
+      if (kw && (post.seoTitle || "").toLowerCase().includes(kw)) score += 15;
+      if ((post.metaDescription || "").length >= 120 && (post.metaDescription || "").length <= 155) score += 15;
+      if (kw && (post.metaDescription || "").toLowerCase().includes(kw)) score += 10;
+      if (wordCount >= 800) score += 15;
+      if (kw && (post.content || "").toLowerCase().includes(kw)) score += 10;
+      if (post.featuredImage) score += 10;
+      if (kw && (post.slug || "").includes(kw.replace(/\s+/g, "-"))) score += 10;
+      setSeoScore(score);
+    }, 500);
+    return () => clearTimeout(seoTimerRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post?.seoTitle, post?.metaDescription, post?.focusKeyword, post?.content, post?.featuredImage, post?.slug, wordCount]);
 
   // ── Auto-save to API every 30 s ────────────────────────────────────────────
   useEffect(() => {
@@ -164,35 +177,54 @@ export default function EditPostPage() {
   }, [postId]); // mount-only; ref keeps post current
 
   // ── Cursor-in-image detector ──────────────────────────────────────────────
+  // FIXED: was [post] → re-attached 3 DOM listeners on every keystroke.
+  // Now []: attaches once on mount with a retry for async MDEditor mount.
+  // Also fixed double-attach race and added 150 ms debounce on checkCursor.
   useEffect(() => {
+    let attached = false;
+    let attachTimerId: ReturnType<typeof setTimeout>;
+    let checkTimerId: ReturnType<typeof setTimeout>;
+
     const checkCursor = () => {
-      const ta = getEditorTextarea();
-      if (!ta) return;
-      const result = detectImageAtCursor(ta.value, ta.selectionStart);
-      setImageAtCursor(!!result);
+      clearTimeout(checkTimerId);
+      checkTimerId = setTimeout(() => {
+        const ta = getEditorTextarea();
+        if (!ta) return;
+        const result = detectImageAtCursor(ta.value, ta.selectionStart);
+        setImageAtCursor(!!result);
+      }, 150);
     };
-    const attach = () => {
+
+    const doAttach = () => {
       const ta = getEditorTextarea();
       if (!ta) return false;
       ta.addEventListener("click",  checkCursor);
       ta.addEventListener("keyup",  checkCursor);
       ta.addEventListener("select", checkCursor);
+      attached = true;
       return true;
     };
-    // Retry until MDEditor mounts
-    if (!attach()) {
-      const t = setTimeout(() => attach(), 1200);
-      return () => clearTimeout(t);
-    }
-    return () => {
+
+    const doDetach = () => {
+      clearTimeout(checkTimerId);
       const ta = getEditorTextarea();
-      if (ta) {
+      if (ta && attached) {
         ta.removeEventListener("click",  checkCursor);
         ta.removeEventListener("keyup",  checkCursor);
         ta.removeEventListener("select", checkCursor);
+        attached = false;
       }
     };
-  }, [post]); // re-attach when post loads
+
+    if (!doAttach()) {
+      attachTimerId = setTimeout(doAttach, 1200);
+    }
+
+    return () => {
+      clearTimeout(attachTimerId);
+      doDetach();
+    };
+  }, []); // mount-only — post is accessed via postRef inside checkCursor
 
   // ── Client-side WebP Compression and Upload helper ───────────────────────
   const uploadAndInsertImage = useCallback(async (file: File, position?: number) => {
@@ -315,6 +347,17 @@ export default function EditPostPage() {
     return () => document.removeEventListener("paste", handlePaste);
   }, [uploadAndInsertImage]);
 
+  // ── Reset dragOverPage on drag-cancel / drop-outside ─────────────────────
+  useEffect(() => {
+    const reset = () => setDragOverPage(false);
+    document.addEventListener("dragend", reset);
+    document.addEventListener("drop",    reset);
+    return () => {
+      document.removeEventListener("dragend", reset);
+      document.removeEventListener("drop",    reset);
+    };
+  }, []);
+
   // ── Page Drag & Drop handlers ──────────────────────────────────────────────
   const handlePageDragOver = (e: React.DragEvent) => {
     const file = e.dataTransfer.items?.[0];
@@ -325,7 +368,7 @@ export default function EditPostPage() {
   };
 
   const handlePageDragLeave = (e: React.DragEvent) => {
-    if (e.relatedTarget === null) {
+    if (!editorContainerRef.current?.contains(e.relatedTarget as Node)) {
       setDragOverPage(false);
     }
   };
@@ -478,6 +521,7 @@ export default function EditPostPage() {
   // ── Toolbar formatter ──────────────────────────────────────────────────────
   const handleFormat = (formatType: string) => {
     if (!post) return;
+    const liveCursor = getEditorTextarea()?.selectionStart ?? savedCursorRef.current;
     let tag = "";
     switch (formatType) {
       case "H1":       tag = "\n# ";                                                                           break;
@@ -499,7 +543,7 @@ export default function EditPostPage() {
       case "Columns":  tag = "\n\n<div className=\"grid grid-cols-2 gap-4\">\n<div>Column 1</div>\n<div>Column 2</div>\n</div>\n\n"; break;
       default: break;
     }
-    if (tag) insertAtCursor(tag);
+    if (tag) insertAtCursor(tag, liveCursor);
   };
 
   // ── Custom event handlers for Editor Textarea ──────────────────────────────
@@ -581,18 +625,16 @@ export default function EditPostPage() {
     }
   };
 
-  // ── Insert image markdown at cursor ──────────────────────────────────────
-  const insertAtCursor = useCallback((markdown: string) => {
+  // ── Insert text at a specific position ───────────────────────────────────
+  const insertAtCursor = useCallback((markdown: string, posOverride?: number) => {
     const ta = getEditorTextarea();
     const currentContent = postRef.current?.content || "";
-    // Use the saved cursor position from when the modal was opened
-    const start = savedCursorRef.current;
-    const end   = start;
+    const start = posOverride !== undefined ? posOverride : savedCursorRef.current;
     if (!ta) {
       setPost((p: any) => ({ ...p, content: currentContent + markdown }));
       return;
     }
-    const newContent = currentContent.slice(0, start) + markdown + currentContent.slice(end);
+    const newContent = currentContent.slice(0, start) + markdown + currentContent.slice(start);
     setPost((p: any) => ({ ...p, content: newContent }));
     requestAnimationFrame(() => {
       ta.focus();

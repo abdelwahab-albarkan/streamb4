@@ -336,11 +336,14 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
     finally { setMediaLoading(false) }
   }, [])
 
+  // Load library only when the user actually switches to the library tab.
+  // Previous condition (`step === 'pick'`) triggered an unnecessary fetch on
+  // every step transition even when the user was on the Upload tab.
   useEffect(() => {
-    if (activeTab === 'library' || step === 'pick') {
+    if (activeTab === 'library') {
       void loadMediaLibrary()
     }
-  }, [activeTab, step, loadMediaLibrary])
+  }, [activeTab, loadMediaLibrary])
 
   // Clipboard paste inside the modal (upload view)
   useEffect(() => {
