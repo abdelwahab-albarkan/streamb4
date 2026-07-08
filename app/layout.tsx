@@ -6,7 +6,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import MicrosoftClarity from '@/components/analytics/MicrosoftClarity'
 import Script from 'next/script'
-import { Analytics }    from '@vercel/analytics/react'
+import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 // ─── Fonts — preload: true for LCP improvement ───────────────────────────────
