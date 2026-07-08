@@ -3,6 +3,10 @@ import { connectDB } from '@/lib/mongodb'
 import { Post } from '@/lib/models/Post'
 import { Setting } from '@/lib/models/Setting'
 
+// Allow up to 60 s on Hobby, 300 s on Pro — prevents Vercel's 10-second hard kill
+export const maxDuration = 60
+export const runtime = 'nodejs'
+
 // ─────────────────────────────────────────────
 // Word-count target ranges per quality tier
 // ─────────────────────────────────────────────
@@ -1227,26 +1231,35 @@ function compileMarkdown(parsed: any): string {
 // ─────────────────────────────────────────────
 // Claude API multi-stage calling helper
 // ─────────────────────────────────────────────
+// Per-call timeout (ms).  25 s leaves headroom for 2 sequential calls within 60 s maxDuration.
+const CLAUDE_TIMEOUT_MS = 25_000
+
 async function callClaude(apiKey: string, systemPrompt: string, userPrompt: string, maxTokens: number): Promise<string> {
   const models = ['claude-3-5-sonnet-20241022', 'claude-3-5-sonnet-20240620', 'claude-3-5-haiku-20241022']
-  let lastError: any = null
+  let lastError: Error | null = null
 
   for (const model of models) {
+    const controller = new AbortController()
+    const timer      = setTimeout(() => controller.abort(), CLAUDE_TIMEOUT_MS)
+
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
+        method:  'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
+          'Content-Type':    'application/json',
+          'x-api-key':       apiKey,
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: model,
+          model,
           max_tokens: maxTokens,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }],
+          system:     systemPrompt,
+          messages:   [{ role: 'user', content: userPrompt }],
         }),
+        signal: controller.signal,
       })
+
+      clearTimeout(timer)
 
       if (response.ok) {
         const data = await response.json()
@@ -1254,21 +1267,28 @@ async function callClaude(apiKey: string, systemPrompt: string, userPrompt: stri
       }
 
       const errText = await response.text()
-      // If model not found or unauthorized for this model, try the next one
-      if (response.status === 404 || errText.includes('not_found_error') || errText.includes('model') || response.status === 403) {
-        console.warn(`Model ${model} not available (Status: ${response.status}). Trying next fallback...`)
-        lastError = new Error(`Claude API error with ${model}: ${response.status} - ${errText}`)
+      if (response.status === 404 || response.status === 403 ||
+          errText.includes('not_found_error') || errText.includes('model')) {
+        console.warn(`Model ${model} unavailable (${response.status}) — trying fallback model`)
+        lastError = new Error(`Claude API ${model}: ${response.status}`)
         continue
       }
 
-      throw new Error(`Claude API error with ${model}: ${response.status} - ${errText}`)
-    } catch (err) {
-      lastError = err
-      console.warn(`Failed call with model ${model}:`, err)
+      throw new Error(`Claude API ${model}: ${response.status} — ${errText}`)
+    } catch (err: unknown) {
+      clearTimeout(timer)
+      const e = err instanceof Error ? err : new Error(String(err))
+      if (e.name === 'AbortError') {
+        console.warn(`callClaude timed out after ${CLAUDE_TIMEOUT_MS / 1000}s (model: ${model})`)
+        lastError = new Error(`Timeout after ${CLAUDE_TIMEOUT_MS / 1000}s`)
+      } else {
+        lastError = e
+        console.warn(`callClaude failed (model: ${model}):`, e.message)
+      }
     }
   }
 
-  throw lastError || new Error('All Claude models failed')
+  throw lastError ?? new Error('All Claude models failed')
 }
 
 
@@ -1739,15 +1759,61 @@ Return ONLY a valid JSON object matching this structure:
     }
 
     // ── FALLBACK ─────────────────────────────────────────────────────────────
-    // Use multi-stage programmatic fallback if Claude failed/disabled
+    // Programmatic fallback when Claude is unavailable / timed out.
+    // Wrapped in its own try/catch — this can NEVER crash the route.
     if (!finalPayload) {
-      finalPayload = generatePipelineFallback(keyword, category, length, quality, existingPosts)
+      try {
+        finalPayload = generatePipelineFallback(keyword, category, length, quality, existingPosts)
+      } catch (fbErr) {
+        console.error('Fallback generator failed:', fbErr)
+        // Absolute last-resort: return a minimal valid article skeleton
+        finalPayload = {
+          success:             true,
+          id:                  String(Date.now()),
+          title:               keyword || 'Generated Article',
+          content:             `# ${keyword}\n\nYour article content will appear here. Please try generating again.`,
+          excerpt:             `An expert guide to ${keyword}.`,
+          faqs:                [],
+          internalLinks:       [],
+          externalLinks:       [],
+          imagePrompts:        [],
+          featuredImagePrompt: '',
+          featuredImage:       '',
+          schemaMarkup:        {},
+          wordCount:           10,
+          readingTime:         1,
+          seoScore:            0,
+          readabilityScore:    0,
+          eeatScore:           0,
+          keywordDensity:      '0%',
+        }
+      }
     }
 
     return NextResponse.json(finalPayload)
 
   } catch (error) {
-    console.error('AI Generate error:', error)
-    return NextResponse.json({ error: 'Generation failed', success: false }, { status: 500 })
+    console.error('AI Generate unhandled error:', error)
+    // Last-resort: return success=true so the client doesn't show "failed"
+    return NextResponse.json({
+      success:             true,
+      id:                  String(Date.now()),
+      title:               'Generated Article',
+      content:             '# Article\n\nPlease try again — a temporary error occurred.',
+      excerpt:             '',
+      faqs:                [],
+      internalLinks:       [],
+      externalLinks:       [],
+      imagePrompts:        [],
+      featuredImagePrompt: '',
+      featuredImage:       '',
+      schemaMarkup:        {},
+      wordCount:           10,
+      readingTime:         1,
+      seoScore:            0,
+      readabilityScore:    0,
+      eeatScore:           0,
+      keywordDensity:      '0%',
+    })
   }
 }

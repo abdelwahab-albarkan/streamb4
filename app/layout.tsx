@@ -6,6 +6,8 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import MicrosoftClarity from '@/components/analytics/MicrosoftClarity'
 import Script from 'next/script'
+import { Analytics }    from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 // ─── Fonts — preload: true for LCP improvement ───────────────────────────────
 const inter = Inter({
@@ -229,6 +231,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </LayoutWrapper>
         <GoogleAnalytics gaId="G-RJ6T9RBRL8" />
+        <Analytics />
+        <SpeedInsights />
         <MetaPixel />
         <MicrosoftClarity />
         <Script id="register-sw" strategy="afterInteractive">
