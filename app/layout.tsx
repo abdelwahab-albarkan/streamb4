@@ -6,6 +6,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import MicrosoftClarity from '@/components/analytics/MicrosoftClarity'
 import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/next'
 
 // ─── Fonts — preload: true for LCP improvement ───────────────────────────────
 const inter = Inter({
@@ -231,6 +232,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GoogleAnalytics gaId="G-RJ6T9RBRL8" />
         <MetaPixel />
         <MicrosoftClarity />
+        <Analytics />
         <Script id="register-sw" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
