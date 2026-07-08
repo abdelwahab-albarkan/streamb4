@@ -633,17 +633,32 @@ export default function EditPostPage() {
     setImageModalOpen(true);
   }, []);
 
+  // Stable close handler — prevents inline arrow-function churn on the onClose prop
+  const handleModalClose = useCallback(() => {
+    setImageModalOpen(false);
+    setImageEditConfig(undefined);
+    setImageEditRange(null);
+    setIsEditMode(false);
+  }, []);
+
   const handleImageInsert = useCallback((markdown: string) => {
     if (imageEditRange) {
       replaceAtRange(markdown, imageEditRange);
     } else {
       insertAtCursor(markdown);
     }
-    setImageModalOpen(false);
-    setImageEditRange(null);
-    setImageEditConfig(undefined);
-    setIsEditMode(false);
-  }, [imageEditRange, replaceAtRange, insertAtCursor]);
+    handleModalClose();
+  }, [imageEditRange, replaceAtRange, insertAtCursor, handleModalClose]);
+
+  // Lock / restore body scroll while modal is open (page-level, not modal-level)
+  useEffect(() => {
+    if (imageModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [imageModalOpen]);
 
   // ── Loading state ──────────────────────────────────────────────────────────
   if (!post) {
@@ -917,16 +932,12 @@ export default function EditPostPage() {
       )}
 
       {/* INLINE IMAGE MODAL */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {imageModalOpen && (
           <InlineImageModal
+            key="inline-image-modal"
             onInsert={handleImageInsert}
-            onClose={() => {
-              setImageModalOpen(false);
-              setImageEditConfig(undefined);
-              setImageEditRange(null);
-              setIsEditMode(false);
-            }}
+            onClose={handleModalClose}
             initialConfig={imageEditConfig}
             editMode={isEditMode}
           />

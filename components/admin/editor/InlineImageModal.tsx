@@ -285,7 +285,9 @@ const DEFAULT_CONFIG: ImageConfig = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }: InlineImageModalProps) {
-  const [mounted,    setMounted]    = useState(false)
+  // No `mounted` gate here — the component is only rendered when imageModalOpen=true
+  // (controlled by the page). The portal is safe on the client because both pages
+  // use dynamic-import / 'use client'.
   const [step,       setStep]       = useState<'choice' | 'pick' | 'configure'>(editMode ? 'configure' : 'choice')
   const [activeTab,  setActiveTab]  = useState<'upload' | 'library' | 'url'>('upload')
   const [config,     setConfig]     = useState<ImageConfig>({ ...DEFAULT_CONFIG, ...initialConfig })
@@ -304,17 +306,10 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
   // URL tab
   const [urlInput, setUrlInput] = useState('')
 
-  const fileInputRef     = useRef<HTMLInputElement>(null)
+  const fileInputRef        = useRef<HTMLInputElement>(null)
   const openPickerAfterStep = useRef(false)
 
-  // Mount + scroll lock
-  useEffect(() => {
-    setMounted(true)
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
-
-  // Escape key to close
+  // Escape key — stable listener; onClose is already useCallback'd in the page
   useEffect(() => {
     const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', fn)
@@ -447,8 +442,6 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
     i.filename.toLowerCase().includes(mediaSearch.toLowerCase())
   )
 
-  if (!mounted) return null
-
   // Live preview figure styles
   const previewFigStyle: React.CSSProperties = {
     marginTop: config.marginTop,
@@ -479,19 +472,35 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
 
   // ── Render ────────────────────────────────────────────────────────────────
   const modal = (
-    <div
+    // The backdrop is a motion.div so that the page-level <AnimatePresence>
+    // can track AND animate its exit.  Using a plain <div> here caused the
+    // backdrop to stay in the DOM at opacity 1 (black-on-black = invisible to
+    // the user but blocking all pointer events) while only the inner panel
+    // faded out via its own exit animation.
+    //
+    // Critically:
+    //   • exit.pointerEvents = 'none'  → zero pointer-event blocking the instant
+    //     close is triggered, before any animation frame runs.
+    //   • transition is a fixed-duration tween (not a spring) so Framer Motion
+    //     always fires onExitComplete and React can unmount the tree cleanly.
+    <motion.div
+      key="inline-image-backdrop"
       role="dialog"
       aria-modal="true"
       aria-label={editMode ? 'Edit Image' : 'Insert Image'}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, pointerEvents: 'none' }}
+      transition={{ duration: 0.18, ease: 'easeInOut' }}
       className="fixed inset-0 z-[300] flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.94)', backdropFilter: 'blur(16px)' }}
+      style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(14px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 16 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 26 }}
+        exit={{ opacity: 0, scale: 0.94, y: 12 }}
+        transition={{ duration: 0.18, ease: 'easeInOut' }}
         className="w-full flex flex-col rounded-[24px] overflow-hidden"
         style={{
           maxWidth: '960px',
@@ -1032,7 +1041,7 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
           </AnimatePresence>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   )
 
   // Always-rendered hidden file input — must be outside AnimatePresence so the

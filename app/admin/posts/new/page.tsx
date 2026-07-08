@@ -512,17 +512,37 @@ export default function NewPostPage() {
     setImageModalOpen(true);
   }, []);
 
+  // Stable close handler — does NOT change on every render, preventing the
+  // modal's Escape-key useEffect from adding/removing its listener on each
+  // parent re-render, and ensuring AnimatePresence gets a consistent reference.
+  const handleModalClose = useCallback(() => {
+    setImageModalOpen(false);
+    setImageEditConfig(undefined);
+    setImageEditRange(null);
+    setIsEditMode(false);
+  }, []);
+
   const handleImageInsert = useCallback((markdown: string) => {
     if (imageEditRange) {
       replaceAtRange(markdown, imageEditRange);
     } else {
       insertAtCursor(markdown);
     }
-    setImageModalOpen(false);
-    setImageEditRange(null);
-    setImageEditConfig(undefined);
-    setIsEditMode(false);
-  }, [imageEditRange, replaceAtRange, insertAtCursor]);
+    handleModalClose();
+  }, [imageEditRange, replaceAtRange, insertAtCursor, handleModalClose]);
+
+  // Lock / restore body scroll while modal is open.
+  // Doing this in the PAGE (not inside the modal) ensures the cleanup always
+  // runs as part of React state changes, not component unmount effects which
+  // can race with AnimatePresence's deferred unmounting.
+  useEffect(() => {
+    if (imageModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [imageModalOpen]);
 
   // ── Persist to API ────────────────────────────────────────────────────────
   const persistPost = async (statusOverride: "draft" | "published"): Promise<boolean> => {
@@ -937,16 +957,12 @@ export default function NewPostPage() {
       )}
 
       {/* INLINE IMAGE MODAL */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {imageModalOpen && (
           <InlineImageModal
+            key="inline-image-modal"
             onInsert={handleImageInsert}
-            onClose={() => {
-              setImageModalOpen(false);
-              setImageEditConfig(undefined);
-              setImageEditRange(null);
-              setIsEditMode(false);
-            }}
+            onClose={handleModalClose}
             initialConfig={imageEditConfig}
             editMode={isEditMode}
           />
