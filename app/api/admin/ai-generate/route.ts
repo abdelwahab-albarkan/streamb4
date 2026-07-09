@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import { Post } from '@/lib/models/Post'
+import { generateSlug } from '@/lib/slugUtils'
 import { Setting } from '@/lib/models/Setting'
 
 // Allow up to 60 s on Hobby, 300 s on Pro — prevents Vercel's 10-second hard kill
@@ -479,7 +480,7 @@ function estimateWordCount(parsed: any): number {
 // ─────────────────────────────────────────────
 function buildEnterpriseMock(keyword: string, category: string, length: string, quality: string): any {
   const uKey = keyword.toUpperCase()
-  const slug = keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  const slug = generateSlug(keyword)
   const wordLength = parseInt(length || '7000', 10)
   const readingTime = Math.ceil(wordLength / 200)
 

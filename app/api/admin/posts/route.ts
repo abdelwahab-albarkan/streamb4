@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 
 // ─── GET ─────────────────────────────────────────────────────────────────────
 
@@ -28,7 +29,16 @@ export async function POST(request: Request) {
     // Use caller-supplied id (from client persistPost) or generate one
     const id    = (typeof postData.id    === "string" ? postData.id.trim()    : "") || String(Date.now());
     const title = (typeof postData.title === "string" ? postData.title.trim() : "") || "Untitled Draft";
-    const slug  = (typeof postData.slug  === "string" ? postData.slug.trim()  : "") || `draft-${id}`;
+
+    // Always generate slug from TITLE only — reject/repair any slug that:
+    //  • is missing, • is longer than 80 chars, • contains invalid chars,
+    //  • or was generated from content instead of the title.
+    const rawSlug = typeof postData.slug === "string" ? postData.slug.trim() : "";
+    const slug = isValidSlug(rawSlug)
+      ? rawSlug
+      : rawSlug
+        ? generateSlug(rawSlug)           // repair: re-slug the incoming value
+        : generateSlug(title) || `draft-${id}`; // fallback: generate from title
 
     await connectDB();
 

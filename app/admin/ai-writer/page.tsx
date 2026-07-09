@@ -743,7 +743,7 @@ export default function AIWriterPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="URL Slug" required>
-                  <TextInput value={seoConfig.slug} onChange={v => setSeoConfig(s => ({ ...s, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, "-") }))} placeholder="url-friendly-slug" prefix="streamb4.com/blog/" />
+                  <TextInput value={seoConfig.slug} onChange={v => setSeoConfig(s => ({ ...s, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-{2,}/g, "-").slice(0, 80) }))} placeholder="url-friendly-slug" prefix="streamb4.com/blog/" />
                 </Field>
                 <Field label="Focus Keyword"><TextInput value={seoConfig.focusKeyword} onChange={v => setSeoConfig(s => ({ ...s, focusKeyword: v }))} placeholder="primary search keyword" /></Field>
                 <Field label="OG Title"><TextInput value={seoConfig.ogTitle} onChange={v => setSeoConfig(s => ({ ...s, ogTitle: v }))} placeholder="Open Graph title…" /></Field>

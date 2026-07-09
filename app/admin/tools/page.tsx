@@ -12,6 +12,13 @@ interface MigrationSummary {
   errors:          string[];
 }
 
+interface SlugFixSummary {
+  total:   number;
+  skipped: number;
+  fixed:   number;
+  errors:  string[];
+}
+
 type MigrationState = "idle" | "running" | "done" | "error";
 
 // ── component ─────────────────────────────────────────────────────────────────
@@ -20,6 +27,10 @@ export default function AdminToolsPage() {
   const [state,   setState]   = useState<MigrationState>("idle");
   const [summary, setSummary] = useState<MigrationSummary | null>(null);
   const [error,   setError]   = useState<string>("");
+
+  const [slugState,   setSlugState]   = useState<MigrationState>("idle");
+  const [slugSummary, setSlugSummary] = useState<SlugFixSummary | null>(null);
+  const [slugError,   setSlugError]   = useState<string>("");
 
   const runMigration = async () => {
     setState("running");
@@ -41,6 +52,29 @@ export default function AdminToolsPage() {
     } catch (err: any) {
       setError(err.message ?? "Network error");
       setState("error");
+    }
+  };
+
+  const runSlugFix = async (dryRun = false) => {
+    setSlugState("running");
+    setSlugSummary(null);
+    setSlugError("");
+    try {
+      const res  = await fetch(
+        `/api/admin/migrate/fix-slugs${dryRun ? "?dryRun=true" : ""}`,
+        { method: "POST" }
+      );
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setSlugError(data.error ?? `HTTP ${res.status}`);
+        setSlugState("error");
+        return;
+      }
+      setSlugSummary(data.summary);
+      setSlugState("done");
+    } catch (err: any) {
+      setSlugError(err.message ?? "Network error");
+      setSlugState("error");
     }
   };
 
@@ -165,6 +199,108 @@ export default function AdminToolsPage() {
              state === "done"    ? "Run Again" :
                                    "Run Migration"}
           </button>
+        </div>
+
+        {/* ── Slug Repair Card ─────────────────────────────────────── */}
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="mt-0.5 w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h2 className="font-semibold text-white">Repair Invalid URL Slugs</h2>
+              <p className="text-gray-400 text-sm mt-1 leading-relaxed">
+                Scans every blog post for slugs that are too long (&gt;80 chars),
+                contain invalid characters, or were incorrectly generated from article
+                content instead of the title. Repairs them in-place and appends{" "}
+                <code className="text-blue-400 bg-blue-500/10 px-1 rounded text-xs">-2</code>,{" "}
+                <code className="text-blue-400 bg-blue-500/10 px-1 rounded text-xs">-3</code> if
+                the repaired slug collides with an existing post.
+              </p>
+              <ul className="text-gray-500 text-xs mt-3 space-y-1">
+                <li>✓ Run <strong className="text-gray-400">Preview</strong> first to see what would change</li>
+                <li>✓ Idempotent — valid slugs are never touched</li>
+                <li>✓ Slug max length: 80 chars, truncated at word boundary</li>
+              </ul>
+            </div>
+          </div>
+
+          {slugState === "running" && (
+            <div className="flex items-center gap-3 rounded-xl bg-blue-500/10 border border-blue-500/20 px-4 py-3">
+              <svg className="w-4 h-4 text-blue-400 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              <span className="text-blue-300 text-sm">Scanning and repairing slugs…</span>
+            </div>
+          )}
+
+          {slugState === "error" && (
+            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-300 text-sm">
+              <strong>Error:</strong> {slugError}
+            </div>
+          )}
+
+          {slugState === "done" && slugSummary && (
+            <div className="rounded-xl bg-blue-500/10 border border-blue-500/20 p-4 space-y-3">
+              <p className="text-blue-400 font-semibold text-sm">Slug repair complete ✓</p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Posts scanned", value: slugSummary.total },
+                  { label: "Already valid", value: slugSummary.skipped },
+                  { label: "Repaired",      value: slugSummary.fixed },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-lg bg-white/5 p-3">
+                    <div className="text-xl font-bold text-white">{value}</div>
+                    <div className="text-gray-400 text-xs mt-0.5">{label}</div>
+                  </div>
+                ))}
+              </div>
+              {slugSummary.errors.length > 0 && (
+                <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                  <p className="text-red-400 text-xs font-semibold mb-1">{slugSummary.errors.length} error(s):</p>
+                  <ul className="text-red-300 text-xs space-y-1 font-mono">
+                    {slugSummary.errors.map((e, i) => <li key={i} className="break-all">{e}</li>)}
+                  </ul>
+                </div>
+              )}
+              {slugSummary.fixed === 0 && slugSummary.errors.length === 0 && (
+                <p className="text-gray-400 text-xs">All slugs are already valid — nothing to repair.</p>
+              )}
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => runSlugFix(true)}
+              disabled={slugState === "running"}
+              className={[
+                "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all border",
+                slugState === "running"
+                  ? "bg-white/5 text-gray-500 cursor-not-allowed border-white/5"
+                  : "bg-white/5 hover:bg-white/10 text-gray-300 border-white/10",
+              ].join(" ")}
+            >
+              Preview (Dry Run)
+            </button>
+            <button
+              onClick={() => runSlugFix(false)}
+              disabled={slugState === "running"}
+              className={[
+                "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all",
+                slugState === "running"
+                  ? "bg-white/5 text-gray-500 cursor-not-allowed"
+                  : slugState === "done"
+                  ? "bg-blue-600 hover:bg-blue-500 text-white"
+                  : "bg-blue-600 hover:bg-blue-500 text-white",
+              ].join(" ")}
+            >
+              {slugState === "running" ? "Running…" : slugState === "done" ? "Run Again" : "Fix Slugs"}
+            </button>
+          </div>
         </div>
 
         {/* Info box */}

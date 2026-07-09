@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -30,7 +31,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     // Required fields: only set if non-empty (skip to keep existing DB value)
     const t = str(postData.title); if (t) update.title = t;
-    const s = str(postData.slug);  if (s) update.slug  = s;
+    // Slug: always validate and repair before writing.
+    // Never accept slugs longer than 80 chars or generated from content.
+    if (str(postData.slug)) {
+      const rawSlug = (postData.slug as string).trim();
+      update.slug = isValidSlug(rawSlug)
+        ? rawSlug
+        : generateSlug(rawSlug || (t ?? ""));
+    }
 
     // Status: always honour the caller's intent
     if (typeof postData.status === "string") update.status = postData.status;

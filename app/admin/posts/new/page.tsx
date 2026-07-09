@@ -19,12 +19,10 @@ import { MemoizedEditor } from "@/components/admin/editor/MemoizedEditor";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function makeSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+// Slug generation is centralised in lib/slugUtils — never inline-generate slugs
+// from content or any source other than the article title.
+import { generateSlug } from "@/lib/slugUtils";
+const makeSlug = generateSlug;
 
 function ensureDraftFields(post: any, fallbackId: string): any {
   return {
@@ -153,9 +151,12 @@ export default function NewPostPage() {
     if (!saved) return;
     try {
       const aiPost = JSON.parse(saved);
+      // Sanitise slug from AI writer — it may be LLM-generated and arbitrarily long
+      const rawSlug = typeof aiPost.slug === "string" ? aiPost.slug : "";
+      const safeSlug = rawSlug ? makeSlug(rawSlug) : makeSlug(aiPost.title || "");
       setPost((prev: any) => ({
         ...prev,
-        title: aiPost.title || "", slug: aiPost.slug || "",
+        title: aiPost.title || "", slug: safeSlug,
         content: aiPost.content || "", excerpt: aiPost.excerpt || "",
         seoTitle: aiPost.seoTitle || "", metaDescription: aiPost.metaDescription || "",
         focusKeyword: aiPost.focusKeyword || "", featuredImage: aiPost.featuredImage || "",
@@ -888,7 +889,15 @@ export default function NewPostPage() {
                 <span className="text-gray-700">streamb4.com/blog/</span>
                 <input
                   value={post.slug}
-                  onChange={(e) => setPost((p: any) => ({ ...p, slug: e.target.value }))}
+                  onChange={(e) => {
+                    // Sanitise in real-time: lowercase, hyphen-only, max 80 chars
+                    const clean = e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]/g, "-")
+                      .replace(/-{2,}/g, "-")
+                      .slice(0, 80);
+                    setPost((p: any) => ({ ...p, slug: clean }));
+                  }}
                   className="flex-1 bg-transparent text-orange-400 outline-none border-b border-dashed border-orange-500/30 pb-0.5 select-text"
                 />
               </div>

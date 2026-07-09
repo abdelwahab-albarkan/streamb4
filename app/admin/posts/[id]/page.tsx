@@ -837,7 +837,14 @@ export default function EditPostPage() {
                 <span className="text-gray-700">streamb4.com/blog/</span>
                 <input
                   value={post.slug}
-                  onChange={(e) => setPost((p: any) => ({ ...p, slug: e.target.value }))}
+                  onChange={(e) => {
+                    const clean = e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]/g, "-")
+                      .replace(/-{2,}/g, "-")
+                      .slice(0, 80);
+                    setPost((p: any) => ({ ...p, slug: clean }));
+                  }}
                   className="flex-1 bg-transparent text-orange-400 outline-none border-b border-dashed border-orange-500/30 pb-0.5 select-text"
                 />
               </div>

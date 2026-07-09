@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import { Setting }   from '@/lib/models/Setting'
+import { generateSlug } from '@/lib/slugUtils'
 
 /**
  * POST /api/admin/ai-seo
@@ -79,6 +80,13 @@ Return exactly:
         if (m) {
           try {
             const seo = JSON.parse(m[0])
+            // Always sanitise the LLM-returned slug — it may be too long
+            // or generated from the full title rather than just the keyword.
+            if (typeof seo.slug === 'string') {
+              seo.slug = generateSlug(seo.slug || kw)
+            } else {
+              seo.slug = generateSlug(kw)
+            }
             return NextResponse.json({ success: true, seo })
           } catch { /* fall through to fallback */ }
         }
@@ -86,8 +94,8 @@ Return exactly:
     } catch { /* fall through to fallback */ }
   }
 
-  // Deterministic fallback
-  const slug = kw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  // Deterministic fallback — always generated from keyword, never content
+  const slug = generateSlug(kw)
   return NextResponse.json({
     success: true,
     seo: {
