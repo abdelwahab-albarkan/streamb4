@@ -68,6 +68,7 @@ const navSections = [
     items: [
       { label: "Users",      href: "/admin/users",    icon: Users },
       { label: "Settings",   href: "/admin/settings", icon: Settings },
+      { label: "Tools",      href: "/admin/tools",    icon: Zap },
       { label: "Audit Logs", href: "/admin/logs",     icon: ScrollText },
     ],
   },

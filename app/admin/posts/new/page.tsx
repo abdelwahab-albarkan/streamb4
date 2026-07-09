@@ -15,6 +15,7 @@ import {
 } from "@/components/admin/editor/InlineImageModal";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+import { MemoizedEditor } from "@/components/admin/editor/MemoizedEditor";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -581,6 +582,20 @@ export default function NewPostPage() {
 
   // Stable close handler — does NOT change on every render, preventing the
   // modal's Escape-key useEffect from adding/removing its listener on each
+  // Stable onChange for MemoizedEditor — must never change reference so the
+  // custom memo comparison can skip re-renders when value hasn't changed.
+  const handleEditorChange = useCallback((v: string | undefined) => {
+    const newContent = v || "";
+    // Keep ref current for autosave / insertAtCursor (synchronous)
+    if (postRef.current) postRef.current = { ...postRef.current, content: newContent };
+    // Debounce the React state update — prevents re-rendering the full page
+    // on every keystroke when post.content contains large base64 or long text
+    clearTimeout(editorChangeTimerRef.current);
+    editorChangeTimerRef.current = setTimeout(() => {
+      setPost((p: any) => ({ ...p, content: newContent }));
+    }, 200);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // parent re-render, and ensuring AnimatePresence gets a consistent reference.
   const handleModalClose = useCallback(() => {
     setImageModalOpen(false);
@@ -894,19 +909,9 @@ export default function NewPostPage() {
 
               {/* MARKDOWN EDITOR */}
               <div data-color-mode="dark" className="mt-2">
-                <MDEditor
+                <MemoizedEditor
                   value={post.content}
-                  onChange={(v) => {
-                    const newContent = v || "";
-                    // Always keep the ref current for autosave / insertAtCursor
-                    if (postRef.current) postRef.current = { ...postRef.current, content: newContent };
-                    // Debounce the state update — avoids re-rendering the entire
-                    // page on every keystroke when content contains large base64 images
-                    clearTimeout(editorChangeTimerRef.current);
-                    editorChangeTimerRef.current = setTimeout(() => {
-                      setPost((p: any) => ({ ...p, content: newContent }));
-                    }, 200);
-                  }}
+                  onChange={handleEditorChange}
                   height={500}
                   preview="edit"
                   style={{ background: "transparent", border: "none", fontSize: "16px" }}

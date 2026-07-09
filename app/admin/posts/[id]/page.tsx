@@ -15,6 +15,7 @@ import {
 } from "@/components/admin/editor/InlineImageModal";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+import { MemoizedEditor } from "@/components/admin/editor/MemoizedEditor";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -684,6 +685,17 @@ export default function EditPostPage() {
     setImageModalOpen(true);
   }, []);
 
+  // Stable onChange for MemoizedEditor — must never change reference so the
+  // custom memo comparison can skip re-renders when value hasn't changed.
+  const handleEditorChange = useCallback((v: string | undefined) => {
+    const newContent = v || "";
+    if (postRef.current) postRef.current = { ...postRef.current, content: newContent };
+    clearTimeout(editorChangeTimerRef.current);
+    editorChangeTimerRef.current = setTimeout(() => {
+      setPost((p: any) => ({ ...p, content: newContent }));
+    }, 200);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Stable close handler — prevents inline arrow-function churn on the onClose prop
   const handleModalClose = useCallback(() => {
     setImageModalOpen(false);
@@ -846,19 +858,9 @@ export default function EditPostPage() {
 
               {/* MARKDOWN EDITOR */}
               <div data-color-mode="dark" className="mt-4">
-                <MDEditor
+                <MemoizedEditor
                   value={post.content}
-                  onChange={(v) => {
-                    const newContent = v || "";
-                    // Always keep the ref current for autosave / insertAtCursor
-                    if (postRef.current) postRef.current = { ...postRef.current, content: newContent };
-                    // Debounce the state update — avoids re-rendering the entire
-                    // page on every keystroke when content contains large base64 images
-                    clearTimeout(editorChangeTimerRef.current);
-                    editorChangeTimerRef.current = setTimeout(() => {
-                      setPost((p: any) => ({ ...p, content: newContent }));
-                    }, 200);
-                  }}
+                  onChange={handleEditorChange}
                   height={500}
                   preview="edit"
                   style={{ background: "transparent", border: "none", fontSize: "16px" }}
