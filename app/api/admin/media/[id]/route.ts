@@ -17,11 +17,12 @@ import { Media } from '@/lib/models/Media'
  */
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
-    const doc = await Media.findById(params.id).select('url mimeType').lean()
+    const doc = await Media.findById(id).select('url mimeType').lean()
     if (!doc) {
       return new NextResponse('Not found', { status: 404 })
     }
