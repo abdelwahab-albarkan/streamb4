@@ -60,7 +60,11 @@ export interface InlineImageModalProps {
 
 // ─── Client-side WebP Compression ───────────────────────────────────────────
 
-async function compressAndConvertToWebP(file: File, quality = 0.8): Promise<File> {
+// Target: keep every image under 150 KB so post.content stays small and the
+// editor never freezes when multiple images are inserted.
+// Strategy: canvas-resize to max 1024 px, then try progressively lower WebP
+// quality until the blob fits, returning the smallest acceptable result.
+async function compressAndConvertToWebP(file: File): Promise<File> {
   if (!file.type.startsWith('image/')) return file
   if (file.type === 'image/svg+xml') return file
 
@@ -73,8 +77,8 @@ async function compressAndConvertToWebP(file: File, quality = 0.8): Promise<File
         let width = img.naturalWidth
         let height = img.naturalHeight
 
-        // Max dimension limits to keep MongoDB base64 data URL size small
-        const MAX_LIMIT = 1600
+        // Keep longest edge ≤ 1024 px — fewer pixels = smaller base64 in DB
+        const MAX_LIMIT = 1024
         if (width > MAX_LIMIT || height > MAX_LIMIT) {
           if (width > height) {
             height = Math.round((height * MAX_LIMIT) / width)
@@ -89,28 +93,30 @@ async function compressAndConvertToWebP(file: File, quality = 0.8): Promise<File
         canvas.height = height
 
         const ctx = canvas.getContext('2d')
-        if (!ctx) {
-          resolve(file)
-          return
-        }
+        if (!ctx) { resolve(file); return }
 
         ctx.drawImage(img, 0, 0, width, height)
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              const newFilename = file.name.replace(/\.[^.]+$/, '') + '.webp'
-              const compressedFile = new File([blob], newFilename, {
-                type: 'image/webp',
-                lastModified: Date.now(),
-              })
-              resolve(compressedFile)
+
+        // Progressive quality fallback: 0.75 → 0.55 → 0.38
+        // Each pass roughly halves the file size relative to the previous.
+        // We stop as soon as the result is ≤ 150 KB or we run out of passes.
+        const TARGET_BYTES = 150 * 1024
+        const qualities = [0.75, 0.55, 0.38]
+        const newFilename = file.name.replace(/\.[^.]+$/, '') + '.webp'
+
+        const tryQuality = (idx: number) => {
+          const q = qualities[idx]
+          canvas.toBlob((blob) => {
+            if (!blob) { resolve(file); return }
+            if (blob.size <= TARGET_BYTES || idx >= qualities.length - 1) {
+              resolve(new File([blob], newFilename, { type: 'image/webp', lastModified: Date.now() }))
             } else {
-              resolve(file)
+              tryQuality(idx + 1)
             }
-          },
-          'image/webp',
-          quality
-        )
+          }, 'image/webp', q)
+        }
+
+        tryQuality(0)
       }
       img.onerror = () => resolve(file)
       img.src = e.target?.result as string
@@ -370,7 +376,9 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
       // 1. Process client side conversion & compression
       const webpFile = await compressAndConvertToWebP(file)
       const { width, height } = await getImageDimensions(webpFile)
-      
+
+      // After progressive compression the file should be well under 1 MB.
+      // Reject anything that still exceeds the Vercel body limit margin.
       if (webpFile.size > 4 * 1024 * 1024) { setUploadError('File too large — max 4 MB.'); return }
 
       const fd = new FormData()

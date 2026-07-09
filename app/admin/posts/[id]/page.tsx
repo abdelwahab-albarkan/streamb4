@@ -102,8 +102,13 @@ export default function EditPostPage() {
   const savedCursorRef = useRef<number>(0);
 
   // Debounce timers — avoids O(n) main-thread work on every keystroke
-  const wordCountTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const seoTimerRef       = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const wordCountTimerRef    = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const seoTimerRef          = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Editor content debounce — MDEditor onChange fires on every keystroke.
+  // With large base64 images in content the state update + React re-render is
+  // expensive. We update postRef immediately (so autosave always has fresh data)
+  // but batch setPost to fire at most every 200 ms.
+  const editorChangeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -242,8 +247,9 @@ export default function EditPostPage() {
             const canvas = document.createElement("canvas");
             let width = img.naturalWidth;
             let height = img.naturalHeight;
-            
-            const MAX_LIMIT = 1600;
+
+            // Keep longest edge ≤ 1024 px — fewer pixels = smaller base64 in DB
+            const MAX_LIMIT = 1024;
             if (width > MAX_LIMIT || height > MAX_LIMIT) {
               if (width > height) {
                 height = Math.round((height * MAX_LIMIT) / width);
@@ -261,21 +267,23 @@ export default function EditPostPage() {
             if (!ctx) { resolve(file); return; }
 
             ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob(
-              (blob) => {
-                if (blob) {
-                  const newFilename = file.name.replace(/\.[^.]+$/, "") + ".webp";
-                  resolve(new File([blob], newFilename, {
-                    type: "image/webp",
-                    lastModified: Date.now(),
-                  }));
+
+            // Progressive quality fallback: 0.75 → 0.55 → 0.38
+            // Stop as soon as result ≤ 150 KB or we run out of passes.
+            const TARGET_BYTES = 150 * 1024;
+            const qualities = [0.75, 0.55, 0.38];
+            const newFilename = file.name.replace(/\.[^.]+$/, "") + ".webp";
+            const tryQuality = (idx: number) => {
+              canvas.toBlob((blob) => {
+                if (!blob) { resolve(file); return; }
+                if (blob.size <= TARGET_BYTES || idx >= qualities.length - 1) {
+                  resolve(new File([blob], newFilename, { type: "image/webp", lastModified: Date.now() }));
                 } else {
-                  resolve(file);
+                  tryQuality(idx + 1);
                 }
-              },
-              "image/webp",
-              0.8
-            );
+              }, "image/webp", qualities[idx]);
+            };
+            tryQuality(0);
           };
           img.onerror = () => resolve(file);
           img.src = e.target?.result as string;
@@ -839,7 +847,17 @@ export default function EditPostPage() {
               <div data-color-mode="dark" className="mt-4">
                 <MDEditor
                   value={post.content}
-                  onChange={(v) => setPost((p: any) => ({ ...p, content: v || "" }))}
+                  onChange={(v) => {
+                    const newContent = v || "";
+                    // Always keep the ref current for autosave / insertAtCursor
+                    if (postRef.current) postRef.current = { ...postRef.current, content: newContent };
+                    // Debounce the state update — avoids re-rendering the entire
+                    // page on every keystroke when content contains large base64 images
+                    clearTimeout(editorChangeTimerRef.current);
+                    editorChangeTimerRef.current = setTimeout(() => {
+                      setPost((p: any) => ({ ...p, content: newContent }));
+                    }, 200);
+                  }}
                   height={500}
                   preview="edit"
                   style={{ background: "transparent", border: "none", fontSize: "16px" }}
