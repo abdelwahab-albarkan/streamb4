@@ -14,6 +14,7 @@ import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleFAQ } from "@/components/blog/ArticleFAQ";
 import { ContentBlock } from "@/components/blog/ContentBlocks";
+import { ArticlePricingStrip } from "@/components/blog/ArticlePricingStrip";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
@@ -267,6 +268,9 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             </div>
           )
         })()}
+
+        {/* Pricing Strip — full-width, sits between hero image and article body */}
+        <ArticlePricingStrip />
 
         {/* Grid Area: Content + TOC Sticky Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
