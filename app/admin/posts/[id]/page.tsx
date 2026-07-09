@@ -303,8 +303,9 @@ export default function EditPostPage() {
       
       if (data.success) {
         const autoAlt = processedFile.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
+        // Use the serving endpoint URL — NOT the base64 — so post.content stays small
         const defaultCfg: ImageConfig = {
-          url: data.item.url,
+          url: `/api/admin/media/${data.item._id}`,
           alt: autoAlt,
           caption: "",
           title: "",

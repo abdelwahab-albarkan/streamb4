@@ -391,7 +391,10 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
 
       if (data.success) {
         const autoAlt = webpFile.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')
-        const newCfg = { ...DEFAULT_CONFIG, url: data.item.url, alt: data.item.altText || autoAlt }
+        // Use the serving endpoint URL — NOT the base64 data URL — so the figure
+        // block stored in post.content stays small and the editor never freezes.
+        const contentUrl = `/api/admin/media/${data.item._id}`
+        const newCfg = { ...DEFAULT_CONFIG, url: contentUrl, alt: data.item.altText || autoAlt }
         setConfig(newCfg)
         setMediaItems(prev => [data.item, ...prev])
         setStep('configure')
@@ -424,9 +427,11 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
 
   const handleLibraryInsert = () => {
     if (!selectedItem) return
+    // Use the serving endpoint URL so the figure block stays small in post.content
+    const contentUrl = `/api/admin/media/${selectedItem._id}`
     setConfig(c => ({
       ...c,
-      url: selectedItem.url,
+      url: contentUrl,
       alt: selectedItem.altText || selectedItem.filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')
     }))
     setStep('configure')
@@ -741,7 +746,7 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
                                     }}
                                   >
                                     <img
-                                      src={item.url}
+                                      src={`/api/admin/media/${item._id}`}
                                       alt={item.altText || item.filename}
                                       className="w-full h-full object-cover"
                                       loading="lazy"
@@ -773,7 +778,7 @@ export function InlineImageModal({ onInsert, onClose, initialConfig, editMode }:
                             className="flex items-center gap-3 pt-3 border-t flex-shrink-0"
                             style={{ borderColor: 'rgba(255,255,255,0.06)' }}
                           >
-                            <img src={selectedItem.url} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                            <img src={`/api/admin/media/${selectedItem._id}`} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                             <div className="flex-1 min-w-0">
                               <p className="text-white text-xs font-semibold truncate">{selectedItem.filename}</p>
                               <p className="text-gray-500 text-[10px]">
