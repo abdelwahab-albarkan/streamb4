@@ -26,26 +26,36 @@ export default function AdminDashboardPage() {
     try {
       // Load posts
       const resPosts = await fetch("/api/admin/posts");
+      console.log("[DASH] /api/admin/posts status:", resPosts.status, "ok:", resPosts.ok);
       if (resPosts.ok) {
         const data = await resPosts.json();
+        console.log("[DASH] /api/admin/posts raw:", JSON.stringify(data).slice(0, 500));
+        console.log("[DASH] data.posts type:", typeof data.posts, "isArray:", Array.isArray(data.posts), "length:", Array.isArray(data.posts) ? data.posts.length : "N/A");
         setPosts(data.posts || []);
+      } else {
+        const text = await resPosts.text().catch(() => "(unreadable)");
+        console.log("[DASH] /api/admin/posts FAILED body:", text.slice(0, 300));
       }
 
       // Load subscribers
       const resSubs = await fetch("/api/newsletter");
+      console.log("[DASH] /api/newsletter status:", resSubs.status, "ok:", resSubs.ok);
       if (resSubs.ok) {
         const data = await resSubs.json();
+        console.log("[DASH] /api/newsletter raw:", JSON.stringify(data));
         setSubscribersCount((data.subscribers || []).length);
       }
 
       // Load pending comments
       const resComments = await fetch("/api/admin/comments?status=pending");
+      console.log("[DASH] /api/admin/comments status:", resComments.status, "ok:", resComments.ok);
       if (resComments.ok) {
         const data = await resComments.json();
+        console.log("[DASH] /api/admin/comments raw:", JSON.stringify(data).slice(0, 300));
         setPendingComments(data.comments || []);
       }
     } catch (err) {
-      console.error("Dashboard fetch error:", err);
+      console.error("[DASH] Dashboard fetch error:", err);
     }
   };
 
