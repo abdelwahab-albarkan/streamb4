@@ -83,6 +83,7 @@ const TRUST_BADGES = [
 export default function PricingClient() {
   const [activeConnections, setActiveConnections] = useState(1)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openWhatsApp = (plan: any) => {
     const connText = `${activeConnections} Screen${activeConnections > 1 ? 's' : ''}`;
     const priceStr = `$${plan.price.toFixed(2)}`;

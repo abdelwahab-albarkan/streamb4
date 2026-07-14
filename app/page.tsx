@@ -199,6 +199,7 @@ async function getLatestPosts() {
       .sort({ publishedAt: -1, createdAt: -1 })
       .limit(3)
       .lean();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return serializeDocs(docs as any[]);
   } catch {
     return [];
@@ -227,7 +228,7 @@ export default async function Home() {
         <CompareSection />
         <ReviewsSection />
         <OffersSection />
-        <LatestBlogPosts posts={latestPosts as any} />
+        <LatestBlogPosts posts={latestPosts} />
         <FAQSection />
         <CTASection />
       </main>

@@ -13,15 +13,16 @@ export default function BookmarkButton({ postId, postTitle, postSlug }: Bookmark
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
-    const bookmarks = JSON.parse(localStorage.getItem("streamb4_bookmarks") || "[]");
-    setIsBookmarked(bookmarks.some((b: any) => b.id === postId));
+    const bookmarks: { id: string }[] = JSON.parse(localStorage.getItem("streamb4_bookmarks") || "[]");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsBookmarked(bookmarks.some((b) => b.id === postId));
   }, [postId]);
 
   const toggleBookmark = () => {
-    const bookmarks = JSON.parse(localStorage.getItem("streamb4_bookmarks") || "[]");
+    const bookmarks: { id: string; title: string; slug: string; savedAt: string }[] = JSON.parse(localStorage.getItem("streamb4_bookmarks") || "[]");
 
     if (isBookmarked) {
-      const updated = bookmarks.filter((b: any) => b.id !== postId);
+      const updated = bookmarks.filter((b) => b.id !== postId);
       localStorage.setItem("streamb4_bookmarks", JSON.stringify(updated));
       setIsBookmarked(false);
     } else {

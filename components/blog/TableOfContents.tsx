@@ -41,6 +41,7 @@ export function TableOfContents({ toc }: Props) {
 
     // Set initial active to the first heading
     if (!activeId && elements.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveId(elements[0].id)
     }
 

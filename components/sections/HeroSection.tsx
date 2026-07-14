@@ -183,6 +183,7 @@ export function HeroSection() {
   const tvY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -40]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobile(window.innerWidth < 768);
     async function loadHeroData() {
       try {

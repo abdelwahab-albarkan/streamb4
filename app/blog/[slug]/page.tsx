@@ -25,6 +25,7 @@ export const dynamic = 'force-dynamic';
 async function getPost(slug: string) {
   try {
     await connectDB();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const post = await Post.findOne({ slug, status: "published" }).lean() as any;
     return post ? serializeDoc(post) : null;
   } catch (error) {
@@ -37,8 +38,9 @@ async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
     const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).limit(3).lean();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return serializeDocs(docs as any[]);
-  } catch (err) {
+  } catch {
     return [];
   }
 }

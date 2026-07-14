@@ -38,10 +38,10 @@ export function MobileTOC({ toc }: Props) {
 
     elements.forEach((el) => observer.observe(el))
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (elements.length > 0) setActiveId(elements[0].id)
 
     return () => observer.disconnect()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toc])
 
   const scrollTo = useCallback((id: string) => {

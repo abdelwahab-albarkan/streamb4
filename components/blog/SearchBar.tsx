@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -26,6 +27,7 @@ export default function SearchBar() {
   // Debounced search trigger
   useEffect(() => {
     if (query.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
       return;
     }
@@ -144,7 +146,7 @@ export default function SearchBar() {
 
             <div className="px-5 py-3 border-t border-white/[0.04] text-left shrink-0">
               <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">
-                {results.length} results for "{query}"
+                {results.length} results for &quot;{query}&quot;
               </p>
             </div>
           </motion.div>

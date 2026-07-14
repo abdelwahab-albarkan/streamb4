@@ -27,7 +27,7 @@ export default function NewsletterWidget() {
       } else {
         setError(data.error === "already_subscribed" ? "You are already subscribed!" : data.error || "Subscription failed");
       }
-    } catch (err) {
+    } catch {
       setError("Error subscribing. Please try again.");
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ export default function NewsletterWidget() {
       {subscribed ? (
         <div className="flex items-center gap-2 text-green-400 font-bold text-sm">
           <span>✓</span>
-          <span>You're subscribed!</span>
+          <span>You&apos;re subscribed!</span>
         </div>
       ) : (
         <form onSubmit={handleSubscribe} className="space-y-3">

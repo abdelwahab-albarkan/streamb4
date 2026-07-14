@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { getCategoryImage } from '@/lib/blogImages'
 
 interface PostCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post: any
   index?: number
 }

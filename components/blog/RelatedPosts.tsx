@@ -3,6 +3,7 @@
 import { PostCard } from './PostCard'
 
 interface RelatedPostsProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   posts: any[]
 }
 

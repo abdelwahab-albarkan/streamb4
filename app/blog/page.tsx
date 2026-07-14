@@ -12,6 +12,9 @@ import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDocs } from "@/lib/serialize";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Post = any;
+
 export const metadata: Metadata = {
   title: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog",
   description: "Expert IPTV setup guides, streaming tutorials, device comparisons, and IPTV tips from the STREAMB4 team. Learn how to get the most from your IPTV subscription.",
@@ -69,6 +72,7 @@ export const dynamic = 'force-dynamic';
 async function getPosts() {
   await connectDB();
   const docs = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return serializeDocs(docs as any[]);
 }
 
@@ -78,7 +82,7 @@ export default async function BlogListingPage({
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const { category, q } = await searchParams;
-  let posts: any[] = [];
+  let posts: Post[] = [];
   try {
     posts = await getPosts();
   } catch {
@@ -87,26 +91,26 @@ export default async function BlogListingPage({
 
   // Extract unique categories
   const categories = Array.from(
-    new Set(posts.map((p: any) => p.category).filter(Boolean))
+    new Set(posts.map((p: Post) => p.category).filter(Boolean))
   ) as string[];
 
   // Filter posts
   let filteredPosts = posts;
   if (category && category.toLowerCase() !== "all") {
     filteredPosts = filteredPosts.filter(
-      (p: any) => p.category?.toLowerCase() === category.toLowerCase()
+      (p: Post) => p.category?.toLowerCase() === category.toLowerCase()
     );
   }
   if (q) {
     filteredPosts = filteredPosts.filter(
-      (p: any) =>
+      (p: Post) =>
         p.title?.toLowerCase().includes(q.toLowerCase()) ||
         p.excerpt?.toLowerCase().includes(q.toLowerCase())
     );
   }
 
   // Honour both isFeatured and featured fields (schema has both); fall back to newest post
-  const featuredPost = posts.find((p: any) => p.isFeatured || p.featured) || posts[0] || null;
+  const featuredPost = posts.find((p: Post) => p.isFeatured || p.featured) || posts[0] || null;
   const recentPosts = [...posts].slice(0, 4);
 
   return (
@@ -214,7 +218,7 @@ export default async function BlogListingPage({
                   <div className="text-5xl mb-4">🔍</div>
                   <h3 className="text-white font-bold text-lg mb-2">No articles found</h3>
                   <p className="text-gray-500 text-sm max-w-md mx-auto leading-relaxed">
-                    We couldn't find any articles matching your search criteria. Try filtering by another category or resetting the search.
+                    We couldn&apos;t find any articles matching your search criteria. Try filtering by another category or resetting the search.
                   </p>
                   <Link href="/blog" className="inline-block mt-6">
                     <span
@@ -242,8 +246,8 @@ export default async function BlogListingPage({
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {filteredPosts
-                        .filter((p: any) => category || q || !featuredPost || p.id !== featuredPost.id)
-                        .map((post: any, i: number) => (
+                        .filter((p: Post) => category || q || !featuredPost || p.id !== featuredPost.id)
+                        .map((post: Post, i: number) => (
                           <PostCard key={post.id} post={post} index={i} />
                         ))}
                     </div>
@@ -266,7 +270,7 @@ export default async function BlogListingPage({
                   Recent Posts
                 </h3>
                 <div className="space-y-4">
-                  {recentPosts.map((post: any) => (
+                  {recentPosts.map((post: Post) => (
                     <Link
                       key={post.id}
                       href={`/blog/${post.slug}`}
@@ -308,7 +312,7 @@ export default async function BlogListingPage({
                 </h3>
                 <div className="space-y-2">
                   {categories.map((cat) => {
-                    const count = posts.filter((p: any) => p.category === cat).length;
+                    const count = posts.filter((p: Post) => p.category === cat).length;
                     return (
                       <Link
                         key={cat}

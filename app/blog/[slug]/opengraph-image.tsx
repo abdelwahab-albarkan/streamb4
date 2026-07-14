@@ -11,6 +11,7 @@ async function getPost(slug: string) {
   try {
     await connectDB();
     const doc = await Post.findOne({ slug, status: "published" }).lean();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return doc ? serializeDoc(doc as any) : null;
   } catch {
     return null;

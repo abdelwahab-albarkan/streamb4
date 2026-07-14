@@ -17,7 +17,7 @@ export function ShareButtons({ title, slug }: ShareButtonsProps) {
         await navigator.clipboard.writeText(shareUrl)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
-      } catch (err) {
+      } catch {
         console.error('Failed to copy link')
       }
       return
@@ -48,7 +48,7 @@ export function ShareButtons({ title, slug }: ShareButtonsProps) {
           title,
           url: shareUrl,
         })
-      } catch (err) {
+      } catch {
         console.error('Native share failed')
       }
     } else {

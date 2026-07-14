@@ -32,7 +32,9 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postSlug]);
 
   const handleSubmit = async (e: React.FormEvent) => {

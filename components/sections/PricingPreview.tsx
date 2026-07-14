@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
-import { PRICING, PRICING_TABS, type PricingPlan } from "@/lib/constants";
+import { PRICING, PRICING_TABS } from "@/lib/constants";
 import { PaymentLogosGrid } from "@/components/ui/PaymentLogos";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -44,11 +44,9 @@ const getPeriodName = (period: string) => {
 function PricingCard({
   plan,
   period,
-  index,
 }: {
   plan: (typeof plans)[0];
   period: Period;
-  index: number;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -76,7 +74,6 @@ function PricingCard({
   };
 
   const displayPrice = getDisplayPrice();
-  const equivMonthly = period !== "monthly" ? plan.monthlyEquiv[period] : null;
 
   return (
     <motion.div
@@ -458,7 +455,7 @@ export function PricingPreview() {
           >
             {/* Sliding pill — removed duplicate; pill rendered inside each active button below */}
 
-            {tabs.map((tab, i) => {
+            {tabs.map((tab) => {
               const isActive = activePeriod === tab.id;
               return (
                 <button
@@ -511,12 +508,11 @@ export function PricingPreview() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10"
         >
-          {plans.map((plan, i) => (
+          {plans.map((plan) => (
             <PricingCard
               key={plan.connections}
               plan={plan}
               period={activePeriod}
-              index={i}
             />
           ))}
         </motion.div>

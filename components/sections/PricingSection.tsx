@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap, Lock, FileText, Radio, Shield, MessageCircle, Earth,
-  Star, ArrowRight, Check, Bitcoin, CreditCard
+  Star, ArrowRight, Check
 } from 'lucide-react'
 import { LucideGradDefs } from '@/components/ui/icons'
 
