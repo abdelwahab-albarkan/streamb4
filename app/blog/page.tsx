@@ -64,16 +64,12 @@ const blogBreadcrumbSchema = {
   ]
 };
 
+export const dynamic = 'force-dynamic';
+
 async function getPosts() {
-  try {
-    await connectDB();
-    const docs = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
-    // serializeDocs converts every ObjectId → hex string and Date → ISO string in one pass,
-    // making all documents safe for React Server Component payload serialization.
-    return serializeDocs(docs as any[]);
-  } catch (err) {
-    return [];
-  }
+  await connectDB();
+  const docs = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+  return serializeDocs(docs as any[]);
 }
 
 export default async function BlogListingPage({
@@ -82,7 +78,12 @@ export default async function BlogListingPage({
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const { category, q } = await searchParams;
-  const posts = await getPosts();
+  let posts: any[] = [];
+  try {
+    posts = await getPosts();
+  } catch {
+    posts = [];
+  }
 
   // Extract unique categories
   const categories = Array.from(

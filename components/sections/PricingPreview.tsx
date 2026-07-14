@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { openTawkChat } from "@/lib/hooks/useTawk";
+
 import { PRICING, PRICING_TABS, type PricingPlan } from "@/lib/constants";
 import { PaymentLogosGrid } from "@/components/ui/PaymentLogos";
 
@@ -320,12 +320,7 @@ function PricingCard({
               `(Firestick / Android TV / Smart TV / iPhone / Windows)\n\n` +
               `Please help me complete my purchase.`;
 
-            openTawkChat(msg, {
-              Product: 'IPTV Subscription',
-              Plan: planName,
-              Connections: plan.connections,
-              Price: priceText
-            });
+            window.open('https://wa.me/212625218443?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
           }}
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.98 }}

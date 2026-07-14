@@ -1,13 +1,7 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
-
-// Import dynamic renderer safely on client side
-const MDEditorPreview = dynamic(
-  () => import("@uiw/react-markdown-preview"),
-  { ssr: false }
-);
+import MDEditorPreview from "@uiw/react-markdown-preview";
 
 export default function MarkdownPreview({ source }: { source: string }) {
   return (

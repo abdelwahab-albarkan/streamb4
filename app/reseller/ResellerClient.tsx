@@ -5,7 +5,6 @@ import { Check, Shield, DollarSign, Users, Award, TrendingUp, HelpCircle } from 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import { openTawkChat } from "@/lib/hooks/useTawk";
 
 const RESELLER_PACKAGES = [
   {
@@ -145,7 +144,7 @@ export default function ResellerClient() {
                     </ul>
                   </div>
                   <Button
-                    onClick={() => openTawkChat('Hi! I am interested in the reseller program 🤝')}
+                    onClick={() => window.open('https://wa.me/212625218443?text=' + encodeURIComponent('Hi! I am interested in the reseller program 🤝'), '_blank', 'noopener,noreferrer')}
                     className="w-full mt-4"
                     variant={pkg.popular ? "primary" : "outline"}
                   >

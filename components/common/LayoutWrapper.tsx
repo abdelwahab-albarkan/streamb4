@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import MouseGlow from "@/components/ui/MouseGlow";
-import TawkChat from "@/components/common/TawkChat";
+import WhatsAppButton from "@/components/common/WhatsAppButton";
 import PageTransition from "@/components/ui/PageTransition";
 import { LazyMotion, domMax } from "framer-motion";
 
@@ -25,7 +25,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <main id="main-content">{children}</main>
       </PageTransition>
       <Footer />
-      <TawkChat />
+      <WhatsAppButton />
     </LazyMotion>
   );
 }

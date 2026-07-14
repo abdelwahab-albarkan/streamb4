@@ -7,7 +7,7 @@ import {
   Star, ArrowRight, Check, Bitcoin, CreditCard
 } from 'lucide-react'
 import { LucideGradDefs } from '@/components/ui/icons'
-import { openTawkChat } from "@/lib/hooks/useTawk";
+
 import { PaymentLogosGrid } from "@/components/ui/PaymentLogos";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -59,26 +59,19 @@ const FEATURES = [
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
-function openTawk(plan: (typeof PRICING_DATA)[1]['plans'][0], connections: number, label: string) {
+function openWhatsApp(plan: (typeof PRICING_DATA)[1]['plans'][0], connections: number) {
   const connText = `${connections} Screen${connections > 1 ? 's' : ''}`;
   const priceStr = `$${plan.price.toFixed(2)}`;
-  
+
   const msg =
     `Hello STREAMB4 Team 👋\n\n` +
     `I would like to purchase this subscription.\n\n` +
     `Plan: ${plan.duration}\n` +
     `Connections: ${connText}\n` +
     `Price: ${priceStr} USD\n\n` +
-    `Device:\n` +
-    `(Firestick / Android TV / Smart TV / iPhone / Windows)\n\n` +
     `Please help me complete my purchase.`;
 
-  openTawkChat(msg, {
-    Product: 'IPTV Subscription',
-    Plan: plan.duration,
-    Connections: connections,
-    Price: priceStr
-  });
+  window.open('https://wa.me/212625218443?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -393,7 +386,7 @@ export function PricingSection() {
 
                   {/* CTA */}
                   <motion.button
-                    onClick={() => openTawk(plan, activeConnections, currentData.label)}
+                    onClick={() => openWhatsApp(plan, activeConnections)}
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     className="w-full py-4 rounded-[16px] font-black text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer"

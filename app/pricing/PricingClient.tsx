@@ -18,7 +18,7 @@ import {
   Home,
   ArrowRight,
 } from 'lucide-react'
-import { openTawkChat } from "@/lib/hooks/useTawk"
+
 import { PaymentLogosGrid } from "@/components/ui/PaymentLogos"
 
 const PRICING_DATA = {
@@ -83,7 +83,7 @@ const TRUST_BADGES = [
 export default function PricingClient() {
   const [activeConnections, setActiveConnections] = useState(1)
 
-  const openTawk = (plan: any) => {
+  const openWhatsApp = (plan: any) => {
     const connText = `${activeConnections} Screen${activeConnections > 1 ? 's' : ''}`;
     const priceStr = `$${plan.price.toFixed(2)}`;
     const msg =
@@ -92,16 +92,8 @@ export default function PricingClient() {
       `Plan: ${plan.duration}\n` +
       `Connections: ${connText}\n` +
       `Price: ${priceStr} USD\n\n` +
-      `Device:\n` +
-      `(Firestick / Android TV / Smart TV / iPhone / Windows)\n\n` +
       `Please help me complete my purchase.`;
-
-    openTawkChat(msg, {
-      Product: 'IPTV Subscription',
-      Plan: plan.duration,
-      Connections: activeConnections,
-      Price: priceStr
-    });
+    window.open(`https://wa.me/212625218443?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
   }
 
   const currentData = PRICING_DATA[activeConnections as keyof typeof PRICING_DATA]
@@ -462,7 +454,7 @@ export default function PricingClient() {
 
                       {/* CTA Button */}
                       <motion.button
-                        onClick={() => openTawk(plan)}
+                        onClick={() => openWhatsApp(plan)}
                         whileHover={{ scale: 1.03, y: -2 }}
                         whileTap={{ scale: 0.97 }}
                         aria-label={`Get ${plan.duration} plan for $${plan.price.toFixed(2)}`}

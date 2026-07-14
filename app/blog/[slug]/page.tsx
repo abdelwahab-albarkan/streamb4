@@ -20,22 +20,12 @@ import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
 
+export const dynamic = 'force-dynamic';
+
 async function getPost(slug: string) {
   try {
     await connectDB();
-    let post = await Post.findOne({ slug, status: "published" }).lean() as any;
-
-    if (!post) {
-      // Partial slug match fallback
-      const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean() as any[];
-      post = posts.find(
-        (p: any) =>
-          p.slug?.includes(slug) || slug?.includes(p.slug)
-      ) || null;
-    }
-
-    // serializeDoc converts every ObjectId → hex string and Date → ISO string in one pass.
-    // This is required for React Server Component payload safety on client navigation.
+    const post = await Post.findOne({ slug, status: "published" }).lean() as any;
     return post ? serializeDoc(post) : null;
   } catch (error) {
     console.error("getPost error:", error);

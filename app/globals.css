@@ -324,13 +324,36 @@ pre, code {
   word-wrap: normal;
 }
 
-/* Responsive images in content */
+/* Responsive images in content — covers Tailwind prose, article elements,
+   and @uiw/react-markdown-preview (wmde-markdown) rendered output */
 .prose img,
 .content img,
-article img {
-  max-width: 100%;
-  height: auto;
+article img,
+.wmde-markdown img,
+[data-color-mode] img {
+  display: block;
+  max-width: 100% !important;
+  width: auto;
+  height: auto !important;
   object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Prevent markdown content from overflowing horizontally on mobile */
+.wmde-markdown,
+[data-color-mode] .wmde-markdown {
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Markdown tables — horizontal scroll container on mobile */
+.wmde-markdown table,
+[data-color-mode] table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Clamp letter-spacing for hero text */
