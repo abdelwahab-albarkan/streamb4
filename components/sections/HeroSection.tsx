@@ -176,12 +176,14 @@ function FeatureCard({ icon, number, title, subtitle }: FeatureCardProps) {
 
 export function HeroSection() {
   const [movies, setMovies] = useState<TMDBMedia[]>([]);
+  const [isMobile, setIsMobile] = useState(true);
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], [0, -80]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
-  const tvY = useTransform(scrollY, [0, 500], [0, -40]);
+  const heroY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -80]);
+  const heroOpacity = useTransform(scrollY, [0, 400], isMobile ? [1, 1] : [1, 0]);
+  const tvY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -40]);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
     async function loadHeroData() {
       try {
         const data = await getPopularMovies();

@@ -1,22 +1,25 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { StatsBar } from "@/components/sections/StatsBar";
 import { VODSection } from "@/components/sections/VODSection";
-import { SportsSection } from "@/components/sections/SportsSection";
-import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
-import { LibraryStats } from "@/components/sections/LibraryStats";
-import { DevicesSection } from "@/components/sections/DevicesSection";
-import { PricingSection } from "@/components/sections/PricingSection";
-import { HowItWorks } from "@/components/sections/HowItWorks";
-import { CompareSection } from "@/components/sections/CompareSection";
-import { ReviewsSection } from "@/components/sections/ReviewsSection";
-import { LatestBlogPosts } from "@/components/sections/LatestBlogPosts";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDocs } from "@/lib/serialize";
-import { OffersSection } from "@/components/sections/OffersSection";
-import { FAQSection } from "@/components/sections/FAQSection";
-import { CTASection } from "@/components/sections/CTASection";
+
+// Below-fold sections — lazy-loaded to reduce initial JS bundle on mobile
+const SportsSection   = dynamic(() => import("@/components/sections/SportsSection").then(m => ({ default: m.SportsSection })));
+const FeaturesGrid    = dynamic(() => import("@/components/sections/FeaturesGrid").then(m => ({ default: m.FeaturesGrid })));
+const LibraryStats    = dynamic(() => import("@/components/sections/LibraryStats").then(m => ({ default: m.LibraryStats })));
+const DevicesSection  = dynamic(() => import("@/components/sections/DevicesSection").then(m => ({ default: m.DevicesSection })));
+const HowItWorks      = dynamic(() => import("@/components/sections/HowItWorks").then(m => ({ default: m.HowItWorks })));
+const PricingSection  = dynamic(() => import("@/components/sections/PricingSection").then(m => ({ default: m.PricingSection })));
+const CompareSection  = dynamic(() => import("@/components/sections/CompareSection").then(m => ({ default: m.CompareSection })));
+const ReviewsSection  = dynamic(() => import("@/components/sections/ReviewsSection").then(m => ({ default: m.ReviewsSection })));
+const OffersSection   = dynamic(() => import("@/components/sections/OffersSection").then(m => ({ default: m.OffersSection })));
+const LatestBlogPosts = dynamic(() => import("@/components/sections/LatestBlogPosts").then(m => ({ default: m.LatestBlogPosts })));
+const FAQSection      = dynamic(() => import("@/components/sections/FAQSection").then(m => ({ default: m.FAQSection })));
+const CTASection      = dynamic(() => import("@/components/sections/CTASection").then(m => ({ default: m.CTASection })));
 
 export const metadata: Metadata = {
   title: "STREAMB4 — Best IPTV Service | 50,000+ Channels, 4K Streaming",

@@ -23,7 +23,7 @@
 export function generateSlug(input: string, maxLen = 80): string {
   if (!input || typeof input !== "string") return "";
 
-  let slug = input
+  const slug = input
     // 1. Unicode normalise → decompose accents, then strip combining marks
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
