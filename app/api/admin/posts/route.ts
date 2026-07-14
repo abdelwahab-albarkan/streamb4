@@ -6,9 +6,17 @@ import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 // ─── GET ─────────────────────────────────────────────────────────────────────
 
 export async function GET() {
-  await connectDB();
-  const posts = await Post.find({}).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
-  return NextResponse.json({ success: true, posts });
+  try {
+    await connectDB();
+    const posts = await Post.find({}).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    return NextResponse.json({ success: true, posts });
+  } catch (error) {
+    console.error("GET /api/admin/posts error:", error);
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : "Database error" },
+      { status: 500 }
+    );
+  }
 }
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
