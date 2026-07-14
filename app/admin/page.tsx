@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
       const resSubs = await fetch("/api/newsletter");
       if (resSubs.ok) {
         const data = await resSubs.json();
-        setSubscribersCount((data.subscribers || []).length);
+        setSubscribersCount(data.count || 0);
       }
 
       // Load pending comments
