@@ -21,31 +21,21 @@ export default function AdminDashboardPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [subscribersCount, setSubscribersCount] = useState(0);
   const [pendingComments, setPendingComments] = useState<any[]>([]);
-  const [dataError, setDataError] = useState<string | null>(null);
 
   const loadDashboardData = async () => {
     try {
-      setDataError(null);
-
       // Load posts
       const resPosts = await fetch("/api/admin/posts");
-      if (resPosts.status === 401) {
-        setDataError("Session expired. Please log out and log back in.");
-        return;
+      if (resPosts.ok) {
+        const data = await resPosts.json();
+        setPosts(data.posts || []);
       }
-      if (!resPosts.ok) {
-        const errData = await resPosts.json().catch(() => ({}));
-        setDataError(errData.error || `Server error (${resPosts.status}) — check Vercel logs and MONGODB_URI env var.`);
-        return;
-      }
-      const postsData = await resPosts.json();
-      setPosts(postsData.posts || []);
 
       // Load subscribers
       const resSubs = await fetch("/api/newsletter");
       if (resSubs.ok) {
         const data = await resSubs.json();
-        setSubscribersCount(data.count || 0);
+        setSubscribersCount((data.subscribers || []).length);
       }
 
       // Load pending comments
@@ -55,7 +45,6 @@ export default function AdminDashboardPage() {
         setPendingComments(data.comments || []);
       }
     } catch (err) {
-      setDataError(`Network error: ${err instanceof Error ? err.message : String(err)}`);
       console.error("Dashboard fetch error:", err);
     }
   };
@@ -140,13 +129,6 @@ export default function AdminDashboardPage() {
         </h1>
         <p className="text-gray-500 text-sm mt-1">Welcome back — here's what's happening today.</p>
       </div>
-
-      {/* Error Banner */}
-      {dataError && (
-        <div className="px-4 py-3 rounded-xl text-sm font-semibold text-red-300" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          {dataError}
-        </div>
-      )}
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
