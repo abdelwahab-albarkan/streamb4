@@ -90,7 +90,11 @@ export async function proxy(request: NextRequest) {
     pathname === "/api/admin/auth/login" ||
     pathname === "/api/admin/auth/logout";
 
-  if (isAdminApi && !isAuthApi) {
+  // Media GET is public — blog visitors need images; only upload/delete needs auth
+  const isPublicMediaGet =
+    request.method === "GET" && pathname.startsWith("/api/admin/media/");
+
+  if (isAdminApi && !isAuthApi && !isPublicMediaGet) {
     const token = request.cookies.get("admin_token")?.value;
     if (!token || !(await verifyAdminJWT(token))) {
       return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {

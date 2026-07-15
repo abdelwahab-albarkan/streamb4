@@ -50,6 +50,19 @@ export async function GET() {
     const collections = await mongoose.connection.db!.listCollections().toArray();
     result.collections = collections.map((c) => c.name);
 
+    // ── Media diagnostic ──────────────────────────────────────────────────────
+    const { Media } = await import('@/lib/models/Media');
+    const mediaCount = await Media.countDocuments({});
+    const sampleMedia = await Media.findOne({}).select('_id filename mimeType url').lean() as any;
+    result.media = {
+      count: mediaCount,
+      sampleId: sampleMedia?._id?.toString() ?? null,
+      sampleFilename: sampleMedia?.filename ?? null,
+      sampleMimeType: sampleMedia?.mimeType ?? null,
+      sampleUrlPrefix: sampleMedia?.url ? sampleMedia.url.slice(0, 40) : null,
+      imageUrlPattern: sampleMedia ? `/api/admin/media/${sampleMedia._id}` : null,
+    };
+
   } catch (err) {
     result.error = err instanceof Error ? err.message : String(err);
     result.stack = err instanceof Error ? err.stack : undefined;
