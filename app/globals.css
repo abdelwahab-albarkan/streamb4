@@ -306,26 +306,48 @@ body.menu-open {
 .grid-auto-md { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
 .grid-auto-lg { grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); }
 
-/* Prevent tables from overflowing */
-table {
-  display: block;
+/* ── Table wrapper (injected by rehypeWrapTables plugin) ──────────────────
+   Only markdown content tables get this treatment — not every <table> on
+   the page.  The wrapper scrolls horizontally; the page never overflows.   */
+.table-wrapper {
   width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+}
+
+.table-wrapper table {
+  min-width: 700px;
+  width: max-content;
+  border-collapse: collapse;
 }
 
 /* Code blocks — horizontal scroll on mobile */
-pre, code {
+pre {
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   white-space: pre;
+}
+
+code {
   word-break: normal;
   word-wrap: normal;
 }
 
+blockquote {
+  overflow-wrap: break-word;
+}
+
 /* Responsive images in content — covers Tailwind prose, article elements,
    and @uiw/react-markdown-preview (wmde-markdown) rendered output */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .prose img,
 .content img,
 article img,
@@ -339,21 +361,27 @@ article img,
   border-radius: 8px;
 }
 
-/* Prevent markdown content from overflowing horizontally on mobile */
+/* Markdown content — allow child overflow so .table-wrapper can scroll */
 .wmde-markdown,
 [data-color-mode] .wmde-markdown {
-  overflow-x: hidden;
+  overflow-x: visible;
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
-/* Markdown tables — horizontal scroll container on mobile */
-.wmde-markdown table,
-[data-color-mode] table {
+/* Prose container owns the horizontal clip — keeps page clean */
+.prose {
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+}
+
+/* Markdown tables that aren't yet wrapped (fallback safety) */
+.wmde-markdown > table,
+[data-color-mode] > table {
   display: block;
-  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  min-width: 700px;
 }
 
 /* Clamp letter-spacing for hero text */
