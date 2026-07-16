@@ -138,19 +138,24 @@ export function ArticlePricingStrip() {
         </div>
       </div>
 
-      {/* Cards — horizontal scroll on mobile, grid on ≥md */}
+      {/* Cards */}
       <div className="p-4 sm:p-5">
-        {/* Mobile: horizontal scroll container */}
-        <div
-          className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory md:hidden"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} compact />
-          ))}
+        {/* Mobile (<768px): featured 12-month plan only */}
+        <div className="md:hidden">
+          <PlanCard plan={PLANS[3]} />
+          <Link
+            href="/pricing"
+            className="mt-4 flex items-center justify-center gap-1.5 text-[12px] font-bold"
+            style={{ color: "#ff7a00" }}
+          >
+            View All Pricing Plans
+            <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
 
-        {/* Tablet 2×2 — sm to md */}
+        {/* Tablet 2×2 — md to lg */}
         <div className="hidden md:grid lg:hidden grid-cols-2 gap-3">
           {PLANS.map((plan) => (
             <PlanCard key={plan.id} plan={plan} />
