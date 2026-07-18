@@ -21,6 +21,8 @@ const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE}/contact`,       lastModified: new Date(), changeFrequency: "yearly",  priority: 0.4 },
   { url: `${BASE}/about`,         lastModified: new Date(), changeFrequency: "yearly",  priority: 0.4 },
   { url: `${BASE}/restream`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.65 },
+  { url: `${BASE}/legal/privacy`, lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
+  { url: `${BASE}/legal/terms`,   lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

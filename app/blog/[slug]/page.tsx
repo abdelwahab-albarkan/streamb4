@@ -34,6 +34,15 @@ async function getPost(slug: string) {
   }
 }
 
+// Does NOT catch — used by generateMetadata so DB errors don't permanently noindex valid posts.
+// Returns null only when the slug genuinely doesn't exist (true 404).
+async function getPostForMetadata(slug: string) {
+  await connectDB();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const post = await Post.findOne({ slug, status: "published" }).lean() as any;
+  return post ? serializeDoc(post) : null;
+}
+
 async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
@@ -54,7 +63,16 @@ function safeJsonLd(data: object): string {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPost(slug);
+
+  let post;
+  try {
+    post = await getPostForMetadata(slug);
+  } catch {
+    // Transient DB failure — inherit global index:true so the post is not permanently noindexed.
+    // The page component will show an error UI; Google will re-crawl and get full content once DB recovers.
+    return {};
+  }
+
   if (!post) return { robots: { index: false, follow: false } };
   const ogImg = post.ogImage || post.featuredImage || "/og-image.jpg";
   return {
