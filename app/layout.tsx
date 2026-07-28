@@ -16,7 +16,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  preload: true,
+  preload: false,
 })
 
 const anton = Anton({
@@ -24,7 +24,7 @@ const anton = Anton({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-anton',
-  preload: true,
+  preload: false,
 })
 
 const spartan = League_Spartan({
