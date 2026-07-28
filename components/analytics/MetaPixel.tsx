@@ -6,7 +6,7 @@ export default function MetaPixel() {
   if (!PIXEL_ID || PIXEL_ID === 'XXXXXXXXXXXXXXX' || PIXEL_ID.includes('XXX')) return null
 
   return (
-    <Script id="meta-pixel" strategy="afterInteractive">
+    <Script id="meta-pixel" strategy="lazyOnload">
       {`
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
