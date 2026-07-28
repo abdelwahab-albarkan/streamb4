@@ -585,9 +585,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                         src={`https://image.tmdb.org/t/p/w300${m.poster_path}`}
                         alt={m.title || m.name || "Movie Poster"}
                         fill
-                        sizes="(max-width: 1024px) 80px, 110px"
+                        sizes="110px"
                         className="object-cover"
-                        priority={i < 4}
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-1.5 transition-opacity duration-200">
                         <p className="text-white text-[7px] font-bold line-clamp-2 leading-tight">
