@@ -52,17 +52,47 @@ function extractBase64Images(content: string): Array<{
   return results
 }
 
+async function migrateBase64Image(payload: string, mime: string, summary: any): Promise<string> {
+  const hash    = sha256(payload)
+  const hashTag = `__hash:${hash}`
+
+  // Check for an existing Media doc created by a previous migration run
+  const existing = await Media.findOne({ altText: hashTag }).select('_id').lean()
+  if (existing) {
+    summary.imagesReused++
+    return String((existing as any)._id)
+  }
+
+  // Save the image as a new Media document
+  const dataUrl  = `data:${mime};base64,${payload}`
+  const buffer   = Buffer.from(payload, 'base64')
+  const ext      = mime.split('/')[1] ?? 'webp'
+  const filename = `migrated-${hash.slice(0, 8)}.${ext}`
+
+  const doc = await new Media({
+    filename,
+    url:      dataUrl,
+    mimeType: mime,
+    size:     buffer.byteLength,
+    altText:  hashTag,   // store hash so future runs detect duplicates
+  }).save()
+
+  summary.imagesExtracted++
+  return String(doc._id)
+}
+
 // ── handler ──────────────────────────────────────────────────────────────────
 
 export async function POST() {
   await connectDB()
 
-  // Fetch only the fields we need — avoid pulling huge content into memory
-  // for posts that don't need migration.
-  const posts = await Post.find(
-    { content: { $regex: 'data:image/' } },
-    { _id: 1, content: 1, title: 1 }
-  ).lean()
+  // Fetch posts containing base64 in either content or featuredImage
+  const posts = await Post.find({
+    $or: [
+      { content: { $regex: 'data:image/' } },
+      { featuredImage: { $regex: '^data:image/' } }
+    ]
+  }).lean()
 
   const summary = {
     postsScanned:   posts.length,
@@ -73,61 +103,50 @@ export async function POST() {
   }
 
   for (const post of posts) {
-    const content: string = (post as any).content ?? ''
-    const matches = extractBase64Images(content)
+    try {
+      const content = post.content ?? ''
+      const featuredImage = post.featuredImage ?? ''
+      let newContent = content
+      let newFeaturedImage = featuredImage
+      let changed = false
 
-    if (matches.length === 0) continue
-
-    let newContent = content
-    let changed    = false
-
-    for (const { full, mime, payload } of matches) {
-      try {
-        const hash    = sha256(payload)
-        const hashTag = `__hash:${hash}`
-
-        // Check for an existing Media doc created by a previous migration run
-        let mediaId: string | null = null
-        const existing = await Media.findOne({ altText: hashTag }).select('_id').lean()
-        if (existing) {
-          mediaId = String((existing as any)._id)
-          summary.imagesReused++
-        } else {
-          // Save the image as a new Media document
-          const dataUrl  = `data:${mime};base64,${payload}`
-          const buffer   = Buffer.from(payload, 'base64')
-          const ext      = mime.split('/')[1] ?? 'webp'
-          const filename = `migrated-${hash.slice(0, 8)}.${ext}`
-
-          const doc = await new Media({
-            filename,
-            url:      dataUrl,
-            mimeType: mime,
-            size:     buffer.byteLength,
-            altText:  hashTag,   // store hash so future runs detect duplicates
-          }).save()
-
-          mediaId = String(doc._id)
-          summary.imagesExtracted++
+      // 1. Migrate featuredImage if it is a base64 string
+      if (featuredImage.startsWith('data:image/')) {
+        const match = featuredImage.match(/^data:(image\/[^;]+);base64,(.+)$/)
+        if (match) {
+          const mime = match[1]
+          const payload = match[2]
+          const mediaId = await migrateBase64Image(payload, mime, summary)
+          newFeaturedImage = `/api/admin/media/${mediaId}`
+          changed = true
         }
-
-        // Replace the full data URL inside the src attribute
-        const endpointUrl = `/api/admin/media/${mediaId}`
-        newContent = newContent.replace(
-          `src="${full}"`,
-          `src="${endpointUrl}"`
-        )
-        changed = true
-      } catch (err: any) {
-        summary.errors.push(
-          `Post ${(post as any)._id}: ${err.message ?? String(err)}`
-        )
       }
-    }
 
-    if (changed) {
-      await Post.findByIdAndUpdate((post as any)._id, { content: newContent })
-      summary.postsUpdated++
+      // 2. Migrate inline images in content
+      const matches = extractBase64Images(content)
+      if (matches.length > 0) {
+        for (const { full, mime, payload } of matches) {
+          const mediaId = await migrateBase64Image(payload, mime, summary)
+          const endpointUrl = `/api/admin/media/${mediaId}`
+          newContent = newContent.replace(
+            `src="${full}"`,
+            `src="${endpointUrl}"`
+          )
+          changed = true
+        }
+      }
+
+      if (changed) {
+        await Post.findByIdAndUpdate(post._id, {
+          content: newContent,
+          featuredImage: newFeaturedImage
+        })
+        summary.postsUpdated++
+      }
+    } catch (err: any) {
+      summary.errors.push(
+        `Post ${post._id}: ${err.message ?? String(err)}`
+      )
     }
   }
 
