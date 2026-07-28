@@ -7,7 +7,9 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { getPopularMovies, type TMDBMedia } from "@/lib/tmdb";
 
 export function VODSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[] }) {
-  const [movies, setMovies] = useState<TMDBMedia[]>(initialMovies.slice(0, 20));
+  const [movies, setMovies] = useState<TMDBMedia[]>(() => {
+    return initialMovies.slice(0, 20);
+  });
   const [loading, setLoading] = useState(initialMovies.length === 0);
 
   useEffect(() => {
@@ -24,9 +26,6 @@ export function VODSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[]
         }
       }
       loadMovies();
-    } else {
-      setMovies(initialMovies.slice(0, 20));
-      setLoading(false);
     }
   }, [initialMovies]);
 

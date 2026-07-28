@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { League_Spartan } from "next/font/google";
 import { getPopularMovies, type TMDBMedia } from "@/lib/tmdb";
 import {
   IconRocket,
@@ -14,12 +13,6 @@ import {
   IconDiamond,
 } from "@/components/ui/PremiumIcons";
 import Link from "next/link";
-
-const spartan = League_Spartan({
-  subsets: ["latin"],
-  weight: ["800", "900"],
-  preload: false,
-});
 
 /* ============================================
    SVG FLAG COMPONENTS (HANDCRAFTED)
@@ -278,28 +271,19 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
           </motion.div>
 
           {/* 2. Headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
+          <div>
             <h1
-              className={`${spartan.className} uppercase leading-[0.92] font-black text-white`}
+              className="font-spartan uppercase leading-[0.92] font-black text-white"
               style={{
                 fontSize: "clamp(2.1rem, 6.5vw, 4.25rem)",
                 letterSpacing: "clamp(-0.5px, -0.03em, -2px)"
               }}
             >
-              <motion.span
-                className="block text-white"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.15, duration: 0.6 }}
-              >
+              <span className="block text-white opacity-0 animate-slide-in-1">
                 THE BEST IPTV
-              </motion.span>
-              <motion.span
-                className="block"
+              </span>
+              <span
+                className="block opacity-0 animate-slide-in-2"
                 style={{
                   background: "linear-gradient(90deg, #ff7a00 0%, #ff9500 50%, #ffb300 100%)",
                   WebkitBackgroundClip: "text",
@@ -307,18 +291,10 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                   backgroundClip: "text",
                   filter: "drop-shadow(0 0 25px rgba(255,122,0,0.3))",
                 }}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
               >
                 SUBSCRIPTION
-              </motion.span>
-              <motion.span
-                className="block text-white"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.25, duration: 0.6 }}
-              >
+              </span>
+              <span className="block text-white opacity-0 animate-slide-in-3">
                 IN{" "}
                 <span
                   style={{
@@ -329,9 +305,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                 >
                   USA & CANADA
                 </span>
-              </motion.span>
+              </span>
             </h1>
-          </motion.div>
+          </div>
 
           {/* Orange Accent Line */}
           <motion.div
@@ -537,7 +513,6 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                       width={56}
                       height={84}
                       className="object-cover"
-                      unoptimized
                     />
                   </motion.div>
                 ))}
@@ -610,8 +585,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                         src={`https://image.tmdb.org/t/p/w300${m.poster_path}`}
                         alt={m.title || m.name || "Movie Poster"}
                         fill
+                        sizes="(max-width: 1024px) 80px, 110px"
                         className="object-cover"
-                        unoptimized
+                        priority={i < 4}
                       />
                       <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-1.5 transition-opacity duration-200">
                         <p className="text-white text-[7px] font-bold line-clamp-2 leading-tight">
@@ -677,7 +653,6 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                       width={56}
                       height={84}
                       className="object-cover"
-                      unoptimized
                     />
                   </motion.div>
                 ))}

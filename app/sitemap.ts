@@ -30,11 +30,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     await connectDB();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    interface SitemapPost {
+      slug: string;
+      updatedAt?: string | Date;
+      date?: string | Date;
+      isFeatured?: boolean;
+    }
     const posts = await Post.find({ status: "published" })
       .select("slug updatedAt isFeatured createdAt")
       .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
-      .lean() as any[];
+      .lean() as unknown as SitemapPost[];
 
     blogEntries = posts.map((p) => ({
       url: `${BASE}/blog/${p.slug}`,

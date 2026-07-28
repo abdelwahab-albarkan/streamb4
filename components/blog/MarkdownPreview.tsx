@@ -4,11 +4,18 @@ import React from "react";
 import MDEditorPreview from "@uiw/react-markdown-preview";
 import type { PluggableList } from "unified";
 
+interface HastNode {
+  type: string;
+  tagName?: string;
+  children?: HastNode[];
+  properties?: Record<string, unknown>;
+}
+
 // Rehype plugin: wraps every <table> in <div class="table-wrapper">
 // so the table scrolls horizontally without the page overflowing.
 function rehypeWrapTables() {
-  return function (tree: any) {
-    function walk(node: any) {
+  return function (tree: HastNode) {
+    function walk(node: HastNode) {
       if (!Array.isArray(node.children)) return;
       for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i];

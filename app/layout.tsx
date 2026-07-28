@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Anton, Inter } from 'next/font/google'
+import type { Metadata } from 'next'
+import { Anton, Inter, League_Spartan } from 'next/font/google'
 import "./globals.css";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import { GoogleAnalytics } from '@next/third-parties/google'
@@ -22,6 +22,14 @@ const anton = Anton({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-anton',
+  preload: true,
+})
+
+const spartan = League_Spartan({
+  subsets: ['latin'],
+  weight: ['800', '900'],
+  display: 'swap',
+  variable: '--font-spartan',
   preload: true,
 })
 
@@ -223,7 +231,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }}
         />
       </head>
-      <body className={`${inter.variable} ${anton.variable} font-sans antialiased bg-[#0A0A0A] text-white`}>
+      <body className={`${inter.variable} ${anton.variable} ${spartan.variable} font-sans antialiased bg-[#0A0A0A] text-white`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only fixed top-4 left-4 z-50 px-4 py-2 bg-orange-500 text-black font-bold rounded"

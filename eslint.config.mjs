@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "scratch/**",
   ]),
   // Admin and API routes: backend-only code where `any` types are acceptable
   {

@@ -20,19 +20,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="group relative rounded-[32px] overflow-hidden cursor-pointer border border-white/[0.06] bg-white/[0.01]"
-        style={{
-          boxShadow: '0 0 60px rgba(255,122,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255, 122, 0, 0.3)'
-          e.currentTarget.style.boxShadow =
-            '0 30px 80px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 122, 0, 0.1)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)'
-          e.currentTarget.style.boxShadow = '0 0 60px rgba(255,122,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04)'
-        }}
+        className="group relative rounded-[32px] overflow-hidden cursor-pointer border border-white/[0.06] bg-white/[0.01] shadow-[0_0_60px_rgba(255,122,0,0.06),_inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-orange-500/30 hover:shadow-[0_30px_80px_rgba(0,0,0,0.7),_0_0_40px_rgba(255,122,0,0.1)] transition-all duration-300"
       >
         {/* Background image & gradient overlay */}
         <div className="relative aspect-[21/9] sm:aspect-[16/7] overflow-hidden w-full h-full">

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { StatsBar } from "@/components/sections/StatsBar";
-import { VODSection } from "@/components/sections/VODSection";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDocs } from "@/lib/serialize";
 import { getPopularMovies, getPopularSports } from "@/lib/tmdb";
 
 // Below-fold sections — lazy-loaded to reduce initial JS bundle on mobile
+const VODSection      = dynamic(() => import("@/components/sections/VODSection").then(m => ({ default: m.VODSection })));
 const SportsSection   = dynamic(() => import("@/components/sections/SportsSection").then(m => ({ default: m.SportsSection })));
 const FeaturesGrid    = dynamic(() => import("@/components/sections/FeaturesGrid").then(m => ({ default: m.FeaturesGrid })));
 const LibraryStats    = dynamic(() => import("@/components/sections/LibraryStats").then(m => ({ default: m.LibraryStats })));

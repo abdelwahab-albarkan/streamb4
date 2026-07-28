@@ -20,21 +20,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
-        className="group rounded-[24px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 h-full flex flex-col relative"
-        style={{
-          background: 'rgba(12, 12, 12, 0.95)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.04)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255, 122, 0, 0.3)'
-          e.currentTarget.style.boxShadow =
-            '0 20px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 122, 0, 0.08)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)'
-          e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255, 255, 255, 0.04)'
-        }}
+        className="group rounded-[24px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 h-full flex flex-col relative bg-[#0C0C0C]/95 border border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-orange-500/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.7),_0_0_30px_rgba(255,122,0,0.08)]"
       >
         {/* Glow behind on hover */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(255,122,0,0.06),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
