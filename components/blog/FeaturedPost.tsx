@@ -17,7 +17,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
   return (
     <Link href={`/blog/${post.slug}`}>
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 1, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="group relative rounded-[32px] overflow-hidden cursor-pointer border border-white/[0.06] bg-white/[0.01] shadow-[0_0_60px_rgba(255,122,0,0.06),_inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-orange-500/30 hover:shadow-[0_30px_80px_rgba(0,0,0,0.7),_0_0_40px_rgba(255,122,0,0.1)] transition-all duration-300"
