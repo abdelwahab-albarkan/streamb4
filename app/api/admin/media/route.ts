@@ -9,8 +9,13 @@ const MAX_BYTES = 4 * 1024 * 1024
 export async function GET() {
   try {
     await connectDB()
-    const docs = await Media.find({}).sort({ createdAt: -1 }).lean()
-    return NextResponse.json({ success: true, items: serializeDocs(docs as any[]) })
+    const docs = await Media.find({}).select("-url").sort({ createdAt: -1 }).lean()
+    const serialized = serializeDocs(docs as any[])
+    const items = serialized.map((item: any) => ({
+      ...item,
+      url: `/api/admin/media/${item._id}`,
+    }))
+    return NextResponse.json({ success: true, items })
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 })
   }

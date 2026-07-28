@@ -20,7 +20,7 @@ import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour (ISR)
 
 async function getPost(slug: string) {
   try {
@@ -46,7 +46,11 @@ async function getPostForMetadata(slug: string) {
 async function getRelatedPosts(category: string, currentId: string) {
   try {
     await connectDB();
-    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).limit(3).lean();
+    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" })
+      .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
+      .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+      .limit(3)
+      .lean();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return serializeDocs(docs as any[]);
   } catch {

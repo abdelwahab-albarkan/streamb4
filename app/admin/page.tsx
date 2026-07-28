@@ -21,8 +21,10 @@ export default function AdminDashboardPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [subscribersCount, setSubscribersCount] = useState(0);
   const [pendingComments, setPendingComments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const loadDashboardData = async () => {
+    setLoading(true);
     try {
       // Load posts
       const resPosts = await fetch("/api/admin/posts");
@@ -43,7 +45,7 @@ export default function AdminDashboardPage() {
       if (resSubs.ok) {
         const data = await resSubs.json();
         console.log("[DASH] /api/newsletter raw:", JSON.stringify(data));
-        setSubscribersCount((data.subscribers || []).length);
+        setSubscribersCount(typeof data.count === "number" ? data.count : (data.subscribers || []).length);
       }
 
       // Load pending comments
@@ -56,6 +58,8 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       console.error("[DASH] Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,6 +130,14 @@ export default function AdminDashboardPage() {
       icon: <Mail className="w-5 h-5 text-blue-500" />,
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

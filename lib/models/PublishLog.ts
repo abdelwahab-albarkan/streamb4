@@ -40,6 +40,9 @@ const PublishLogSchema = new Schema<IPublishLog>(
 // Compound index for fast log queries per post or per platform
 PublishLogSchema.index({ postId: 1, timestamp: -1 })
 PublishLogSchema.index({ platform: 1, timestamp: -1 })
+PublishLogSchema.index({ timestamp: -1 })
+PublishLogSchema.index({ timestamp: 1 })
+PublishLogSchema.index({ status: 1, timestamp: -1 })
 
 export const PublishLog: Model<IPublishLog> =
   mongoose.models.PublishLog ||

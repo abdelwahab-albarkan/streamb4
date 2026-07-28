@@ -8,25 +8,31 @@ import { getPopularSports, type TMDBMedia } from "@/lib/tmdb";
 
 const SPORTS_CATEGORIES = ["Football", "Basketball", "Tennis", "F1", "Boxing", "Golf"];
 
-export function SportsSection() {
-  const [sports, setSports] = useState<TMDBMedia[]>([]);
-  const [loading, setLoading] = useState(true);
+export function SportsSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[] }) {
+  const [sports, setSports] = useState<TMDBMedia[]>(initialMovies.filter(item => item.poster_path !== null).slice(0, 20));
+  const [loading, setLoading] = useState(initialMovies.length === 0);
 
   useEffect(() => {
-    async function loadSports() {
-      try {
-        const data = await getPopularSports();
-        const filtered = data.filter(item => item.poster_path !== null);
-        // Get 20 items
-        setSports(filtered.slice(0, 20));
-      } catch (err) {
-        console.error("Sports section error", err);
-      } finally {
-        setLoading(false);
+    if (initialMovies.length === 0) {
+      async function loadSports() {
+        try {
+          const data = await getPopularSports();
+          const filtered = data.filter(item => item.poster_path !== null);
+          // Get 20 items
+          setSports(filtered.slice(0, 20));
+        } catch (err) {
+          console.error("Sports section error", err);
+        } finally {
+          setLoading(false);
+        }
       }
+      loadSports();
+    } else {
+      const filtered = initialMovies.filter(item => item.poster_path !== null);
+      setSports(filtered.slice(0, 20));
+      setLoading(false);
     }
-    loadSports();
-  }, []);
+  }, [initialMovies]);
 
   // Split into Row 1 and Row 2
   const row1 = sports.slice(0, 10);

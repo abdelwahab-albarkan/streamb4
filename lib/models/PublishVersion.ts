@@ -18,4 +18,8 @@ const PublishVersionSchema = new Schema<IPublishVersion>({
   snapshot: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: false, versionKey: false })
 
+PublishVersionSchema.index({ articleSlug: 1, savedAt: -1 })
+PublishVersionSchema.index({ savedAt: -1 })
+PublishVersionSchema.index({ savedAt: 1 })
+
 export const PublishVersion: Model<IPublishVersion> = mongoose.models.PublishVersion || mongoose.model<IPublishVersion>('PublishVersion', PublishVersionSchema)

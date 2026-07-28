@@ -67,11 +67,14 @@ const blogBreadcrumbSchema = {
   ]
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour (ISR)
 
 async function getPosts() {
   await connectDB();
-  const docs = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+  const docs = await Post.find({ status: "published" })
+    .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
+    .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+    .lean();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return serializeDocs(docs as any[]);
 }

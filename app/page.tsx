@@ -6,6 +6,7 @@ import { VODSection } from "@/components/sections/VODSection";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDocs } from "@/lib/serialize";
+import { getPopularMovies, getPopularSports } from "@/lib/tmdb";
 
 // Below-fold sections — lazy-loaded to reduce initial JS bundle on mobile
 const SportsSection   = dynamic(() => import("@/components/sections/SportsSection").then(m => ({ default: m.SportsSection })));
@@ -196,6 +197,7 @@ async function getLatestPosts() {
   try {
     await connectDB();
     const docs = await Post.find({ status: "published" })
+      .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
       .sort({ publishedAt: -1, createdAt: -1 })
       .limit(3)
       .lean();
@@ -207,7 +209,11 @@ async function getLatestPosts() {
 }
 
 export default async function Home() {
-  const latestPosts = await getLatestPosts();
+  const [latestPosts, movies, sports] = await Promise.all([
+    getLatestPosts(),
+    getPopularMovies().catch(() => []),
+    getPopularSports().catch(() => []),
+  ]);
 
   return (
     <>
@@ -216,10 +222,10 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(homepageFaqSchema) }} />
       <main id="main-content">
-        <HeroSection />
+        <HeroSection initialMovies={movies} />
         <StatsBar />
-        <VODSection />
-        <SportsSection />
+        <VODSection initialMovies={movies} />
+        <SportsSection initialMovies={sports} />
         <FeaturesGrid />
         <LibraryStats />
         <DevicesSection />

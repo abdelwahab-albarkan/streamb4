@@ -26,4 +26,7 @@ const CommentSchema = new Schema<IComment>({
   avatar: { type: String, default: '' },
 }, { timestamps: false, versionKey: false })
 
+CommentSchema.index({ postSlug: 1, status: 1 })
+CommentSchema.index({ status: 1 })
+
 export const Comment: Model<IComment> = mongoose.models.Comment || mongoose.model<IComment>('Comment', CommentSchema)

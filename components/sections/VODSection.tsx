@@ -6,24 +6,29 @@ import { Star } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { getPopularMovies, type TMDBMedia } from "@/lib/tmdb";
 
-export function VODSection() {
-  const [movies, setMovies] = useState<TMDBMedia[]>([]);
-  const [loading, setLoading] = useState(true);
+export function VODSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[] }) {
+  const [movies, setMovies] = useState<TMDBMedia[]>(initialMovies.slice(0, 20));
+  const [loading, setLoading] = useState(initialMovies.length === 0);
 
   useEffect(() => {
-    async function loadMovies() {
-      try {
-        const data = await getPopularMovies();
-        // Get 20 movies
-        setMovies(data.slice(0, 20));
-      } catch (err) {
-        console.error("VOD error", err);
-      } finally {
-        setLoading(false);
+    if (initialMovies.length === 0) {
+      async function loadMovies() {
+        try {
+          const data = await getPopularMovies();
+          // Get 20 movies
+          setMovies(data.slice(0, 20));
+        } catch (err) {
+          console.error("VOD error", err);
+        } finally {
+          setLoading(false);
+        }
       }
+      loadMovies();
+    } else {
+      setMovies(initialMovies.slice(0, 20));
+      setLoading(false);
     }
-    loadMovies();
-  }, []);
+  }, [initialMovies]);
 
   // Split into Row 1 and Row 2
   const row1 = movies.slice(0, 10);

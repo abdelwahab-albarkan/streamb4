@@ -120,4 +120,8 @@ const PostSchema = new Schema<IPost>({
   outline: { type: String, default: '' },
 }, { timestamps: false, versionKey: false })
 
+PostSchema.index({ status: 1, isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+PostSchema.index({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+PostSchema.index({ status: 1, category: 1, isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+
 export const Post: Model<IPost> = mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)

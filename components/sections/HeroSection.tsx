@@ -174,8 +174,8 @@ function FeatureCard({ icon, number, title, subtitle }: FeatureCardProps) {
    MAIN HERO COMPONENT
 ============================================ */
 
-export function HeroSection() {
-  const [movies, setMovies] = useState<TMDBMedia[]>([]);
+export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[] }) {
+  const [movies, setMovies] = useState<TMDBMedia[]>(initialMovies.slice(0, 26));
   const [isMobile, setIsMobile] = useState(true);
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -80]);
@@ -185,16 +185,18 @@ export function HeroSection() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobile(window.innerWidth < 768);
-    async function loadHeroData() {
-      try {
-        const data = await getPopularMovies();
-        setMovies(data.slice(0, 26));
-      } catch (err) {
-        console.error("Mockup fetch err", err);
+    if (initialMovies.length === 0) {
+      async function loadHeroData() {
+        try {
+          const data = await getPopularMovies();
+          setMovies(data.slice(0, 26));
+        } catch (err) {
+          console.error("Mockup fetch err", err);
+        }
       }
+      loadHeroData();
     }
-    loadHeroData();
-  }, []);
+  }, [initialMovies]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505] pt-[72px] px-4 sm:px-6 lg:px-8 pb-24">

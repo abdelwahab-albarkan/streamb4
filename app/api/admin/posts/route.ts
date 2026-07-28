@@ -7,7 +7,10 @@ import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 
 export async function GET() {
   await connectDB();
-  const posts = await Post.find({}).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+  const posts = await Post.find({})
+    .select("-content -faqs -internalLinks -schemaMarkup")
+    .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+    .lean();
   return NextResponse.json({ success: true, posts });
 }
 
