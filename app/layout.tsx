@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { Anton, Inter, League_Spartan } from 'next/font/google'
 import "./globals.css";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
-import { GoogleAnalytics } from '@next/third-parties/google'
+// GoogleAnalytics from @next/third-parties defaults to afterInteractive → emits
+// <link rel="preload" as="script"> for the 490 KB GTM script, racing with CSS/fonts.
+// Using lazyOnload instead: fires after idle, no preload hint, analytics still captured.
 import MetaPixel from '@/components/analytics/MetaPixel'
 import MicrosoftClarity from '@/components/analytics/MicrosoftClarity'
 import Script from 'next/script'
@@ -241,7 +243,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LayoutWrapper>
           {children}
         </LayoutWrapper>
-        <GoogleAnalytics gaId="G-RJ6T9RBRL8" />
+        {/* GA4 at lazyOnload: no <link rel="preload"> in head, fires after idle */}
+        <Script
+          id="_next-ga-init"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-RJ6T9RBRL8');
+            `,
+          }}
+        />
+        <Script
+          id="_next-ga"
+          src="https://www.googletagmanager.com/gtag/js?id=G-RJ6T9RBRL8"
+          strategy="lazyOnload"
+        />
         <Analytics />
         <SpeedInsights />
         <MetaPixel />
