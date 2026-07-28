@@ -279,11 +279,11 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                 letterSpacing: "clamp(-0.5px, -0.03em, -2px)"
               }}
             >
-              <span className="block text-white opacity-0 animate-slide-in-1">
+              <span className="block text-white animate-slide-in-1">
                 THE BEST IPTV
               </span>
               <span
-                className="block opacity-0 animate-slide-in-2"
+                className="block animate-slide-in-2"
                 style={{
                   background: "linear-gradient(90deg, #ff7a00 0%, #ff9500 50%, #ffb300 100%)",
                   WebkitBackgroundClip: "text",
@@ -294,7 +294,7 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
               >
                 SUBSCRIPTION
               </span>
-              <span className="block text-white opacity-0 animate-slide-in-3">
+              <span className="block text-white animate-slide-in-3">
                 IN{" "}
                 <span
                   style={{

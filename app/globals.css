@@ -410,11 +410,9 @@ article img,
 /* ─── Compositor-Thread Entrance Animations for LCP ─────────────────────── */
 @keyframes slideInFromLeft {
   from {
-    opacity: 0;
     transform: translate3d(-20px, 0, 0);
   }
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
