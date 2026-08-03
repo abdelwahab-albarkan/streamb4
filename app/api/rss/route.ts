@@ -1,10 +1,14 @@
-import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { xmlResponse } from "@/lib/serialize";
 
 export async function GET() {
   await connectDB();
-  const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).limit(20).lean();
+  const posts = await Post.find({ status: "published" })
+    .select("title slug excerpt category publishedAt createdAt")
+    .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+    .limit(20)
+    .lean();
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -31,9 +35,8 @@ export async function GET() {
   </channel>
 </rss>`;
 
-  return new NextResponse(rss, {
+  return xmlResponse("GET /api/rss", rss, {
     headers: {
-      "Content-Type": "application/xml",
       "Cache-Control": "s-maxage=3600",
     },
   });

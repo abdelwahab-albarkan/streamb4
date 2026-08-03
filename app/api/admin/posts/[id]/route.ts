@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { generateSlug, isValidSlug } from "@/lib/slugUtils";
+import { jsonResponse } from "@/lib/serialize";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -9,10 +9,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const post = await Post.findOne({ $or: [{ id }, { slug: id }] }).lean();
 
   if (!post) {
-    return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
+    return jsonResponse("GET /api/admin/posts/[id] [NOT FOUND]", { success: false, error: "Post not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ success: true, post });
+  return jsonResponse("GET /api/admin/posts/[id]", { success: true, post });
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -118,13 +118,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     ).lean();
 
     if (!updatedPost) {
-      return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
+      return jsonResponse("PUT /api/admin/posts/[id] [NOT FOUND]", { success: false, error: "Post not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, post: updatedPost });
+    return jsonResponse("PUT /api/admin/posts/[id]", { success: true, post: updatedPost });
   } catch (error: any) {
     console.error("PUT /api/admin/posts/[id] FAILED:", error?.message);
-    return NextResponse.json(
+    return jsonResponse(
+      "PUT /api/admin/posts/[id] [ERROR]",
       { success: false, error: error instanceof Error ? error.message : String(error) },
       { status: 500 },
     );
@@ -139,11 +140,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const deleted = await Post.findOneAndDelete({ id }).lean();
 
     if (!deleted) {
-      return NextResponse.json({ success: false, error: "Post not found" }, { status: 404 });
+      return jsonResponse("DELETE /api/admin/posts/[id] [NOT FOUND]", { success: false, error: "Post not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true });
+    return jsonResponse("DELETE /api/admin/posts/[id]", { success: true });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    return jsonResponse("DELETE /api/admin/posts/[id] [ERROR]", { success: false, error: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }

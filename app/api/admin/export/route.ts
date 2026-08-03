@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import { Post } from '@/lib/models/Post'
+import { jsonResponse } from '@/lib/serialize'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -30,13 +31,25 @@ export async function GET(req: Request) {
       ].join(','))
     ].join('\n')
 
+    const bytes = Buffer.byteLength(csv, 'utf8')
+    console.log(`[API Size Log] GET /api/admin/export (CSV): ${bytes} bytes (${(bytes / 1024 / 1024).toFixed(3)} MB)`)
+
+    const MAX_BYTES = 4 * 1024 * 1024 // 4 MB safety limit
+    if (bytes > MAX_BYTES) {
+      return jsonResponse('GET /api/admin/export [PAYLOAD TOO LARGE]', 
+        { success: false, error: 'CSV export too large. Please run the base64 image migration first.' },
+        { status: 413 }
+      )
+    }
+
     return new NextResponse(csv, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="posts.csv"'
+        'Content-Disposition': 'attachment; filename="posts.csv"',
+        'Content-Length': String(bytes)
       }
     })
   }
 
-  return NextResponse.json(posts)
+  return jsonResponse('GET /api/admin/export (JSON)', posts)
 }

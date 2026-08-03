@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { jsonResponse } from "@/lib/serialize";
 
 export async function GET(request: Request) {
   try {
@@ -8,12 +8,26 @@ export async function GET(request: Request) {
     const query = url.searchParams.get("q") || "";
 
     if (!query) {
-      return NextResponse.json([]);
+      return jsonResponse("GET /api/search [EMPTY]", []);
     }
 
     await connectDB();
 
-    const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    // Optimize DB query: filter in MongoDB using $or regex matches, and select only required fields.
+    const posts = await Post.find({
+      status: "published",
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { tags: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+        { excerpt: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } },
+      ]
+    })
+      .select("id title slug excerpt category tags featuredImage readingTime content")
+      .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+      .lean();
+
     const q = query.toLowerCase();
 
     const ranked = posts
@@ -62,8 +76,8 @@ export async function GET(request: Request) {
         searchScore: p.searchScore,
       }));
 
-    return NextResponse.json(ranked);
+    return jsonResponse("GET /api/search", ranked);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return jsonResponse("GET /api/search [ERROR]", { error: err.message }, { status: 500 });
   }
 }

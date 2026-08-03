@@ -10,7 +10,9 @@ export const contentType = "image/jpeg";
 async function getPost(slug: string) {
   try {
     await connectDB();
-    const doc = await Post.findOne({ slug, status: "published" }).lean();
+    const doc = await Post.findOne({ slug, status: "published" })
+      .select("title category author readingTime")
+      .lean();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return doc ? serializeDoc(doc as any) : null;
   } catch {

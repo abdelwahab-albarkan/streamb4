@@ -28,6 +28,13 @@ export async function GET(
     }
 
     const dataUrl: string = (doc as any).url ?? ''
+
+    // External storage redirect support
+    if (dataUrl.startsWith('http://') || dataUrl.startsWith('https://')) {
+      console.log(`[Media Serve] Redirecting media ${id} to external URL: ${dataUrl}`)
+      return NextResponse.redirect(dataUrl, { status: 302 })
+    }
+
     const commaIdx = dataUrl.indexOf(',')
     if (!dataUrl.startsWith('data:') || commaIdx === -1) {
       // Shouldn't happen, but guard gracefully
@@ -36,6 +43,8 @@ export async function GET(
 
     const mime   = dataUrl.slice(5, commaIdx).replace(';base64', '')
     const buffer = Buffer.from(dataUrl.slice(commaIdx + 1), 'base64')
+
+    console.log(`[Media Serve Size Log] GET /api/admin/media/${id}: ${buffer.byteLength} bytes (${(buffer.byteLength / 1024 / 1024).toFixed(3)} MB)`)
 
     return new NextResponse(buffer, {
       status: 200,

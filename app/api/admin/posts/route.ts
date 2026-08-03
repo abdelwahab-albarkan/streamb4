@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { generateSlug, isValidSlug } from "@/lib/slugUtils";
+import { jsonResponse } from "@/lib/serialize";
 
 // ─── GET ─────────────────────────────────────────────────────────────────────
 
@@ -11,7 +11,7 @@ export async function GET() {
     .select("-content -faqs -internalLinks -schemaMarkup")
     .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
     .lean();
-  return NextResponse.json({ success: true, posts });
+  return jsonResponse("GET /api/admin/posts", { success: true, posts });
 }
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
@@ -22,7 +22,8 @@ export async function POST(request: Request) {
   try {
     postData = await request.json();
   } catch (error) {
-    return NextResponse.json(
+    return jsonResponse(
+      "POST /api/admin/posts [BAD REQUEST]",
       { success: false, message: error instanceof Error ? error.message : String(error) },
       { status: 400 },
     );
@@ -103,11 +104,12 @@ export async function POST(request: Request) {
 
     await new Post(newPost).save();
 
-    return NextResponse.json({ success: true, post: newPost });
+    return jsonResponse("POST /api/admin/posts", { success: true, post: newPost });
   } catch (error) {
     console.error("POST /api/admin/posts FAILED");
     console.error(error);
-    return NextResponse.json(
+    return jsonResponse(
+      "POST /api/admin/posts [ERROR]",
       {
         success: false,
         message: error instanceof Error ? error.message : String(error),

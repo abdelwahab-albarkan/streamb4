@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     // Find post title for notification
     let postTitle = data.postSlug;
     try {
-      const post = await Post.findOne({ slug: data.postSlug }).lean() as any;
+      const post = await Post.findOne({ slug: data.postSlug }).select('title').lean() as any;
       if (post?.title) {
         postTitle = post.title;
       }

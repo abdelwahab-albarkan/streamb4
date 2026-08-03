@@ -39,7 +39,9 @@ async function getPost(slug: string) {
 async function getPostForMetadata(slug: string) {
   await connectDB();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const post = await Post.findOne({ slug, status: "published" }).lean() as any;
+  const post = await Post.findOne({ slug, status: "published" })
+    .select("title seoTitle metaDescription excerpt ogTitle ogDescription featuredImage ogImage twitterTitle twitterDescription")
+    .lean() as any;
   return post ? serializeDoc(post) : null;
 }
 

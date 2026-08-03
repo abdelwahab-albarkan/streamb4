@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import { Post } from '@/lib/models/Post'
+import { jsonResponse } from '@/lib/serialize'
 import { User } from '@/lib/models/User'
 import { Comment } from '@/lib/models/Comment'
 import { Player } from '@/lib/models/Player'
@@ -48,14 +48,12 @@ export async function GET() {
 
     const timestamp = new Date().toISOString().split('T')[0]
 
-    return new NextResponse(JSON.stringify(backup, null, 2), {
+    return jsonResponse('GET /api/admin/backup', backup, {
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Disposition':
-          `attachment; filename="streamb4-backup-${timestamp}.json"`
+        'Content-Disposition': `attachment; filename="streamb4-backup-${timestamp}.json"`
       }
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Backup failed' }, { status: 500 })
+    return jsonResponse('GET /api/admin/backup [ERROR]', { error: 'Backup failed' }, { status: 500 })
   }
 }

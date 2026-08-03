@@ -1,11 +1,14 @@
-import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
+import { jsonResponse } from "@/lib/serialize";
 
 export async function POST() {
   try {
     await connectDB();
-    const posts = await Post.find({ status: "published" }).sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 }).lean();
+    const posts = await Post.find({ status: "published" })
+      .select("slug date createdAt updatedAt")
+      .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
+      .lean();
 
     const urls = [
       { url: "https://streamb4.com", priority: "1.0", lastmod: new Date().toISOString().split("T")[0] },
@@ -32,8 +35,8 @@ ${urls
   .join("\n")}
 </urlset>`;
 
-    return NextResponse.json({ success: true, xml });
+    return jsonResponse("POST /api/admin/sitemap", { success: true, xml });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return jsonResponse("POST /api/admin/sitemap [ERROR]", { success: false, error: err.message }, { status: 500 });
   }
 }
