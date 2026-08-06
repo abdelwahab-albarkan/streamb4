@@ -1,6 +1,6 @@
 ﻿'use client'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from "next/link";
 import { StepIcon } from "@/components/ui/icons";
@@ -187,22 +187,11 @@ export default function InstallClient() {
         </motion.div>
 
         {/* ═══ PREMIUM DEVICE SELECTOR CARDS ═══ */}
-        <motion.div
-          variants={{
-            hidden:{},
-            visible:{transition:{staggerChildren:0.08}}
-          }}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
 
           {devices.map((device, i) => (
             <motion.div
               key={device.id}
-              variants={{
-                hidden:{opacity:0, y: 0},
-                visible:{opacity:1, y:0, transition:{duration:0.5}}
-              }}
               onClick={() => {
                 setActiveDevice(i)
                 setPlaying(false)
@@ -227,15 +216,13 @@ export default function InstallClient() {
                   : 'inset 0 1px 0 rgba(255,255,255,0.04)',
               }}>
 
-              {/* Top orange line when active */}
-              {activeDevice === i && (
-                <motion.div
-                  layoutId="activeTopLine"
-                  className="absolute top-0 left-0 right-0 h-[2px]"
-                  style={{
-                    background:'linear-gradient(90deg,transparent,#ff7a00,#ffb300,transparent)'
-                  }}/>
-              )}
+              {/* Top orange line when active — CSS only, no layoutId */}
+              <div
+                className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-300"
+                style={{
+                  background:'linear-gradient(90deg,transparent,#ff7a00,#ffb300,transparent)',
+                  opacity: activeDevice === i ? 1 : 0,
+                }}/>
 
               {/* Corner glow when active */}
               {activeDevice === i && (
@@ -308,15 +295,13 @@ export default function InstallClient() {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {/* ═══ VIDEO SECTION — matches reference image ═══ */}
-        <AnimatePresence>
-          <motion.div
+        <motion.div
             key={activeDevice}
             initial={{opacity:0, y: 0}}
             animate={{opacity:1, y:0}}
-            exit={{opacity:0, y: 0}}
             transition={{duration:0.4}}
             className="rounded-[28px] overflow-hidden"
             style={{
@@ -555,15 +540,12 @@ export default function InstallClient() {
               </div>
             </div>
           </motion.div>
-        </AnimatePresence>
 
         {/* ═══ INSTALLATION STEPS ═══ */}
-        <AnimatePresence>
-          <motion.div
+        <motion.div
             key={`steps-${activeDevice}`}
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.45 }}
             className="mt-10"
           >
@@ -655,7 +637,7 @@ export default function InstallClient() {
               </Link>
             </div>
           </motion.div>
-        </AnimatePresence>
+        </motion.div>
 
         {/* ═══ BOTTOM CTA ═══ */}
         <motion.div
