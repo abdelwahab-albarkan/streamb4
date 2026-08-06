@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Check, Shield, Server, Activity, Database, ArrowRight, Zap } from "lucide-react";
@@ -42,7 +42,7 @@ export default function RestreamClient() {
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#FF6B00]/5 rounded-full blur-[150px]" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >

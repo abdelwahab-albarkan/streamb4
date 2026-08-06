@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -278,7 +278,7 @@ export default function PricingClient() {
             {/* Plan label */}
             <motion.div
               key={activeConnections}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center mt-4">
               <span className="text-white font-black text-lg uppercase">
@@ -535,7 +535,7 @@ export default function PricingClient() {
         <section className="px-4 sm:px-6 lg:px-8 pb-24">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}

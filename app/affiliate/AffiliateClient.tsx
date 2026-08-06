@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { DollarSign, Users, BarChart, Percent, Award, Link as LinkIcon } from "lucide-react";
@@ -44,7 +44,7 @@ export default function AffiliateClient() {
           </nav>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >

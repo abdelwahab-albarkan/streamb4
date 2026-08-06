@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { Mail, MessageCircle, Clock, Send, ShieldCheck, X } from "lucide-react";
@@ -17,9 +17,9 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
     <AnimatePresence>
       <motion.div
         key={toast.message + toast.type}
-        initial={{ opacity: 0, y: 24, scale: 0.95 }}
+        initial={{ opacity: 0, y: 0, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 24, scale: 0.95 }}
+        exit={{ opacity: 0, y: 0, scale: 0.95 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
         className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3.5 rounded-2xl min-w-[280px] max-w-sm"
         style={{

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -65,9 +65,9 @@ function CopyToast({ show }: { show: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.92 }}
+          initial={{ opacity: 0, y: 0, scale: 0.92 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 16 }}
+          exit={{ opacity: 0, y: 0 }}
           transition={{ type: "spring", stiffness: 420, damping: 26 }}
           className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
             flex items-center gap-3 px-6 py-3.5 rounded-2xl
@@ -179,7 +179,7 @@ function PlayerCard({
       layout
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.3 }}
@@ -441,7 +441,7 @@ export default function DevicesClient() {
 
         {/* ─── HEADER ─────────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center mb-14"
@@ -472,7 +472,7 @@ export default function DevicesClient() {
 
         {/* ─── STEP 1 CARD ─────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.08 }}
           className="rounded-[20px] p-8 mb-14"
@@ -549,7 +549,7 @@ export default function DevicesClient() {
 
         {/* ─── SUBTITLE + SEARCH + FILTERS ─────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
           className="mb-8"
@@ -674,7 +674,7 @@ export default function DevicesClient() {
 
         {/* ─── WHY SECTION ─────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 0 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
@@ -736,7 +736,7 @@ export default function DevicesClient() {
 
         {/* ─── FAQ ─────────────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 0 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
@@ -765,7 +765,7 @@ export default function DevicesClient() {
 
         {/* ─── FULL GUIDES ─────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 0 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}

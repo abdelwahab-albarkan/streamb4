@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -134,7 +134,7 @@ export default function InstallClient() {
 
         {/* ═══ HEADER ═══ */}
         <motion.div
-          initial={{opacity:0, y:30}}
+          initial={{opacity:1, y:0}}
           animate={{opacity:1, y:0}}
           transition={{duration:0.6}}
           className="text-center mb-16">
@@ -200,7 +200,7 @@ export default function InstallClient() {
             <motion.div
               key={device.id}
               variants={{
-                hidden:{opacity:0, y:20},
+                hidden:{opacity:0, y: 0},
                 visible:{opacity:1, y:0, transition:{duration:0.5}}
               }}
               onClick={() => {
@@ -314,9 +314,9 @@ export default function InstallClient() {
         <AnimatePresence>
           <motion.div
             key={activeDevice}
-            initial={{opacity:0, y:20}}
+            initial={{opacity:0, y: 0}}
             animate={{opacity:1, y:0}}
-            exit={{opacity:0, y:-20}}
+            exit={{opacity:0, y: 0}}
             transition={{duration:0.4}}
             className="rounded-[28px] overflow-hidden"
             style={{
@@ -561,9 +561,9 @@ export default function InstallClient() {
         <AnimatePresence>
           <motion.div
             key={`steps-${activeDevice}`}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
+            exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.45 }}
             className="mt-10"
           >
@@ -601,7 +601,7 @@ export default function InstallClient() {
               {active.steps.map((step: { icon: string; title: string; desc: string }, i: number) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 0 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.07 }}
                   className="relative rounded-[20px] p-6 flex flex-col gap-4"
@@ -659,7 +659,7 @@ export default function InstallClient() {
 
         {/* ═══ BOTTOM CTA ═══ */}
         <motion.div
-          initial={{opacity:0, y:20}}
+          initial={{opacity:0, y: 0}}
           whileInView={{opacity:1, y:0}}
           viewport={{once:true}}
           transition={{duration:0.5, delay:0.3}}
