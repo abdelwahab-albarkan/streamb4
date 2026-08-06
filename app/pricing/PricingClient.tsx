@@ -160,7 +160,7 @@ export default function PricingClient() {
         <section className="pt-36 pb-16 px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-5xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 1, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}>
 
@@ -220,7 +220,7 @@ export default function PricingClient() {
         <section className="px-4 sm:px-6 lg:px-8 mb-16">
           <div className="max-w-lg mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="relative p-1.5 rounded-[20px]"
@@ -297,16 +297,16 @@ export default function PricingClient() {
             <AnimatePresence>
               <motion.div
                 key={activeConnections}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
+                exit={{ opacity: 0, y: 0 }}
                 transition={{ duration: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
 
                 {currentData.plans.map((plan, i) => (
                   <motion.div
                     key={plan.duration}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 0 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.1, duration: 0.5 }}
                     whileHover={{
