@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -90,18 +89,14 @@ export default function SearchBar() {
       </div>
 
       {/* Results Dropdown */}
-      <AnimatePresence>
-        {results.length > 0 && isFocused && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 mt-2 rounded-[20px] overflow-hidden z-50 border bg-[#0C0C0C]/95 backdrop-blur-xl"
+      {results.length > 0 && isFocused && (
+          <div
             style={{
+              animation: "fadeInPage 0.2s ease-out both",
               borderColor: "rgba(255,255,255,0.08)",
               boxShadow: "0 20px 60px rgba(0,0,0,0.8)",
             }}
+            className="absolute top-full left-0 right-0 mt-2 rounded-[20px] overflow-hidden z-50 border bg-[#0C0C0C]/95 backdrop-blur-xl"
           >
             <div className="max-h-[320px] overflow-y-auto">
               {results.map((result) => (
@@ -149,9 +144,8 @@ export default function SearchBar() {
                 {results.length} results for &quot;{query}&quot;
               </p>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
 
 interface CountUpProps {
   target: number;
@@ -18,34 +17,39 @@ export default function CountUp({
 }: CountUpProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+  const triggered = useRef(false);
 
   useEffect(() => {
-    if (!inView) return;
+    const el = ref.current;
+    if (!el) return;
 
-    let startTime: number;
-    let animFrame: number;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || triggered.current) return;
+        triggered.current = true;
+        observer.disconnect();
 
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+        let startTime: number;
+        let animFrame: number;
+        const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOut(progress);
+        const animate = (timestamp: number) => {
+          if (!startTime) startTime = timestamp;
+          const progress = Math.min((timestamp - startTime) / duration, 1);
+          setCount(Math.floor(easeOut(progress) * target));
+          if (progress < 1) animFrame = requestAnimationFrame(animate);
+          else setCount(target);
+        };
 
-      setCount(Math.floor(easedProgress * target));
-
-      if (progress < 1) {
         animFrame = requestAnimationFrame(animate);
-      } else {
-        setCount(target);
-      }
-    };
+        return () => cancelAnimationFrame(animFrame);
+      },
+      { rootMargin: "-60px 0px" }
+    );
 
-    animFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animFrame);
-  }, [inView, target, duration]);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration]);
 
   return (
     <span ref={ref} className={className}>

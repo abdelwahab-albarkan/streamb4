@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import { motion } from 'framer-motion'
 
 /* ============================================
    PREMIUM SVG ICONS
@@ -198,20 +197,19 @@ const FeatureBadge = ({
   title: string
   subtitle?: string 
 }) => (
-  <motion.div
-    whileHover={{ scale: 1.05, y: -2 }}
-    transition={{ duration: 0.2 }}
-    className="group flex items-center gap-3 
+  <div
+    className="group flex items-center gap-3
       px-4 py-3 rounded-2xl cursor-default
       bg-white/[0.03] border border-white/[0.06]
-      hover:bg-white/[0.06] 
+      hover:bg-white/[0.06]
       hover:border-orange-500/20
       hover:shadow-[0_0_30px_rgba(255,122,0,0.1)]
-      transition-all duration-300"
+      hover:scale-[1.05] hover:-translate-y-0.5
+      transition-all duration-200"
   >
     <IconContainer>{icon}</IconContainer>
     <div>
-      <p className="text-white font-bold text-sm 
+      <p className="text-white font-bold text-sm
         group-hover:text-orange-100
         transition-colors duration-300">
         {title}
@@ -222,7 +220,7 @@ const FeatureBadge = ({
         </p>
       )}
     </div>
-  </motion.div>
+  </div>
 )
 
 /* ============================================
@@ -307,19 +305,18 @@ const FlagEU = () => (
    COUNTRY PILL COMPONENT  
 ============================================ */
 
-const CountryPill = ({ 
-  flag, name 
-}: { 
+const CountryPill = ({
+  flag, name
+}: {
   flag: React.ReactNode
-  name: string 
+  name: string
 }) => (
-  <motion.div
-    whileHover={{ scale: 1.08, y: -1 }}
-    transition={{ duration: 0.2 }}
+  <div
     className="group inline-flex items-center gap-2
       px-4 py-2 rounded-full cursor-default
       backdrop-blur-md
       transition-all duration-300
+      hover:scale-[1.08] hover:-translate-y-px
       hover:shadow-[0_0_25px_rgba(255,122,0,0.2)]"
     style={{
       background: 'rgba(255,255,255,0.04)',
@@ -334,13 +331,13 @@ const CountryPill = ({
       transition-all duration-300">
       {flag}
     </div>
-    <span className="text-gray-200 text-xs font-semibold 
+    <span className="text-gray-200 text-xs font-semibold
       tracking-wide uppercase
       group-hover:text-orange-100
       transition-colors duration-300">
       {name}
     </span>
-  </motion.div>
+  </div>
 )
 
 /* ============================================
@@ -348,10 +345,8 @@ const CountryPill = ({
 ============================================ */
 
 export const PremiumFeatureBadges = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.4, duration: 0.5 }}
+  <div
+    style={{ animation: "fadeInPage 0.5s ease-out 0.4s both" }}
     className="flex flex-wrap gap-3 my-6"
   >
     <FeatureBadge
@@ -374,19 +369,17 @@ export const PremiumFeatureBadges = () => (
       title="Instant Activation"
       subtitle="Ready in 60 seconds"
     />
-  </motion.div>
+  </div>
 )
 
 export const PremiumCountryBadges = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 15 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.15, duration: 0.5 }}
+  <div
+    style={{ animation: "fadeInPage 0.5s ease-out 0.15s both" }}
     className="flex flex-row flex-nowrap items-center gap-2 mb-6 w-max max-w-full overflow-visible"
   >
     <CountryPill flag={<FlagUSA />} name="United States" />
     <CountryPill flag={<FlagCanada />} name="Canada" />
     <CountryPill flag={<FlagUK />} name="United Kingdom" />
     <CountryPill flag={<FlagEU />} name="Europe" />
-  </motion.div>
+  </div>
 )

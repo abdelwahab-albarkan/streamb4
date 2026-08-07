@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface AccordionItemProps {
   question: string;
@@ -25,20 +24,19 @@ export function AccordionItem({ question, answer }: AccordionItemProps) {
           }`}
         />
       </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <div className="px-5 md:px-6 pb-5 md:pb-6 text-gray-400 leading-relaxed">
-              {answer}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: open ? "1fr" : "0fr",
+          transition: "grid-template-rows 0.25s ease-in-out",
+        }}
+      >
+        <div className="overflow-hidden">
+          <div className="px-5 md:px-6 pb-5 md:pb-6 text-gray-400 leading-relaxed">
+            {answer}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

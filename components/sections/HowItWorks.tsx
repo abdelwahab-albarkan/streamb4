@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import FloatingElement from "@/components/ui/FloatingElement";
 
@@ -85,11 +84,8 @@ function ArrowConnector() {
 
 function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, delay: index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
+    <div
+      style={{ animation: `fadeInPage 0.55s cubic-bezier(0.25,0.46,0.45,0.94) ${index * 0.12}s both` }}
       className="step-card group relative flex flex-col"
     >
       {/* Outer glow — CSS hover */}
@@ -234,7 +230,7 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
           }}
         />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -300,11 +296,8 @@ export function HowItWorks() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="flex items-center justify-center gap-4 mb-6"
         >
           <div
@@ -322,19 +315,16 @@ export function HowItWorks() {
             className="h-px w-16 rounded-full"
             style={{ background: "linear-gradient(90deg, rgba(255,138,0,0.4), transparent)" }}
           />
-        </motion.div>
+        </div>
 
         {/* Headline */}
-        <motion.h2
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
-          className="text-center font-anton uppercase leading-[0.88] tracking-tight mb-5"
+        <h2
           style={{
             fontFamily: "var(--font-anton), Anton, sans-serif",
             fontSize: "clamp(46px, 7.5vw, 96px)",
+            animation: "fadeInPage 0.5s ease-out 0.08s both",
           }}
+          className="text-center font-anton uppercase leading-[0.88] tracking-tight mb-5"
         >
           <span className="text-white">GET STARTED IN </span>
           <span
@@ -347,18 +337,15 @@ export function HowItWorks() {
           >
             3 SIMPLE STEPS.
           </span>
-        </motion.h2>
+        </h2>
 
         {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
+        <p
+          style={{ animation: "fadeInPage 0.5s ease-out 0.14s both" }}
           className="text-center text-gray-500 text-lg mb-20"
         >
           Subscribe, activate your account, and start watching in just a few minutes.
-        </motion.p>
+        </p>
 
         {/* ── Cards + arrows ── */}
         <div className="relative mb-12">
@@ -368,15 +355,9 @@ export function HowItWorks() {
             className="absolute z-20 hidden lg:flex items-center"
             style={{ top: 192, left: "calc(33.333% - 28px)" }}
           >
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              whileInView={{ opacity: 1, scaleX: 1 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: 0.45, ease: "easeOut" }}
-              style={{ transformOrigin: "left" }}
-            >
+            <div style={{ animation: "arrowReveal 0.5s ease-out 0.45s both", transformOrigin: "left" }}>
               <ArrowConnector />
-            </motion.div>
+            </div>
           </div>
 
           {/* Arrow 2→3 */}
@@ -384,15 +365,9 @@ export function HowItWorks() {
             className="absolute z-20 hidden lg:flex items-center"
             style={{ top: 192, left: "calc(66.666% - 28px)" }}
           >
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              whileInView={{ opacity: 1, scaleX: 1 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
-              style={{ transformOrigin: "left" }}
-            >
+            <div style={{ animation: "arrowReveal 0.5s ease-out 0.6s both", transformOrigin: "left" }}>
               <ArrowConnector />
-            </motion.div>
+            </div>
           </div>
 
           {/* Grid */}
@@ -404,25 +379,20 @@ export function HowItWorks() {
         </div>
 
         {/* ── Bottom features strip ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-          className="rounded-[20px] px-4 py-4 md:px-8 md:py-5"
+        <div
           style={{
+            animation: "fadeInPage 0.5s ease-out 0.2s both",
             background: "rgba(15,15,15,0.8)",
             border: "1px solid rgba(255,138,0,0.1)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
+          className="rounded-[20px] px-4 py-4 md:px-8 md:py-5"
         >
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-orange-500/10">
             {bottomFeatures.map((feature) => (
-              <motion.div
+              <div
                 key={feature.title}
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.2 }}
-                className="group flex items-center gap-2 md:gap-3 px-2.5 py-2.5 md:px-6 md:py-3 lg:py-0 md:first:pl-0 md:last:pr-0"
+                className="group flex items-center gap-2 md:gap-3 px-2.5 py-2.5 md:px-6 md:py-3 lg:py-0 md:first:pl-0 md:last:pr-0 hover:scale-[1.04] transition-transform duration-200"
               >
                 <div
                   className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden md:overflow-visible transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(255,138,0,0.35)]"
@@ -439,10 +409,10 @@ export function HowItWorks() {
                   </p>
                   <p className="text-[#bdbdbd] text-[9px] md:text-xs">{feature.sub}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

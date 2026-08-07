@@ -1,6 +1,5 @@
 ﻿'use client'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from "next/link";
 import { StepIcon } from "@/components/ui/icons";
@@ -133,11 +132,7 @@ export default function InstallClient() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-8 py-16">
 
         {/* ═══ HEADER ═══ */}
-        <motion.div
-          initial={{opacity:1, y:0}}
-          animate={{opacity:1, y:0}}
-          transition={{duration:0.6}}
-          className="text-center mb-16">
+        <div className="text-center mb-16">
 
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2
@@ -181,29 +176,25 @@ export default function InstallClient() {
           </h1>
 
           <p className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto">
-            Follow our simple step-by-step video tutorials to get 
+            Follow our simple step-by-step video tutorials to get
             STREAMB4 running on any device.
           </p>
-        </motion.div>
+        </div>
 
         {/* ═══ PREMIUM DEVICE SELECTOR CARDS ═══ */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
 
           {devices.map((device, i) => (
-            <motion.div
+            <div
               key={device.id}
               onClick={() => {
                 setActiveDevice(i)
                 setPlaying(false)
               }}
-              whileHover={{
-                y: -6,
-                transition:{duration:0.2}
-              }}
               className="relative group cursor-pointer
                 rounded-[20px] overflow-hidden p-5
                 flex flex-col items-center gap-4
-                transition-all duration-300"
+                hover:-translate-y-1 transition-all duration-300"
               style={{
                 background: activeDevice === i
                   ? 'linear-gradient(145deg,rgba(255,122,0,0.12),rgba(5,5,5,0.98))'
@@ -243,16 +234,9 @@ export default function InstallClient() {
                     filter:'blur(15px)'
                   }}/>
 
-                <motion.div
-                  animate={activeDevice === i 
-                    ? {y:[0,-4,0]} 
-                    : {y:0}}
-                  transition={{
-                    duration:3,
-                    repeat:activeDevice === i ? Infinity : 0,
-                    ease:'easeInOut'
-                  }}
-                  className="relative z-10">
+                <div
+                  className="relative z-10"
+                  style={{ animation: activeDevice === i ? 'floatY 3s ease-in-out infinite' : 'none' }}>
                   <Image
                     src={device.image}
                     alt={device.name}
@@ -266,7 +250,7 @@ export default function InstallClient() {
                         : 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))'
                     }}
                   />
-                </motion.div>
+                </div>
 
                 {/* Bottom glow under device */}
                 <div className={`absolute bottom-0 left-1/2 -translate-x-1/2
@@ -293,18 +277,16 @@ export default function InstallClient() {
                       : 'w-3 bg-white/10'}`}/>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* ═══ VIDEO SECTION — matches reference image ═══ */}
-        <motion.div
+        <div
             key={activeDevice}
-            initial={{opacity:0, y: 0}}
-            animate={{opacity:1, y:0}}
-            transition={{duration:0.4}}
             className="rounded-[28px] overflow-hidden"
             style={{
+              animation: "fadeInPage 0.4s ease-out both",
               background:'linear-gradient(145deg,rgba(20,10,0,0.98),rgba(5,5,5,1))',
               border:'1px solid rgba(255,122,0,0.2)',
               boxShadow:'0 0 60px rgba(255,122,0,0.08)'
@@ -422,13 +404,12 @@ export default function InstallClient() {
 
                 {/* Action buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <motion.button
+                  <button
                     onClick={() => setPlaying(true)}
-                    whileHover={{scale:1.03, y:-2}}
-                    whileTap={{scale:0.97}}
                     className="flex items-center justify-center gap-2.5
                       px-6 py-3 rounded-[14px]
-                      font-black text-black text-sm uppercase cursor-pointer"
+                      font-black text-black text-sm uppercase cursor-pointer
+                      hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] transition-transform duration-150"
                     style={{
                       background:'linear-gradient(135deg,#ff7a00,#ffb300)',
                       boxShadow:'0 0 25px rgba(255,122,0,0.35)'
@@ -438,7 +419,7 @@ export default function InstallClient() {
                       <path d="M8 5v14l11-7z"/>
                     </svg>
                     Watch Full Tutorial
-                  </motion.button>
+                  </button>
 
                   <div className="flex items-center justify-center gap-2
                     px-4 py-3 rounded-[14px] text-gray-500 text-sm"
@@ -479,13 +460,8 @@ export default function InstallClient() {
                           }}/>
                       </div>
 
-                      <motion.div
-                        animate={{y:[0,-10,0]}}
-                        transition={{
-                          duration:4,
-                          repeat:Infinity,
-                          ease:'easeInOut'
-                        }}
+                      <div
+                        style={{ animation: 'floatY 4s ease-in-out infinite' }}
                         className="relative z-10">
                         <Image
                           src={active.image}
@@ -497,17 +473,16 @@ export default function InstallClient() {
                             filter:'drop-shadow(0 20px 40px rgba(255,122,0,0.25)) drop-shadow(0 0 60px rgba(255,122,0,0.1))'
                           }}
                         />
-                      </motion.div>
+                      </div>
 
                       {/* Play button overlay */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <motion.button
+                        <button
                           onClick={() => setPlaying(true)}
-                          whileHover={{scale:1.1}}
-                          whileTap={{scale:0.95}}
                           className="w-16 h-16 rounded-full
                             flex items-center justify-center
-                            backdrop-blur-sm cursor-pointer"
+                            backdrop-blur-sm cursor-pointer
+                            hover:scale-110 active:scale-95 transition-transform duration-150"
                           style={{
                             background:'rgba(255,122,0,0.2)',
                             border:'2px solid rgba(255,122,0,0.5)',
@@ -523,7 +498,7 @@ export default function InstallClient() {
                             </defs>
                             <path d="M8 5v14l11-7z" fill="url(#plg)"/>
                           </svg>
-                        </motion.button>
+                        </button>
                       </div>
                     </div>
                   </>
@@ -539,14 +514,12 @@ export default function InstallClient() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
 
         {/* ═══ INSTALLATION STEPS ═══ */}
-        <motion.div
+        <div
             key={`steps-${activeDevice}`}
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
+            style={{ animation: "fadeInPage 0.45s ease-out both" }}
             className="mt-10"
           >
             {/* Section header */}
@@ -581,13 +554,11 @@ export default function InstallClient() {
             {/* Steps grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {active.steps.map((step: { icon: string; title: string; desc: string }, i: number) => (
-                <motion.div
+                <div
                   key={i}
-                  initial={{ opacity: 0, y: 0 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: i * 0.07 }}
                   className="relative rounded-[20px] p-6 flex flex-col gap-4"
                   style={{
+                    animation: `fadeInPage 0.35s ease-out ${i * 0.07}s both`,
                     background: 'linear-gradient(145deg,rgba(20,10,0,0.97),rgba(5,5,5,1))',
                     border: '1px solid rgba(255,122,0,0.12)',
                   }}
@@ -622,7 +593,7 @@ export default function InstallClient() {
                       </svg>
                     </div>
                   )}
-                </motion.div>
+                </div>
               ))}
             </div>
 
@@ -636,17 +607,13 @@ export default function InstallClient() {
                 Chat with support →
               </Link>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
 
         {/* ═══ BOTTOM CTA ═══ */}
-        <motion.div
-          initial={{opacity:0, y: 0}}
-          whileInView={{opacity:1, y:0}}
-          viewport={{once:true}}
-          transition={{duration:0.5, delay:0.3}}
+        <div
           className="text-center mt-16 p-6 sm:p-10 rounded-[28px]"
           style={{
+            animation: "fadeInPage 0.5s ease-out both",
             background:'linear-gradient(145deg,rgba(255,122,0,0.08),rgba(5,5,5,0.98))',
             border:'1px solid rgba(255,122,0,0.15)'
           }}>
@@ -662,19 +629,18 @@ export default function InstallClient() {
             Our support team is available 24/7 to help you get started.
           </p>
           <Link href="/contact">
-            <motion.div
-              whileHover={{scale:1.03, y:-2}}
-              whileTap={{scale:0.97}}
+            <div
               className="inline-block px-10 py-4 rounded-full font-black
-                text-black text-sm uppercase tracking-wide cursor-pointer"
+                text-black text-sm uppercase tracking-wide cursor-pointer
+                hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] transition-transform duration-150"
               style={{
                 background:'linear-gradient(135deg,#ff7a00,#ffb300)',
                 boxShadow:'0 0 30px rgba(255,122,0,0.35)'
               }}>
               Chat With Support
-            </motion.div>
+            </div>
           </Link>
-        </motion.div>
+        </div>
 
       </div>
     </div>

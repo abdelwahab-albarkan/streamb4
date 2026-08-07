@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 interface FAQItem {
   question: string
@@ -43,21 +42,13 @@ export function ArticleFAQ({ faqs }: ArticleFAQProps) {
                   {isOpen ? '−' : '+'}
                 </span>
               </button>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
-                    exit={{ height: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-5 pt-1 text-gray-400 text-sm leading-relaxed border-t border-white/[0.03]">
-                      {faq.answer}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div style={{ display: 'grid', gridTemplateRows: isOpen ? '1fr' : '0fr', transition: 'grid-template-rows 0.25s ease-in-out' }}>
+                <div className="overflow-hidden">
+                  <div className="px-6 pb-5 pt-1 text-gray-400 text-sm leading-relaxed border-t border-white/[0.03]">
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
             </div>
           )
         })}

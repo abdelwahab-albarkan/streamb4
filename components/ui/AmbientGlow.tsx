@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 
 interface AmbientGlowProps {
   position?: "left" | "right" | "center";
@@ -19,7 +18,7 @@ export default function AmbientGlow({
   };
 
   return (
-    <motion.div
+    <div
       className="absolute pointer-events-none"
       style={{
         ...positions[position],
@@ -29,8 +28,6 @@ export default function AmbientGlow({
         background: `radial-gradient(circle, rgba(255,122,0,${opacity}) 0%, transparent 70%)`,
         filter: "blur(80px)",
       }}
-      animate={{ opacity: [opacity, opacity * 1.5, opacity] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     />
   );
 }

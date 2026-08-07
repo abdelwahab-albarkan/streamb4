@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 export default function FAQClient({
   question,
@@ -28,38 +27,31 @@ export default function FAQClient({
         <p className="text-white font-semibold text-sm leading-snug">
           {question}
         </p>
-        <motion.div
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.25 }}
-          className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center"
+        <div
+          className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-250"
           style={{
             background: open
               ? 'linear-gradient(135deg,#FF8C00,#FFB300)'
               : 'rgba(255,255,255,0.06)',
+            transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
           }}>
           <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none"
             stroke={open ? '#000' : '#fff'} strokeWidth="2.5">
             <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
           </svg>
-        </motion.div>
+        </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}>
-            <div className="px-6 pb-5 border-t"
-              style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-              <p className="text-[#A1A1AA] text-sm leading-relaxed pt-4">
-                {answer}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div style={{ display: 'grid', gridTemplateRows: open ? '1fr' : '0fr', transition: 'grid-template-rows 0.3s ease-in-out' }}>
+        <div className="overflow-hidden">
+          <div className="px-6 pb-5 border-t"
+            style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <p className="text-[#A1A1AA] text-sm leading-relaxed pt-4">
+              {answer}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

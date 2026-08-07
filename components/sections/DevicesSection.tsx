@@ -271,8 +271,8 @@ export function DevicesSection() {
         {/* Bottom Features Strip */}
         <div
           className="rounded-[20px] px-8 py-5"
-          style={{ animation: "fadeInPage 0.6s ease-out 0.3s both" }}
           style={{
+            animation: "fadeInPage 0.6s ease-out 0.3s both",
             background: "rgba(15,15,15,0.8)",
             border: "1px solid rgba(255,138,0,0.12)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",

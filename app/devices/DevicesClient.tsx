@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { Flame, Monitor, Radio, Cpu, Smartphone, type LucideIcon } from "lucide-react";
@@ -61,24 +60,19 @@ const FILTERS = ["All", "Firestick", "Android TV", "Samsung", "LG", "Windows", "
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 function CopyToast({ show }: { show: boolean }) {
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, y: 0, scale: 0.92 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 0 }}
-          transition={{ type: "spring", stiffness: 420, damping: 26 }}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
-            flex items-center gap-3 px-6 py-3.5 rounded-2xl
-            text-sm font-bold shadow-2xl whitespace-nowrap"
-          style={{
-            background: "#0a0a0a",
-            border: "1px solid rgba(255,122,0,0.45)",
-            color: "#ff7a00",
-            boxShadow: "0 0 30px rgba(255,122,0,0.25)",
-          }}
-        >
+  return show ? (
+      <div
+        style={{
+          animation: "fadeInPage 0.25s ease-out both",
+          background: "#0a0a0a",
+          border: "1px solid rgba(255,122,0,0.45)",
+          color: "#ff7a00",
+          boxShadow: "0 0 30px rgba(255,122,0,0.25)",
+        }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
+          flex items-center gap-3 px-6 py-3.5 rounded-2xl
+          text-sm font-bold shadow-2xl whitespace-nowrap"
+      >
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-orange-400">
             <path
               fillRule="evenodd"
@@ -87,10 +81,8 @@ function CopyToast({ show }: { show: boolean }) {
             />
           </svg>
           Downloader Code Copied Successfully
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        </div>
+  ) : null;
 }
 
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
@@ -113,9 +105,7 @@ function FAQAccordion() {
               >
                 {faq.q}
               </span>
-              <motion.span
-                animate={{ rotate: isOpen ? 45 : 0 }}
-                transition={{ duration: 0.2 }}
+              <span
                 className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border transition-all duration-200"
                 style={
                   isOpen
@@ -123,10 +113,12 @@ function FAQAccordion() {
                         background: "rgba(255,122,0,0.15)",
                         borderColor: "rgba(255,122,0,0.4)",
                         boxShadow: "0 0 15px rgba(255,122,0,0.2)",
+                        transform: "rotate(45deg)",
                       }
                     : {
                         background: "rgba(255,255,255,0.03)",
                         borderColor: "rgba(255,255,255,0.08)",
+                        transform: "rotate(0deg)",
                       }
                 }
               >
@@ -139,23 +131,21 @@ function FAQAccordion() {
                 >
                   <path d="M12 5v14M5 12h14" />
                 </svg>
-              </motion.span>
+              </span>
             </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
-                  <p className="text-gray-400 text-sm leading-relaxed pb-5 pr-4">
-                    {faq.a}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateRows: isOpen ? "1fr" : "0fr",
+                transition: "grid-template-rows 0.25s ease-in-out",
+              }}
+            >
+              <div className="overflow-hidden">
+                <p className="text-gray-400 text-sm leading-relaxed pb-5 pr-4">
+                  {faq.a}
+                </p>
+              </div>
+            </div>
           </div>
         );
       })}
@@ -174,15 +164,9 @@ function PlayerCard({
   const isBrowser = player.downloaderCode === "Browser";
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.3 }}
+    <div
+      style={{ animation: "fadeInPage 0.3s ease-out both", background: "rgba(15, 15, 15, 0.6)" }}
       className="player-card relative rounded-[20px] p-6 flex flex-col gap-4 overflow-hidden"
-      style={{
-        background: "rgba(15, 15, 15, 0.6)",
-      }}
     >
       {/* Recommended badge */}
       {player.recommended && (
@@ -275,12 +259,9 @@ function PlayerCard({
           </svg>
           Downloader Code
         </p>
-        <motion.button
+        <button
           onClick={() => !isBrowser && onCopy(player.downloaderCode)}
-          whileHover={!isBrowser ? { scale: 1.02, borderColor: "rgba(255, 122, 0, 0.55)" } : {}}
-          whileTap={!isBrowser ? { scale: 0.98 } : {}}
-          className="w-full text-left px-4 py-3 rounded-[12px] font-mono
-            font-black text-xl tracking-widest transition-all duration-200"
+          className={`w-full text-left px-4 py-3 rounded-[12px] font-mono font-black text-xl tracking-widest transition-all duration-200 ${!isBrowser ? "hover:scale-[1.02] active:scale-[0.98]" : ""}`}
           style={{
             background: "rgba(10, 10, 10, 0.8)",
             border: isBrowser
@@ -289,12 +270,12 @@ function PlayerCard({
             color: isBrowser ? "#666" : "#ff7a00",
             cursor: isBrowser ? "default" : "pointer",
             letterSpacing: "0.12em",
-            boxShadow: !isBrowser && hovered ? "0 0 15px rgba(255, 122, 0, 0.1)" : "none",
+            boxShadow: "none",
           }}
           title={isBrowser ? "" : "Click to copy"}
         >
           {player.downloaderCode}
-        </motion.button>
+        </button>
       </div>
 
       {/* Direct URL / APK */}
@@ -343,7 +324,7 @@ function PlayerCard({
           Official website
         </a>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -430,10 +411,8 @@ export default function DevicesClient() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-10 sm:py-16 relative z-10">
 
         {/* ─── HEADER ─────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="text-center mb-14"
         >
           <p className="text-xs text-orange-500 font-bold tracking-[0.2em] uppercase mb-4 select-none">
@@ -458,19 +437,17 @@ export default function DevicesClient() {
             The fastest way to install IPTV on your Firestick or Android device.
             Just type a 6-digit code and start streaming in seconds.
           </p>
-        </motion.div>
+        </div>
 
         {/* ─── STEP 1 CARD ─────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.08 }}
-          className="rounded-[20px] p-8 mb-14"
+        <div
           style={{
+            animation: "fadeInPage 0.45s ease-out 0.08s both",
             background: "rgba(15, 15, 15, 0.6)",
             border: "1px solid rgba(255, 138, 0, 0.15)",
             boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.04)",
           }}
+          className="rounded-[20px] p-8 mb-14"
         >
           <div className="flex flex-col sm:flex-row items-start gap-6">
             <div
@@ -535,13 +512,11 @@ export default function DevicesClient() {
               </ul>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ─── SUBTITLE + SEARCH + FILTERS ─────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
+        <div
+          style={{ animation: "fadeInPage 0.4s ease-out 0.15s both" }}
           className="mb-8"
         >
           <p className="text-center text-gray-400 text-sm mb-6 leading-relaxed">
@@ -614,7 +589,7 @@ export default function DevicesClient() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* ─── CARDS GRID ──────────────────────────────────────────────── */}
         {loading ? (
@@ -650,25 +625,17 @@ export default function DevicesClient() {
             </button>
           </div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
-          >
-            <AnimatePresence mode="popLayout">
-              {filtered.map((player) => (
-                <PlayerCard key={player.id} player={player} onCopy={handleCopy} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {filtered.map((player) => (
+              <PlayerCard key={player.id} player={player} onCopy={handleCopy} />
+            ))}
+          </div>
         )}
 
         {/* ─── WHY SECTION ─────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
+        <div
+          style={{ animation: "fadeInPage 0.45s ease-out both", borderTop: "1px solid rgba(255, 255, 255, 0.05)" }}
           className="mb-16 pt-12"
-          style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)" }}
         >
           <h2 className="text-2xl font-black text-white mb-6 uppercase tracking-wide">
             Why Do I Need a Downloader Code for IPTV?
@@ -721,14 +688,11 @@ export default function DevicesClient() {
               TV using a MAC address, requiring absolutely zero extra hardware.
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* ─── FAQ ─────────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
+        <div
+          style={{ animation: "fadeInPage 0.45s ease-out both" }}
           className="mb-16"
         >
           <div className="text-center mb-10">
@@ -750,14 +714,11 @@ export default function DevicesClient() {
           >
             <FAQAccordion />
           </div>
-        </motion.div>
+        </div>
 
         {/* ─── FULL GUIDES ─────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
+        <div
+          style={{ animation: "fadeInPage 0.45s ease-out both" }}
         >
           <h2 className="font-anton text-white uppercase text-center mb-8"
             style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", fontFamily: "var(--font-anton), Anton, sans-serif" }}
@@ -767,15 +728,8 @@ export default function DevicesClient() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {GUIDES.map(({ label, Icon, href }) => (
               <Link key={label} href={href}>
-                <motion.div
-                  whileHover={{
-                    y: -5,
-                    borderColor: "rgba(255,122,0,0.55)",
-                    boxShadow: "0 0 28px rgba(255,122,0,0.18), inset 0 1px 0 rgba(255,255,255,0.07)",
-                    transition: { duration: 0.2 },
-                  }}
-                  className="flex flex-col items-center gap-3.5 p-5 rounded-[20px]
-                    cursor-pointer text-center"
+                <div
+                  className="flex flex-col items-center gap-3.5 p-5 rounded-[20px] cursor-pointer text-center hover:-translate-y-1 transition-transform duration-200"
                   style={{
                     background: "linear-gradient(145deg, rgba(255,122,0,0.08) 0%, rgba(8,8,8,0.97) 100%)",
                     border: "1px solid rgba(255,122,0,0.18)",
@@ -802,11 +756,11 @@ export default function DevicesClient() {
                   <span className="text-xs font-bold text-gray-300 leading-tight">
                     {label}
                   </span>
-                </motion.div>
+                </div>
               </Link>
             ))}
           </div>
-        </motion.div>
+        </div>
 
       </div>
 

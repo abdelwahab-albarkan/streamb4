@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 
 export function NewsletterSection() {
   const [email, setEmail] = useState('')
@@ -70,19 +69,17 @@ export function NewsletterSection() {
                 border: '1px solid rgba(255, 255, 255, 0.1)',
               }}
             />
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               type="submit"
               disabled={status === 'loading'}
-              className="px-6 py-3.5 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer whitespace-nowrap"
+              className="px-6 py-3.5 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer whitespace-nowrap hover:scale-[1.02] active:scale-[0.98] transition-transform duration-100"
               style={{
                 background: 'linear-gradient(135deg, #ff7a00, #ffb300)',
                 boxShadow: '0 0 20px rgba(255,122,0,0.25)',
               }}
             >
               {status === 'loading' ? 'SUBSCRIBING...' : 'SUBSCRIBE →'}
-            </motion.button>
+            </button>
           </form>
 
           {message && (

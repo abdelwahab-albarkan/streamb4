@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 interface BookmarkProps {
   postId: string;
@@ -38,11 +37,9 @@ export default function BookmarkButton({ postId, postTitle, postSlug }: Bookmark
   };
 
   return (
-    <motion.button
+    <button
       onClick={toggleBookmark}
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer"
+      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer hover:scale-[1.03] active:scale-[0.97]"
       style={
         isBookmarked
           ? {
@@ -58,6 +55,6 @@ export default function BookmarkButton({ postId, postTitle, postSlug }: Bookmark
       }
     >
       {isBookmarked ? "🔖 Saved" : "📌 Save"}
-    </motion.button>
+    </button>
   );
 }

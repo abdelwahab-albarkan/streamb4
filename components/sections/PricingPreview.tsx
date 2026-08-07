@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
 
 import { PRICING, PRICING_TABS } from "@/lib/constants";
@@ -48,8 +47,6 @@ function PricingCard({
   plan: (typeof plans)[0];
   period: Period;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   const isPopular = plan.popular;
   const isBestValue = plan.bestValue;
   const isHighlighted = isPopular || isBestValue;
@@ -76,41 +73,44 @@ function PricingCard({
   const displayPrice = getDisplayPrice();
 
   return (
-    <motion.div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      whileHover={{ y: isPopular ? -6 : -4 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      style={{
-        zIndex: isPopular ? 10 : 1,
-      }}
-      className={`relative ${isPopular ? "lg:-mt-5 lg:-mb-5" : ""}`}
+    <div
+      style={{ zIndex: isPopular ? 10 : 1 }}
+      className={`relative group ${isPopular ? "lg:-mt-5 lg:-mb-5" : ""} ${!isPopular ? "hover:-translate-y-1 transition-transform duration-300" : "hover:-translate-y-1.5 transition-transform duration-300"}`}
     >
-      {/* ── Outer ambient glow — static for popular, fade on hover for others ── */}
+      {/* ── Outer ambient glow ── */}
       <div
-        className="absolute inset-0 rounded-[28px] pointer-events-none transition-opacity duration-500"
+        className={`absolute inset-0 rounded-[28px] pointer-events-none transition-opacity duration-500 ${isPopular ? "opacity-[0.12]" : "opacity-0 group-hover:opacity-[0.06]"}`}
         style={{
           background: "radial-gradient(ellipse, rgba(255,122,0,1), transparent 65%)",
           filter: "blur(28px)",
           transform: "scale(1.1)",
-          opacity: isPopular ? 0.12 : hovered ? 0.06 : 0,
         }}
       />
 
       {/* ── Gradient border wrapper ── */}
-      <div
-        className="absolute inset-0 rounded-[28px] p-px"
-        style={{
-          background: isPopular
-            ? "linear-gradient(135deg, rgba(255,140,0,0.9) 0%, rgba(255,200,50,0.6) 40%, rgba(255,122,0,0.2) 100%)"
-            : hovered
-            ? "linear-gradient(135deg, rgba(255,122,0,0.35) 0%, rgba(255,179,0,0.12) 100%)"
-            : "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)",
-          transition: "all 0.45s ease",
-        }}
-      >
-        <div className="w-full h-full rounded-[27px] bg-[#050505]" />
-      </div>
+      {isPopular ? (
+        <div
+          className="absolute inset-0 rounded-[28px] p-px"
+          style={{ background: "linear-gradient(135deg, rgba(255,140,0,0.9) 0%, rgba(255,200,50,0.6) 40%, rgba(255,122,0,0.2) 100%)" }}
+        >
+          <div className="w-full h-full rounded-[27px] bg-[#050505]" />
+        </div>
+      ) : (
+        <>
+          <div
+            className="absolute inset-0 rounded-[28px] p-px transition-opacity duration-[450ms] opacity-100 group-hover:opacity-0"
+            style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)" }}
+          >
+            <div className="w-full h-full rounded-[27px] bg-[#050505]" />
+          </div>
+          <div
+            className="absolute inset-0 rounded-[28px] p-px transition-opacity duration-[450ms] opacity-0 group-hover:opacity-100"
+            style={{ background: "linear-gradient(135deg, rgba(255,122,0,0.35) 0%, rgba(255,179,0,0.12) 100%)" }}
+          >
+            <div className="w-full h-full rounded-[27px] bg-[#050505]" />
+          </div>
+        </>
+      )}
 
       {/* ── Card body ── */}
       <div
@@ -135,17 +135,17 @@ function PricingCard({
         />
 
         {/* Ambient corner glow */}
-        <div
-          className="absolute top-0 right-0 w-40 h-40 pointer-events-none"
-          style={{
-            background: isPopular
-              ? "radial-gradient(circle at top right, rgba(255,140,0,0.14), transparent 65%)"
-              : hovered
-              ? "radial-gradient(circle at top right, rgba(255,122,0,0.07), transparent 65%)"
-              : "transparent",
-            transition: "all 0.4s ease",
-          }}
-        />
+        {isPopular ? (
+          <div
+            className="absolute top-0 right-0 w-40 h-40 pointer-events-none"
+            style={{ background: "radial-gradient(circle at top right, rgba(255,140,0,0.14), transparent 65%)" }}
+          />
+        ) : (
+          <div
+            className="absolute top-0 right-0 w-40 h-40 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms]"
+            style={{ background: "radial-gradient(circle at top right, rgba(255,122,0,0.07), transparent 65%)" }}
+          />
+        )}
 
         {/* Noise texture overlay */}
         <div
@@ -250,13 +250,7 @@ function PricingCard({
         />
 
         {/* ── Features ── */}
-        <motion.ul
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="space-y-3 mb-8"
-        >
+        <ul className="space-y-3 mb-8">
           {features.map((feat) => (
             <li
               key={feat}
@@ -295,10 +289,10 @@ function PricingCard({
               </span>
             </li>
           ))}
-        </motion.ul>
+        </ul>
 
         {/* ── CTA Button ── */}
-        <motion.button
+        <button
           onClick={() => {
             const planName = getPeriodName(period);
             const formattedPrice = displayPrice.toFixed(2)
@@ -319,10 +313,7 @@ function PricingCard({
 
             window.open('https://wa.me/212625218443?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
           }}
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.2 }}
-          className="w-full py-4 rounded-[14px] font-black text-[13px] uppercase tracking-[0.12em] transition-all duration-300 cursor-pointer"
+          className="w-full py-4 rounded-[14px] font-black text-[13px] uppercase tracking-[0.12em] cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
           style={
             isPopular
               ? {
@@ -331,24 +322,20 @@ function PricingCard({
                   boxShadow: "0 0 28px rgba(255,140,0,0.3)",
                 }
               : {
-                  background: hovered
-                    ? "rgba(255,122,0,0.07)"
-                    : "rgba(255,255,255,0.04)",
+                  background: "rgba(255,255,255,0.04)",
                   color: "#ffffff",
-                  border: `1px solid ${
-                    hovered ? "rgba(255,122,0,0.25)" : "rgba(255,255,255,0.08)"
-                  }`,
+                  border: "1px solid rgba(255,255,255,0.08)",
                 }
           }
         >
           {isPopular ? '⚡️ GET IPTV NOW' : 'GET STARTED →'}
-        </motion.button>
+        </button>
 
         <p className="text-center text-gray-700 text-[11px] mt-4 tracking-wide">
           ✓ Instant activation &nbsp;·&nbsp; ✓ Cancel anytime
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -415,11 +402,8 @@ export function PricingPreview() {
       {/* ── Content ── */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="flex justify-center mb-6"
         >
           <span
@@ -432,16 +416,11 @@ export function PricingPreview() {
             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
             Pricing
           </span>
-        </motion.div>
-
-
+        </div>
 
         {/* ── Billing period toggle ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out 0.2s both" }}
           className="flex justify-center mb-16 overflow-x-auto pb-2 w-full scrollbar-none"
         >
           <div
@@ -491,14 +470,11 @@ export function PricingPreview() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Cards grid ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10"
         >
           {plans.map((plan) => (
@@ -508,14 +484,11 @@ export function PricingPreview() {
               period={activePeriod}
             />
           ))}
-        </motion.div>
+        </div>
 
         {/* ── Payment methods ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="flex flex-col items-center gap-5 mt-4"
         >
           <p className="text-gray-700 text-[11px] uppercase tracking-[0.25em] font-black">
@@ -528,7 +501,7 @@ export function PricingPreview() {
             Secure payments via encrypted channels. Subscription activates
             instantly after confirmation.
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

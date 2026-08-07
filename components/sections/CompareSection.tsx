@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
@@ -231,11 +230,8 @@ export function CompareSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Eyebrow ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="flex items-center justify-center gap-4 mb-6"
         >
           <div
@@ -253,16 +249,12 @@ export function CompareSection() {
             className="h-px w-16"
             style={{ background: "linear-gradient(90deg, rgba(255,138,0,0.4), transparent)" }}
           />
-        </motion.div>
+        </div>
 
         {/* ── Headline ── */}
-        <motion.h2
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+        <h2
+          style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2rem, 6vw, 4rem)", animation: "fadeInPage 0.5s ease-out 0.08s both" }}
           className="text-center font-anton uppercase leading-[0.92] tracking-tight mb-5 text-white"
-          style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2rem, 6vw, 4rem)" }}
         >
           WHY{" "}
           <span
@@ -286,26 +278,20 @@ export function CompareSection() {
             BETTER
           </span>{" "}
           THAN CABLE.
-        </motion.h2>
+        </h2>
 
         {/* ── Subtitle ── */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
+        <p
+          style={{ animation: "fadeInPage 0.5s ease-out 0.14s both" }}
           className="text-center text-gray-500 text-lg max-w-2xl mx-auto mb-16"
         >
           Compare features side-by-side and discover why thousands of users choose StreamB4 for premium entertainment.
-        </motion.p>
+        </p>
 
         {/* ── Table (Desktop) ── */}
         <div className="hidden lg:block">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
+          <div
+            style={{ animation: "fadeInPage 0.55s ease-out 0.2s both" }}
             className="relative"
           >
             <div
@@ -382,23 +368,20 @@ export function CompareSection() {
                 <CompareRow key={row.feature} row={row} index={i} isLast={i === rows.length - 1} />
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Cards (Mobile/Tablet) ── */}
         <div className="lg:hidden flex flex-col gap-6">
           {/* StreamB4 Card */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="rounded-[24px] p-6"
+          <div
             style={{
+              animation: "fadeInPage 0.5s ease-out both",
               background: "linear-gradient(145deg,rgba(255,122,0,0.08),rgba(5,5,5,0.98))",
               border: "1px solid rgba(255,138,0,0.25)",
               boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
             }}
+            className="rounded-[24px] p-6"
           >
             <h3 className="font-black text-2xl text-white tracking-tight mb-4">
               STREAM<span style={{ background: "linear-gradient(135deg,#ff8a00,#ffb347)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>B4</span>
@@ -414,20 +397,17 @@ export function CompareSection() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Cable TV Card */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-            className="rounded-[24px] p-6"
+          <div
             style={{
+              animation: "fadeInPage 0.5s ease-out 0.1s both",
               background: "rgba(255,255,255,0.02)",
               border: "1px solid rgba(255,255,255,0.06)",
               boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
             }}
+            className="rounded-[24px] p-6"
           >
             <h3 className="font-bold text-2xl text-gray-500 tracking-tight mb-4">Cable TV</h3>
             <div className="divide-y divide-white/[0.04]">
@@ -441,15 +421,12 @@ export function CompareSection() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Bottom CTA ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.25, ease: "easeOut" }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out 0.25s both" }}
           className="flex flex-col items-center gap-6 mt-14"
         >
           <p className="text-gray-600 text-sm text-center">
@@ -458,36 +435,30 @@ export function CompareSection() {
 
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/pricing">
-              <motion.div
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center gap-2 px-8 py-4 rounded-full font-black text-black text-xs uppercase tracking-[0.12em] cursor-pointer"
+              <div
+                className="flex items-center gap-2 px-8 py-4 rounded-full font-black text-black text-xs uppercase tracking-[0.12em] cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] transition-transform duration-200"
                 style={{
                   background: "linear-gradient(135deg,#ff8a00,#ffb347)",
                   boxShadow: "0 0 30px rgba(255,138,0,0.35)",
                 }}
               >
                 ⚡ VIEW PRICING
-              </motion.div>
+              </div>
             </Link>
 
             <Link href="/pricing">
-              <motion.div
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-                className="px-8 py-4 rounded-full font-bold text-white text-xs uppercase tracking-[0.12em] cursor-pointer"
+              <div
+                className="px-8 py-4 rounded-full font-bold text-white text-xs uppercase tracking-[0.12em] cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] transition-transform duration-200"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.1)",
                 }}
               >
                 VIEW PLANS →
-              </motion.div>
+              </div>
             </Link>
           </div>
-        </motion.div>
+        </div>
 
       </div>
     </section>

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Mail, MessageCircle, Clock, Send, ShieldCheck, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
@@ -14,19 +13,15 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
   if (!toast) return null;
   const isSuccess = toast.type === "success";
   return (
-    <AnimatePresence>
-      <motion.div
+      <div
         key={toast.message + toast.type}
-        initial={{ opacity: 0, y: 0, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 0, scale: 0.95 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3.5 rounded-2xl min-w-[280px] max-w-sm"
         style={{
+          animation: "fadeInPage 0.25s ease-out both",
           background: isSuccess ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
           border: `1px solid ${isSuccess ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}`,
           boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
         }}
+        className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3.5 rounded-2xl min-w-[280px] max-w-sm"
       >
         <span className={`text-lg font-bold ${isSuccess ? "text-green-400" : "text-red-400"}`}>
           {isSuccess ? "✓" : "✗"}
@@ -39,8 +34,7 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
         >
           <X className="w-4 h-4" />
         </button>
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 }
 
@@ -221,16 +215,14 @@ export default function ContactClient() {
                       ),
                     },
                   ].map((s) => (
-                    <motion.a
+                    <a
                       key={s.name}
                       href={s.href}
                       aria-label={s.label}
                       title={s.label}
                       target="_blank"
                       rel="noopener noreferrer"
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#2a2a2a] rounded-xl transition-colors duration-300 hover:border-[#FF6B00]/30 group"
+                      className="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#2a2a2a] rounded-xl transition-all duration-300 hover:border-[#FF6B00]/30 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] group"
                     >
                       <span style={{ color: s.color }} className="flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
                         {s.icon}
@@ -239,7 +231,7 @@ export default function ContactClient() {
                         <p className="text-white text-xs font-bold leading-tight">{s.name}</p>
                         <p className="text-gray-600 text-[10px]">{s.sub}</p>
                       </div>
-                    </motion.a>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -248,9 +240,8 @@ export default function ContactClient() {
             {/* Contact Form */}
             <div className="lg:col-span-7 bg-[#141414] border border-[#2a2a2a] rounded-2xl p-8 shadow-2xl relative">
               {success ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                <div
+                  style={{ animation: "fadeInPage 0.25s ease-out both" }}
                   className="text-center py-16"
                 >
                   <div className="w-16 h-16 bg-[#FF6B00]/10 border border-[#FF6B00]/30 rounded-full flex items-center justify-center mx-auto text-[#FF6B00] mb-6">
@@ -260,7 +251,7 @@ export default function ContactClient() {
                   <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
                     Your message has been registered. One of our specialists will reply within 10 minutes.
                   </p>
-                </motion.div>
+                </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                   <h2 className="text-xl font-bold text-white mb-4">Send a Message</h2>

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCategoryImage } from '@/lib/blogImages'
@@ -16,10 +15,8 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
 
   return (
     <Link href={`/blog/${post.slug}`}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
+      <div
+        style={{ animation: `fadeInPage 0.5s ease-out ${Math.min(index * 0.05, 0.3)}s both` }}
         className="group rounded-[24px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 h-full flex flex-col relative bg-[#0C0C0C]/95 border border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-orange-500/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.7),_0_0_30px_rgba(255,122,0,0.08)]"
       >
         {/* Glow behind on hover */}
@@ -90,7 +87,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </Link>
   )
 }

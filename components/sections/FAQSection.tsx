@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const faqs = [
@@ -82,9 +81,7 @@ export function FAQSection() {
                     {faq.q}
                   </span>
 
-                  <motion.div
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.2 }}
+                  <div
                     className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center border transition-all duration-200"
                     style={
                       isOpen
@@ -92,10 +89,12 @@ export function FAQSection() {
                             background: "rgba(255,122,0,0.15)",
                             borderColor: "rgba(255,122,0,0.4)",
                             boxShadow: "0 0 15px rgba(255,122,0,0.2)",
+                            transform: "rotate(45deg)",
                           }
                         : {
                             background: "rgba(255,255,255,0.03)",
                             borderColor: "rgba(255,255,255,0.08)",
+                            transform: "rotate(0deg)",
                           }
                     }
                   >
@@ -108,24 +107,22 @@ export function FAQSection() {
                     >
                       <path d="M12 5v14M5 12h14" />
                     </svg>
-                  </motion.div>
+                  </div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-gray-500 text-[15px] leading-relaxed pb-6 max-w-3xl">
-                        {faq.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                    transition: "grid-template-rows 0.3s ease-in-out",
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-gray-500 text-[15px] leading-relaxed pb-6 max-w-3xl">
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
               </div>
             );
           })}

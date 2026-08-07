@@ -246,17 +246,15 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
         {/* LEFT COLUMN */}
         <div className="w-full max-w-[540px] mx-auto lg:mx-0 flex flex-col justify-center text-center lg:text-left">
           {/* 1. Country Badges Row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
+          <div
+            style={{ animation: "fadeInPage 0.4s ease-out 0.05s both" }}
             className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-5 max-w-full"
           >
             <CountryPill flag={<FlagUSA />} name="USA" />
             <CountryPill flag={<FlagCanada />} name="CANADA" />
             <CountryPill flag={<FlagUK />} name="UK" />
             <CountryPill flag={<FlagEU />} name="EUROPE" />
-          </motion.div>
+          </div>
 
           {/* 2. Headline */}
           <div>
@@ -298,35 +296,29 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
           </div>
 
           {/* Orange Accent Line */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="h-[3px] mt-3 mb-5 rounded-full"
+          <div
             style={{
+              animation: "fadeInPage 0.5s ease-out 0.3s both",
               background: "linear-gradient(90deg, #ff7a00, #ffb300)",
               boxShadow: "0 0 15px rgba(255,122,0,0.5)",
             }}
+            className="h-[3px] mt-3 mb-5 rounded-full"
           />
 
           {/* 3. Description */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+          <p
+            style={{ animation: "fadeInPage 0.4s ease-out 0.2s both" }}
             className="text-gray-400 text-xs md:text-sm leading-[1.6] mb-6 max-w-[460px]"
           >
             Enjoy premium IPTV with lightning-fast servers,{" "}
             <span className="text-gray-200 font-semibold">zero buffering</span>,
             crystal-clear <span className="text-gray-200 font-semibold">4K streaming</span>{" "}
             and instant activation on every device.
-          </motion.p>
+          </p>
 
           {/* 4. Feature Badges 2x2 Grid (Compact) */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
+          <div
+            style={{ animation: "fadeInPage 0.4s ease-out 0.25s both" }}
             className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6 w-full max-w-[500px] mx-auto lg:mx-0"
           >
             <FeatureCard
@@ -351,20 +343,16 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
               title="Instant Setup"
               subtitle="Ready in 60 seconds"
             />
-          </motion.div>
+          </div>
 
           {/* 5. CTA Buttons (Reduced spacing, compact buttons) */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+          <div
+            style={{ animation: "fadeInPage 0.4s ease-out 0.3s both" }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 mb-6 w-full"
           >
             <Link href="/pricing" className="w-full sm:w-auto">
-              <motion.div
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-1.5 py-3.5 px-8 rounded-full font-black text-black text-xs md:text-sm uppercase tracking-wide cursor-pointer relative overflow-hidden select-none w-full"
+              <div
+                className="flex items-center justify-center gap-1.5 py-3.5 px-8 rounded-full font-black text-black text-xs md:text-sm uppercase tracking-wide cursor-pointer relative overflow-hidden select-none w-full hover:scale-[1.03] hover:-translate-y-px active:scale-[0.98] transition-transform duration-200"
                 style={{
                   background: "linear-gradient(135deg, #ff7a00 0%, #ff9500 50%, #ffb300 100%)",
                   boxShadow: "0 0 25px rgba(255,122,0,0.3), 0 3px 10px rgba(255,122,0,0.2)",
@@ -381,14 +369,12 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                   <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
                 </svg>
                 VIEW PRICING
-              </motion.div>
+              </div>
             </Link>
 
             <Link href="/pricing" className="w-full sm:w-auto">
-              <motion.div
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-1.5 py-3 px-7 rounded-full font-bold text-white text-xs md:text-sm uppercase tracking-wide cursor-pointer w-full"
+              <div
+                className="flex items-center justify-center gap-1.5 py-3 px-7 rounded-full font-bold text-white text-xs md:text-sm uppercase tracking-wide cursor-pointer w-full hover:scale-[1.03] hover:-translate-y-px active:scale-[0.98] transition-transform duration-200"
                 style={{
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid rgba(255,255,255,0.1)",
@@ -398,15 +384,13 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
               >
                 VIEW PLANS
                 <span>→</span>
-              </motion.div>
+              </div>
             </Link>
-          </motion.div>
+          </div>
 
           {/* 6. Social Proof */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.35 }}
+          <div
+            style={{ animation: "fadeInPage 0.4s ease-out 0.35s both" }}
             className="flex items-center justify-center lg:justify-start gap-3"
           >
             {/* Real avatar photos */}
@@ -458,7 +442,7 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                 <span className="text-white font-bold">50,000+</span> happy customers worldwide
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN - 3D TV MOCKUP — only rendered on desktop to avoid

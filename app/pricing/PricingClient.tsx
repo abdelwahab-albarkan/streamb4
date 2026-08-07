@@ -1,7 +1,6 @@
 ﻿'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import {
   Zap,
@@ -129,26 +128,17 @@ export default function PricingClient() {
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
           }}/>
-        {/* Floating particles */}
+        {/* Floating particles — static, no JS animation needed */}
         {[...Array(6)].map((_, i) => (
-          <motion.div
+          <div
             key={i}
             className="absolute w-1 h-1 rounded-full"
             style={{
               background: '#ff8c00',
               left: `${15 + i * 15}%`,
               top: `${20 + (i % 3) * 25}%`,
-              opacity: 0.15
-            }}
-            animate={{
-              y: [-20, 20, -20],
-              opacity: [0.05, 0.2, 0.05]
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              delay: i * 0.8,
-              ease: 'easeInOut'
+              opacity: 0.12,
+              animation: `floatY ${4 + i}s ease-in-out ${i * 0.8}s infinite`,
             }}
           />
         ))}
@@ -159,10 +149,7 @@ export default function PricingClient() {
         {/* ═══ HERO ═══ */}
         <section className="pt-36 pb-16 px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}>
+            <div>
 
               {/* Label */}
               <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-10"
@@ -212,17 +199,14 @@ export default function PricingClient() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* ═══ CONNECTION SWITCHER ═══ */}
         <section className="px-4 sm:px-6 lg:px-8 mb-16">
           <div className="max-w-lg mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+            <div
               className="relative p-1.5 rounded-[20px]"
               style={{
                 background: 'rgba(17,17,17,0.9)',
@@ -272,13 +256,12 @@ export default function PricingClient() {
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Plan label */}
-            <motion.div
+            <div
               key={activeConnections}
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
+              style={{ animation: "fadeInPage 0.25s ease-out both" }}
               className="text-center mt-4">
               <span className="text-white font-black text-lg uppercase">
                 {currentData.label}
@@ -286,36 +269,23 @@ export default function PricingClient() {
               <span className="text-[#A1A1AA] text-sm ml-2 font-semibold">
                 — {currentData.tagline}
               </span>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* ═══ PRICING CARDS ═══ */}
         <section className="px-4 sm:px-6 lg:px-8 mb-20">
           <div className="max-w-5xl mx-auto">
-            <AnimatePresence>
-              <motion.div
-                key={activeConnections}
-                initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+            <div
+              key={activeConnections}
+              style={{ animation: "fadeInPage 0.4s ease-out both" }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
 
                 {currentData.plans.map((plan, i) => (
-                  <motion.div
+                  <div
                     key={plan.duration}
-                    initial={{ opacity: 0, y: 0 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    whileHover={{
-                      y: plan.popular ? -14 : -10,
-                      transition: { duration: 0.25 }
-                    }}
-                    className={`relative flex flex-col rounded-[24px] overflow-hidden cursor-pointer ${
-                      plan.popular ? 'lg:-mt-[8px] lg:-mb-[8px]' : ''
-                    }`}
                     style={{
+                      animation: `fadeInPage 0.5s ease-out ${i * 0.1}s both`,
                       background: plan.popular
                         ? 'linear-gradient(145deg,rgba(255,140,0,0.08),rgba(17,17,17,0.98))'
                         : 'rgba(17,17,17,0.95)',
@@ -325,7 +295,10 @@ export default function PricingClient() {
                       boxShadow: plan.popular
                         ? '0 0 60px rgba(255,140,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)'
                         : 'inset 0 1px 0 rgba(255,255,255,0.04)',
-                    }}>
+                    }}
+                    className={`relative flex flex-col rounded-[24px] overflow-hidden cursor-pointer hover:-translate-y-2 transition-transform duration-250 ${
+                      plan.popular ? 'lg:-mt-[8px] lg:-mb-[8px]' : ''
+                    }`}>
 
                     {/* Popular badge */}
                     {plan.popular && (
@@ -453,12 +426,10 @@ export default function PricingClient() {
                       </div>
 
                       {/* CTA Button */}
-                      <motion.button
+                      <button
                         onClick={() => openWhatsApp(plan)}
-                        whileHover={{ scale: 1.03, y: -2 }}
-                        whileTap={{ scale: 0.97 }}
                         aria-label={`Get ${plan.duration} plan for $${plan.price.toFixed(2)}`}
-                        className="w-full py-4 rounded-[16px] font-black text-sm uppercase tracking-wider transition-all duration-300 relative overflow-hidden cursor-pointer"
+                        className="w-full py-4 rounded-[16px] font-black text-sm uppercase tracking-wider transition-all duration-300 relative overflow-hidden cursor-pointer hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97]"
                         style={plan.popular ? {
                           background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                           color: '#000',
@@ -472,12 +443,11 @@ export default function PricingClient() {
                           <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
                           Get This Plan
                         </span>
-                      </motion.button>
+                      </button>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
-            </AnimatePresence>
+              </div>
           </div>
         </section>
 
@@ -486,14 +456,9 @@ export default function PricingClient() {
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
               {TRUST_BADGES.map(({ Icon: BadgeIcon, label }) => (
-                <motion.div
+                <div
                   key={label}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: '0 0 20px rgba(255,140,0,0.15)',
-                    transition: { duration: 0.2 }
-                  }}
-                  className="flex flex-col items-center gap-2.5 p-4 rounded-[16px] text-center cursor-default border border-white/[0.06] hover:border-orange-500/30 transition-colors duration-300"
+                  className="flex flex-col items-center gap-2.5 p-4 rounded-[16px] text-center cursor-default border border-white/[0.06] hover:border-orange-500/30 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,140,0,0.15)] transition-all duration-200"
                   style={{
                     background: 'rgba(17,17,17,0.8)',
                     backdropFilter: 'blur(10px)'
@@ -507,7 +472,7 @@ export default function PricingClient() {
                   <span className="text-[#A1A1AA] text-[10px] font-bold uppercase tracking-wide leading-tight text-center">
                     {label}
                   </span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -533,13 +498,10 @@ export default function PricingClient() {
         {/* ═══ BOTTOM CTA ═══ */}
         <section className="px-4 sm:px-6 lg:px-8 pb-24">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+            <div
               className="p-12 sm:p-16 rounded-[32px] relative overflow-hidden"
               style={{
+                animation: "fadeInPage 0.6s ease-out both",
                 background: 'linear-gradient(145deg,rgba(255,140,0,0.08),rgba(17,17,17,0.98))',
                 border: '1px solid rgba(255,140,0,0.18)',
                 boxShadow: '0 0 80px rgba(255,140,0,0.08)'
@@ -582,37 +544,33 @@ export default function PricingClient() {
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/pricing#plans">
-                    <motion.div
-                      whileHover={{ scale: 1.04, y: -3 }}
-                      whileTap={{ scale: 0.97 }}
+                    <div
                       aria-label="View pricing plans"
-                      className="flex items-center justify-center gap-2.5 px-10 py-5 rounded-[16px] font-black text-black text-base uppercase tracking-wider cursor-pointer"
+                      className="flex items-center justify-center gap-2.5 px-10 py-5 rounded-[16px] font-black text-black text-base uppercase tracking-wider cursor-pointer hover:scale-[1.04] hover:-translate-y-0.5 active:scale-[0.97] transition-transform duration-150"
                       style={{
                         background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                         boxShadow: '0 0 40px rgba(255,140,0,0.4)'
                       }}>
                       <Zap size={18} strokeWidth={2.5} aria-hidden="true" />
                       View Plans
-                    </motion.div>
+                    </div>
                   </Link>
 
                   <Link href="/contact">
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.97 }}
+                    <div
                       aria-label="Talk to our team"
-                      className="flex items-center justify-center gap-2.5 px-10 py-5 rounded-[16px] font-bold text-white text-base border transition-colors cursor-pointer"
+                      className="flex items-center justify-center gap-2.5 px-10 py-5 rounded-[16px] font-bold text-white text-base border transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.97]"
                       style={{
                         background: 'rgba(255,255,255,0.03)',
                         borderColor: 'rgba(255,255,255,0.1)'
                       }}>
                       <MessageCircle size={18} strokeWidth={1.75} aria-hidden="true" />
                       Talk to Us
-                    </motion.div>
+                    </div>
                   </Link>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
       </div>

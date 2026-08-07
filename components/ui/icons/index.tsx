@@ -1,5 +1,4 @@
 'use client'
-import { motion } from 'framer-motion'
 import {
   Download, PlaySquare, KeyRound, RefreshCw, Tv, Globe,
   Smartphone, Zap, ShieldCheck, Settings, Store, Wifi,
@@ -36,18 +35,12 @@ export function PremiumIconBox({
   }
 
   return (
-    <motion.div
-      animate={float ? { y: [0, -4, 0] } : undefined}
-      transition={float ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut' } : undefined}
-      whileHover={{
-        scale: 1.08,
-        boxShadow: '0 0 28px rgba(255,122,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12)',
-        borderColor: 'rgba(255,122,0,0.55)',
-        transition: { duration: 0.22, ease: 'easeOut' },
-      }}
+    <div
       className={`relative flex-shrink-0 flex items-center justify-center
+        hover:scale-[1.08] transition-transform duration-200
         ${dim[size]} ${className}`}
       style={{
+        animation: float ? 'floatY 3.5s ease-in-out infinite' : undefined,
         background:
           'linear-gradient(145deg, rgba(255,122,0,0.10) 0%, rgba(20,10,0,0.85) 100%)',
         border: '1px solid rgba(255,122,0,0.22)',
@@ -65,7 +58,7 @@ export function PremiumIconBox({
         }}
       />
       <div className="relative z-10">{children}</div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -238,14 +231,9 @@ export function IconContainer({
   }
 
   return (
-    <motion.div
-      whileHover={{ 
-        scale: 1.08, 
-        rotate: 2,
-        transition: { duration: 0.25, ease: 'easeOut' }
-      }}
-      className={`relative flex-shrink-0 flex items-center 
-        justify-center ${sizes[size]} ${className}`}
+    <div
+      className={`relative flex-shrink-0 flex items-center
+        justify-center hover:scale-[1.08] hover:rotate-2 transition-transform duration-200 ${sizes[size]} ${className}`}
       style={{
         background: 'linear-gradient(145deg, rgba(255,122,0,0.12) 0%, rgba(255,179,0,0.05) 100%)',
         border: '1px solid rgba(255,122,0,0.25)',
@@ -265,7 +253,7 @@ export function IconContainer({
       <div className="relative z-10 flex items-center justify-center">
         {children}
       </div>
-    </motion.div>
+    </div>
   )
 }
 

@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -200,13 +199,7 @@ export function Navbar() {
 
           {/* ═══ LOGO ═══ */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-            <motion.div
-              whileHover={{
-                scale: 1.05,
-                filter: 'drop-shadow(0 0 12px rgba(255,140,0,0.5))'
-              }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center gap-3">
+            <div className="flex items-center gap-3 hover:scale-[1.05] hover:drop-shadow-[0_0_12px_rgba(255,140,0,0.5)] transition-all duration-200">
 
               {/* Logo icon */}
               <div style={{ width: '38px', height: '38px' }}>
@@ -241,7 +234,7 @@ export function Navbar() {
                   WebkitTextFillColor: 'transparent',
                 }}>B4</span>
               </span>
-            </motion.div>
+            </div>
           </Link>
 
           {/* ═══ DESKTOP NAV ═══ */}
@@ -270,15 +263,12 @@ export function Navbar() {
                       {link.label}
                     </span>
                     {/* Animated underline */}
-                    <motion.div
-                      className="absolute bottom-0 left-4 right-4 h-[2px] rounded-full"
+                    <div
+                      className="absolute bottom-0 left-4 right-4 h-[2px] rounded-full transition-transform duration-200 origin-left group-hover:scale-x-100"
                       style={{
                         background: 'linear-gradient(90deg,#FF8C00,#FFB300)',
-                        transformOrigin: 'left',
-                        scaleX: isActive ? 1 : 0,
-                      }}
-                      whileHover={{ scaleX: 1 }}
-                      transition={{ duration: 0.2 }}/>
+                        transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                      }}/>
                   </div>
                 </Link>
               )
@@ -299,38 +289,32 @@ export function Navbar() {
                   }}>
                   More
                 </span>
-                <motion.svg
-                  className="w-3.5 h-3.5"
+                <svg
+                  className="w-3.5 h-3.5 transition-transform duration-200"
                   viewBox="0 0 24 24"
                   fill="none"
-                  animate={{ rotate: moreOpen ? 180 : 0 }}
-                  transition={{ duration: 0.25 }}
-                  style={{ color: moreOpen ? '#FF8C00' : '#A1A1AA' }}>
+                  style={{ color: moreOpen ? '#FF8C00' : '#A1A1AA', transform: moreOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
                   <path d="M6 9l6 6 6-6"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"/>
-                </motion.svg>
+                </svg>
               </button>
 
               {/* MEGA DROPDOWN */}
-              <AnimatePresence>
-                {moreOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3
-                      w-[280px] rounded-[20px] overflow-hidden py-2"
+              {moreOpen && (
+                  <div
                     style={{
+                      animation: 'fadeInPage 0.18s ease-out both',
                       background: 'rgba(15,15,15,0.97)',
                       border: '1px solid rgba(255,140,0,0.15)',
                       backdropFilter: 'blur(24px)',
                       WebkitBackdropFilter: 'blur(24px)',
                       boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03)',
-                    }}>
+                    }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3
+                      w-[280px] rounded-[20px] overflow-hidden py-2">
 
                     {/* Top glow line */}
                     <div className="absolute top-0 left-0 right-0 h-px"
@@ -352,12 +336,10 @@ export function Navbar() {
                       {MORE_ITEMS.map((item) => (
                         <Link key={item.href} href={item.href}
                           onClick={() => setMoreOpen(false)}>
-                          <motion.div
-                            whileHover={{ x: 4 }}
-                            transition={{ duration: 0.15 }}
+                          <div
                             className="flex items-center gap-3.5 px-4 py-3
                               mx-2 rounded-[12px] cursor-pointer
-                              transition-all duration-150 group"
+                              hover:translate-x-1 transition-all duration-150 group"
                             style={{ background: 'transparent' }}
                             onMouseEnter={e => {
                               e.currentTarget.style.background = 'rgba(255,140,0,0.06)'
@@ -395,13 +377,12 @@ export function Navbar() {
                                 strokeWidth="2"
                                 strokeLinecap="round"/>
                             </svg>
-                          </motion.div>
+                          </div>
                         </Link>
                       ))}
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+              )}
             </div>
           </div>
 
@@ -413,12 +394,11 @@ export function Navbar() {
 
             {/* VIEW PRICING */}
             <Link href="/pricing">
-              <motion.div
-                whileHover={{ scale: 1.04, y: -1 }}
-                whileTap={{ scale: 0.97 }}
+              <div
                 className="relative px-5 py-2.5 rounded-[12px]
                   font-black text-black text-sm uppercase
-                  tracking-wide overflow-hidden cursor-pointer"
+                  tracking-wide overflow-hidden cursor-pointer
+                  hover:scale-[1.04] hover:-translate-y-px active:scale-[0.97] transition-transform duration-150"
                 style={{
                   background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                   boxShadow: '0 0 20px rgba(255,140,0,0.25)',
@@ -430,20 +410,16 @@ export function Navbar() {
                   </svg>
                   VIEW PRICING
                 </span>
-              </motion.div>
+              </div>
             </Link>
 
             {/* CLIENT AREA */}
             <Link href="/contact">
-              <motion.div
-                whileHover={{
-                  scale: 1.02,
-                  background: 'rgba(255,140,0,0.12)',
-                  borderColor: 'rgba(255,140,0,0.5)',
-                }}
-                whileTap={{ scale: 0.97 }}
+              <div
                 className="px-5 py-2.5 rounded-[12px] font-bold
-                  text-sm uppercase tracking-wide transition-all duration-200 cursor-pointer"
+                  text-sm uppercase tracking-wide transition-all duration-200 cursor-pointer
+                  hover:scale-[1.02] active:scale-[0.97]
+                  hover:bg-[rgba(255,140,0,0.12)] hover:border-[rgba(255,140,0,0.5)]"
                 style={{
                   background: 'rgba(255,140,0,0.06)',
                   border: '1px solid rgba(255,140,0,0.25)',
@@ -458,7 +434,7 @@ export function Navbar() {
                   </svg>
                   CLIENT AREA
                 </span>
-              </motion.div>
+              </div>
             </Link>
           </div>
 
@@ -472,42 +448,30 @@ export function Navbar() {
               border: '1px solid rgba(255,255,255,0.08)',
             }}
             aria-label="Toggle menu">
-            <motion.span
-              animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="block w-[18px] h-[1.5px] rounded-full bg-white mb-[5px]"/>
-            <motion.span
-              animate={mobileOpen ? { opacity: 0, x: -6 } : { opacity: 1, x: 0 }}
-              transition={{ duration: 0.25 }}
-              className="block w-[18px] h-[1.5px] rounded-full bg-white mb-[5px]"/>
-            <motion.span
-              animate={mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="block w-[18px] h-[1.5px] rounded-full bg-white"/>
+            <span
+              className="block w-[18px] h-[1.5px] rounded-full bg-white mb-[5px] transition-transform duration-250"
+              style={{ transform: mobileOpen ? 'rotate(45deg) translateY(7px)' : 'none' }}/>
+            <span
+              className="block w-[18px] h-[1.5px] rounded-full bg-white mb-[5px] transition-all duration-250"
+              style={{ opacity: mobileOpen ? 0 : 1, transform: mobileOpen ? 'translateX(-6px)' : 'none' }}/>
+            <span
+              className="block w-[18px] h-[1.5px] rounded-full bg-white transition-transform duration-250"
+              style={{ transform: mobileOpen ? 'rotate(-45deg) translateY(-7px)' : 'none' }}/>
           </button>
         </div>
       </nav>
 
       {/* ═══ MOBILE MENU ═══ */}
-      <AnimatePresence>
-        {mobileOpen && (
+      {mobileOpen && (
           <>
             {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+            <div
               onClick={() => setMobileOpen(false)}
               className="fixed inset-0 z-40 lg:hidden"
-              style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)' }}/>
+              style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', animation: 'fadeInPage 0.2s ease-out both' }}/>
 
             {/* Panel */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 32 }}
+            <div
               className="fixed top-0 right-0 bottom-0 z-50 lg:hidden
                 flex flex-col overflow-y-auto"
               style={{
@@ -515,6 +479,7 @@ export function Navbar() {
                 background: 'rgba(8,8,8,0.99)',
                 backdropFilter: 'blur(24px)',
                 borderLeft: '1px solid rgba(255,140,0,0.1)',
+                animation: 'slideInRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94) both',
               }}>
 
               {/* Panel header */}
@@ -552,11 +517,9 @@ export function Navbar() {
                     const isActive = pathname === link.href ||
                       (link.href !== '/' && pathname.startsWith(link.href))
                     return (
-                      <motion.div
+                      <div
                         key={link.href}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05, duration: 0.25 }}>
+                        style={{ animation: `fadeInPage 0.25s ease-out ${i * 0.05}s both` }}>
                         <Link href={link.href}
                           onClick={() => setMobileOpen(false)}>
                           <div className="flex items-center gap-3 px-3 py-3.5
@@ -577,7 +540,7 @@ export function Navbar() {
                             )}
                           </div>
                         </Link>
-                      </motion.div>
+                      </div>
                     )
                   })}
                 </div>
@@ -589,11 +552,9 @@ export function Navbar() {
                 </p>
                 <div className="space-y-0.5">
                   {MORE_ITEMS.map((item, i) => (
-                    <motion.div
+                    <div
                       key={item.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: (NAV_LINKS.length + i) * 0.05 }}>
+                      style={{ animation: `fadeInPage 0.25s ease-out ${(NAV_LINKS.length + i) * 0.05}s both` }}>
                       <Link href={item.href}
                         onClick={() => setMobileOpen(false)}>
                         <div className="flex items-center gap-3 px-3 py-3
@@ -618,7 +579,7 @@ export function Navbar() {
                           </div>
                         </div>
                       </Link>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -627,11 +588,11 @@ export function Navbar() {
               <div className="px-4 pb-8 pt-4 space-y-3"
                 style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <Link href="/pricing" onClick={() => setMobileOpen(false)}>
-                  <motion.div
-                    whileTap={{ scale: 0.97 }}
+                  <div
                     className="w-full py-3.5 rounded-[14px] font-black
                       text-black text-sm uppercase tracking-wide
-                      flex items-center justify-center gap-2 cursor-pointer"
+                      flex items-center justify-center gap-2 cursor-pointer
+                      active:scale-[0.97] transition-transform duration-100"
                     style={{
                       background: 'linear-gradient(135deg,#FF8C00,#FFB300)',
                       boxShadow: '0 0 20px rgba(255,140,0,0.25)',
@@ -640,15 +601,15 @@ export function Navbar() {
                       <path d="M13 2L4.09 12.26a1 1 0 00.91 1.64l5.5-.78-1 8.62L20 11.74a1 1 0 00-.91-1.64l-5.5.78L13 2z"/>
                     </svg>
                     VIEW PRICING
-                  </motion.div>
+                  </div>
                 </Link>
 
                 <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                  <motion.div
-                    whileTap={{ scale: 0.97 }}
+                  <div
                     className="w-full py-3.5 rounded-[14px] font-bold
                       text-sm uppercase tracking-wide
-                      flex items-center justify-center gap-2 cursor-pointer"
+                      flex items-center justify-center gap-2 cursor-pointer
+                      active:scale-[0.97] transition-transform duration-100"
                     style={{
                       background: 'rgba(255,140,0,0.06)',
                       border: '1px solid rgba(255,140,0,0.25)',
@@ -660,13 +621,12 @@ export function Navbar() {
                       <circle cx="12" cy="7" r="4"/>
                     </svg>
                     CLIENT AREA
-                  </motion.div>
+                  </div>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           </>
         )}
-      </AnimatePresence>
     </>
   )
 }

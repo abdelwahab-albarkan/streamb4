@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap, Lock, FileText, Radio, Shield, MessageCircle, Earth,
   Star, ArrowRight, Check
@@ -104,13 +103,7 @@ export function PricingSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center mb-6"
-        >
+        <div style={{ animation: "fadeInPage 0.5s ease-out both" }} className="flex justify-center mb-6">
           <span
             className="inline-flex items-center gap-2 text-orange-500 text-[11px] font-black tracking-[0.3em] uppercase px-4 py-2 rounded-full"
             style={{ background: 'rgba(255,122,0,0.07)', border: '1px solid rgba(255,122,0,0.15)' }}
@@ -118,16 +111,12 @@ export function PricingSection() {
             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
             Pricing
           </span>
-        </motion.div>
+        </div>
 
         {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.05 }}
+        <h2
+          style={{ animation: "fadeInPage 0.5s ease-out 0.05s both", fontSize: 'clamp(2.5rem,7vw,5.5rem)', fontFamily: 'var(--font-anton), Anton, sans-serif' }}
           className="font-anton text-center uppercase leading-[0.9] tracking-tight mb-4"
-          style={{ fontSize: 'clamp(2.5rem,7vw,5.5rem)', fontFamily: 'var(--font-anton), Anton, sans-serif' }}
         >
           <span className="text-white">SIMPLE </span>
           <span
@@ -140,24 +129,18 @@ export function PricingSection() {
           >
             PRICING.
           </span>
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+        <p
+          style={{ animation: "fadeInPage 0.5s ease-out 0.1s both" }}
           className="text-gray-500 text-center text-base sm:text-lg max-w-xl mx-auto mb-14 leading-relaxed font-semibold"
         >
           No contracts. Cancel anytime. Instant activation.
-        </motion.p>
+        </p>
 
         {/* Connection switcher */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out 0.15s both" }}
           className="flex justify-center mb-6 px-4"
         >
           <div
@@ -208,44 +191,29 @@ export function PricingSection() {
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Plan label */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeConnections}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-            className="text-center mb-10"
-          >
-            <span className="text-white font-black text-lg uppercase">{currentData.label}</span>
-            <span className="text-[#A1A1AA] text-sm ml-2 font-semibold">— {currentData.tagline}</span>
-          </motion.div>
-        </AnimatePresence>
+        <div
+          key={activeConnections}
+          style={{ animation: "fadeInPage 0.25s ease-out both" }}
+          className="text-center mb-10"
+        >
+          <span className="text-white font-black text-lg uppercase">{currentData.label}</span>
+          <span className="text-[#A1A1AA] text-sm ml-2 font-semibold">— {currentData.tagline}</span>
+        </div>
 
         {/* Cards */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeConnections}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mb-14"
-          >
+        <div
+          key={activeConnections}
+          style={{ animation: "fadeInPage 0.4s ease-out both" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mb-14"
+        >
             {currentData.plans.map((plan, i) => (
-              <motion.div
+              <div
                 key={plan.duration}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.45 }}
-                whileHover={{ y: plan.popular ? -12 : -8, transition: { duration: 0.25 } }}
-                className={`relative flex flex-col rounded-[24px] overflow-hidden ${
-                  plan.popular ? 'lg:-mt-2 lg:-mb-2' : ''
-                }`}
                 style={{
+                  animation: `fadeInPage 0.45s ease-out ${i * 0.08}s both`,
                   background: plan.popular
                     ? 'linear-gradient(145deg,rgba(255,140,0,0.08),rgba(17,17,17,0.98))'
                     : 'rgba(17,17,17,0.95)',
@@ -256,6 +224,9 @@ export function PricingSection() {
                     ? '0 0 60px rgba(255,140,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)'
                     : 'inset 0 1px 0 rgba(255,255,255,0.04)',
                 }}
+                className={`relative flex flex-col rounded-[24px] overflow-hidden hover:-translate-y-2 transition-transform duration-250 ${
+                  plan.popular ? 'lg:-mt-2 lg:-mb-2' : ''
+                }`}
               >
                 {/* Popular badge */}
                 {plan.popular && (
@@ -384,11 +355,9 @@ export function PricingSection() {
                   </div>
 
                   {/* CTA */}
-                  <motion.button
+                  <button
                     onClick={() => openWhatsApp(plan, activeConnections)}
-                    whileHover={{ scale: 1.03, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="w-full py-4 rounded-[16px] font-black text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer"
+                    className="w-full py-4 rounded-[16px] font-black text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97]"
                     style={
                       plan.popular
                         ? { background: 'linear-gradient(135deg,#FF8C00,#FFB300)', color: '#000', boxShadow: '0 0 30px rgba(255,140,0,0.4)' }
@@ -401,7 +370,7 @@ export function PricingSection() {
                         : <>GET STARTED <ArrowRight size={14} strokeWidth={2} /></>
                       }
                     </span>
-                  </motion.button>
+                  </button>
 
                   <p className="text-center text-gray-700 text-[11px] mt-4 tracking-wide flex items-center justify-center gap-2">
                     <Check size={11} strokeWidth={2.5} className="text-orange-500/60" />
@@ -411,18 +380,14 @@ export function PricingSection() {
                     Cancel anytime
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </AnimatePresence>
+          </div>
 
         {/* Trust badges */}
         <LucideGradDefs />
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
           className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-10"
         >
           {([
@@ -434,15 +399,9 @@ export function PricingSection() {
             { Icon: MessageCircle, label: '24/7 Support' },
             { Icon: Earth,         label: 'Worldwide Access' },
           ] as const).map((badge) => (
-            <motion.div
+            <div
               key={badge.label}
-              whileHover={{
-                borderColor: 'rgba(255,122,0,0.4)',
-                boxShadow: '0 0 18px rgba(255,122,0,0.12)',
-                y: -2,
-                transition: { duration: 0.2 }
-              }}
-              className="flex flex-col items-center gap-2.5 p-4 rounded-[16px] text-center border border-white/[0.06] transition-colors duration-300"
+              className="flex flex-col items-center gap-2.5 p-4 rounded-[16px] text-center border border-white/[0.06] transition-all duration-200 hover:-translate-y-0.5 hover:border-orange-500/40 hover:shadow-[0_0_18px_rgba(255,122,0,0.12)]"
               style={{ background: 'rgba(17,17,17,0.8)', backdropFilter: 'blur(10px)' }}
             >
               <div
@@ -461,16 +420,13 @@ export function PricingSection() {
               <span className="text-[#A1A1AA] text-[10px] font-bold uppercase tracking-wide leading-tight">
                 {badge.label}
               </span>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Payment methods */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+        <div
+          style={{ animation: "fadeInPage 0.5s ease-out 0.1s both" }}
           className="flex flex-col items-center gap-5"
         >
           <p className="text-gray-700 text-[11px] uppercase tracking-[0.25em] font-black">
@@ -482,7 +438,7 @@ export function PricingSection() {
           <p className="text-gray-700 text-[12px] text-center max-w-sm leading-relaxed">
             Secure payments via encrypted channels. Subscription activates instantly after confirmation.
           </p>
-        </motion.div>
+        </div>
 
       </div>
     </section>
