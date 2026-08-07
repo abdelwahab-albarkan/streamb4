@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ShieldAlert, Scale, FileText } from "lucide-react";
 
@@ -11,11 +10,7 @@ export default function TermsClient() {
       <section className="relative pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div>
             <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-4">
               LEGAL INFORMATION
             </p>
@@ -23,7 +18,7 @@ export default function TermsClient() {
               TERMS OF <span className="text-[#FF6B00]">SERVICE</span>
             </h1>
             <p className="text-gray-400 text-sm">Last updated: June 2026</p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

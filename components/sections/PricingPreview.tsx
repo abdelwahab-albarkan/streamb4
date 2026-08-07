@@ -416,8 +416,8 @@ export function PricingPreview() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex justify-center mb-6"
@@ -438,8 +438,8 @@ export function PricingPreview() {
 
         {/* ── Billing period toggle ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
           className="flex justify-center mb-16 overflow-x-auto pb-2 w-full scrollbar-none"
@@ -464,22 +464,15 @@ export function PricingPreview() {
                   className="relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-colors duration-200 cursor-pointer select-none"
                   style={{ color: isActive ? "#000000" : "rgba(255,255,255,0.38)" }}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="pricingPill"
-                      className="absolute inset-0 rounded-full -z-10"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 35,
-                        mass: 0.8,
-                      }}
-                      style={{
-                        background: "linear-gradient(135deg, #ff8c00, #ffb800)",
-                        boxShadow: "0 0 18px rgba(255,140,0,0.32)",
-                      }}
-                    />
-                  )}
+                  <div
+                    className="absolute inset-0 rounded-full -z-10"
+                    style={{
+                      background: "linear-gradient(135deg, #ff8c00, #ffb800)",
+                      boxShadow: "0 0 18px rgba(255,140,0,0.32)",
+                      opacity: isActive ? 1 : 0,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  />
                   {tab.label}
                   {tab.save && (
                     <span
@@ -502,8 +495,8 @@ export function PricingPreview() {
 
         {/* ── Cards grid ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10"
@@ -519,8 +512,8 @@ export function PricingPreview() {
 
         {/* ── Payment methods ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex flex-col items-center gap-5 mt-4"

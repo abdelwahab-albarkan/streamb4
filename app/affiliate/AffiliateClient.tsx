@@ -2,7 +2,6 @@
 
 import React from "react";
 import { DollarSign, Users, BarChart, Percent, Award, Link as LinkIcon } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
@@ -43,11 +42,7 @@ export default function AffiliateClient() {
             </ol>
           </nav>
 
-          <motion.div
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div>
             <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-4">
               PARTNER & EARN
             </p>
@@ -71,7 +66,7 @@ export default function AffiliateClient() {
                 View Reseller Program →
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

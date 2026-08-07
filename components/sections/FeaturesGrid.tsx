@@ -1,11 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import GlowCard from "@/components/ui/GlowCard";
 import FloatingElement from "@/components/ui/FloatingElement";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import {
   Feature4K,
   FeatureNoBuffer,
@@ -75,15 +73,9 @@ export function FeaturesGrid() {
         </ScrollReveal>
 
         {/* 3x2 Cards Grid */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {features.map((feature, i) => (
-            <motion.div key={feature.title} variants={staggerItem} className="h-full">
+            <div key={feature.title} className="h-full" style={{ animation: `fadeInPage 0.45s ease-out ${i * 0.08}s both` }}>
               <GlowCard
                 className="relative p-7 rounded-[24px] overflow-hidden group cursor-default h-full"
                 style={{
@@ -125,9 +117,9 @@ export function FeaturesGrid() {
                   }}
                 />
               </GlowCard>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

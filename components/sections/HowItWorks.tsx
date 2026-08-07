@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 import Image from "next/image";
+import FloatingElement from "@/components/ui/FloatingElement";
 
 // ─── ICONS ─────────────────────
 // ICONS
@@ -84,57 +84,46 @@ function ArrowConnector() {
 // ─── STEP CARD ─────────────────────────────────────────────────────────────────
 
 function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      whileHover={{ y: -4 }}
-      className="relative flex flex-col"
+      className="step-card group relative flex flex-col"
     >
-      {/* Outer glow */}
+      {/* Outer glow — CSS hover */}
       <div
-        className="absolute inset-0 rounded-[28px] pointer-events-none transition-opacity duration-500"
+        className="step-card-glow absolute inset-0 rounded-[28px] pointer-events-none opacity-0 transition-opacity duration-500"
         style={{
           background: "radial-gradient(ellipse at center, rgba(255,138,0,0.1), transparent 70%)",
           filter: "blur(18px)",
           transform: "scale(1.06)",
-          opacity: hovered ? 1 : 0,
         }}
       />
 
       {/* Card */}
       <div
-        className="relative rounded-[28px] p-7 flex flex-col h-full overflow-hidden transition-all duration-300"
+        className="step-card-inner relative rounded-[28px] p-7 flex flex-col h-full overflow-hidden transition-all duration-300"
         style={{
           background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)",
-          border: hovered ? "1px solid rgba(255,138,0,0.25)" : "1px solid rgba(255,255,255,0.06)",
-          boxShadow: hovered
-            ? "0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,138,0,0.06), inset 0 1px 0 rgba(255,255,255,0.06)"
-            : "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
         }}
       >
         {/* Top edge shimmer */}
         <div
-          className="absolute top-0 left-0 right-0 h-px transition-all duration-500"
+          className="step-card-shimmer absolute top-0 left-0 right-0 h-px transition-all duration-500"
           style={{
-            background: hovered
-              ? "linear-gradient(90deg, transparent, rgba(255,138,0,0.4), transparent)"
-              : "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
           }}
         />
 
         {/* Corner ambient */}
         <div
-          className="absolute top-0 right-0 w-32 h-32 pointer-events-none transition-opacity duration-500"
+          className="step-card-corner absolute top-0 right-0 w-32 h-32 pointer-events-none opacity-0 transition-opacity duration-500"
           style={{
             background: "radial-gradient(circle at top right, rgba(255,138,0,0.08), transparent 60%)",
-            opacity: hovered ? 1 : 0,
           }}
         />
 
@@ -152,17 +141,7 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
           />
 
           {/* Floating iPhone */}
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{
-              duration: 4 + index * 0.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: index * 0.4,
-            }}
-            whileHover={{ y: -14, transition: { duration: 0.4 } }}
-            className="relative"
-          >
+          <FloatingElement duration={4 + index * 0.5} distance={10} delay={index * 0.4} className="relative">
             <Image
               src={`/devices/${step.phone}`}
               alt={`StreamB4 ${step.title} on iPhone`}
@@ -196,7 +175,7 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
                 opacity: 0.7,
               }}
             />
-          </motion.div>
+          </FloatingElement>
         </div>
 
         {/* ── Number + icon ── */}
@@ -224,11 +203,10 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
 
           {/* Icon badge */}
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
+            className="step-card-icon w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
             style={{
               background: "linear-gradient(135deg, rgba(255,138,0,0.12), rgba(255,179,0,0.06))",
               border: "1px solid rgba(255,138,0,0.2)",
-              boxShadow: hovered ? "0 0 20px rgba(255,138,0,0.28)" : "none",
             }}
           >
             {step.icon}
@@ -237,11 +215,8 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
 
         {/* Title */}
         <h3
-          className="font-anton text-2xl xl:text-[28px] uppercase tracking-tight mb-3 transition-colors duration-200"
-          style={{
-            fontFamily: "var(--font-anton), Anton, sans-serif",
-            color: hovered ? "rgb(255,243,230)" : "#ffffff",
-          }}
+          className="font-anton text-2xl xl:text-[28px] uppercase tracking-tight mb-3 text-white group-hover:text-orange-50 transition-colors duration-200"
+          style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}
         >
           {step.title}
         </h3>
@@ -253,10 +228,9 @@ function StepCard({ step, index }: { step: typeof steps[0]; index: number }) {
 
         {/* Bottom accent */}
         <div
-          className="absolute bottom-0 left-5 right-5 h-px rounded-full pointer-events-none transition-opacity duration-300"
+          className="step-card-accent absolute bottom-0 left-5 right-5 h-px rounded-full pointer-events-none opacity-0 transition-opacity duration-300"
           style={{
             background: "linear-gradient(90deg, transparent, rgba(255,138,0,0.4), transparent)",
-            opacity: hovered ? 1 : 0,
           }}
         />
       </div>
@@ -327,8 +301,8 @@ export function HowItWorks() {
 
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex items-center justify-center gap-4 mb-6"
@@ -352,8 +326,8 @@ export function HowItWorks() {
 
         {/* Headline */}
         <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
           className="text-center font-anton uppercase leading-[0.88] tracking-tight mb-5"
@@ -377,8 +351,8 @@ export function HowItWorks() {
 
         {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
           className="text-center text-gray-500 text-lg mb-20"
@@ -431,8 +405,8 @@ export function HowItWorks() {
 
         {/* ── Bottom features strip ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
           className="rounded-[20px] px-4 py-4 md:px-8 md:py-5"

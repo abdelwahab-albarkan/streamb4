@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import Image from "next/image";
 
 /* ============================================
@@ -95,30 +94,11 @@ interface DeviceCardProps {
 }
 
 function DeviceCard({ device }: DeviceCardProps) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <motion.div
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      variants={{
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-        },
-      }}
-      className="relative group overflow-hidden flex flex-col items-center p-5 pb-6 rounded-[20px] cursor-pointer"
+    <div
+      className="device-card relative group overflow-hidden flex flex-col items-center p-5 pb-6 rounded-[20px] cursor-pointer"
       style={{
         background: "rgba(15,15,15,0.6)",
-        border: "1px solid rgba(255,138,0,0.15)",
-      }}
-      whileHover={{
-        y: -6,
-        scale: 1.03,
-        border: "1px solid rgba(255,138,0,0.45)",
-        boxShadow: "0 0 40px rgba(255,138,0,0.1), inset 0 1px 0 rgba(255,255,255,0.06)",
       }}
     >
       {/* Checkmark badge */}
@@ -154,13 +134,13 @@ function DeviceCard({ device }: DeviceCardProps) {
           {/* === BOTTOM ORANGE LIGHT === */}
           {/* This is the key premium effect */}
           <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full"
+            className="device-card-light absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full"
             style={{
               background: "radial-gradient(ellipse, #ff8a00, #ffb347)",
-              opacity: hovered ? 1 : 0.7,
-              width: hovered ? "7rem" : "6rem",
+              opacity: 0.7,
+              width: "6rem",
               height: "12px",
-              filter: hovered ? "blur(6px)" : "blur(8px)",
+              filter: "blur(8px)",
               transition: "all 0.3s ease",
             }}
           />
@@ -184,14 +164,7 @@ function DeviceCard({ device }: DeviceCardProps) {
           />
 
           {/* === DEVICE IMAGE === */}
-          <motion.div
-            whileHover={{
-              y: -4,
-              filter: "drop-shadow(0 0 12px rgba(255,138,0,0.4))",
-              transition: { duration: 0.3 },
-            }}
-            className="relative z-10"
-          >
+          <div className="device-card-img relative z-10">
             <Image
               src={device.image}
               alt={`Watch STREAMB4 on ${device.name}`}
@@ -203,7 +176,7 @@ function DeviceCard({ device }: DeviceCardProps) {
                 filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.5))",
               }}
             />
-          </motion.div>
+          </div>
 
           {/* === AMBIENT GLOW BEHIND IMAGE === */}
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
@@ -225,7 +198,7 @@ function DeviceCard({ device }: DeviceCardProps) {
       <p className="text-[#bdbdbd] text-xs text-center leading-relaxed z-10">
         {device.desc}
       </p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -245,24 +218,16 @@ export function DevicesSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center text-orange-500 text-xs font-bold tracking-[0.2em] uppercase mb-6"
+        <p className="text-center text-orange-500 text-xs font-bold tracking-[0.2em] uppercase mb-6"
+          style={{ animation: "fadeInPage 0.5s ease-out both" }}
         >
           COMPATIBILITY
-        </motion.p>
+        </p>
 
         {/* Big headline — white + orange gradient */}
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+        <h2
           className="text-center font-anton uppercase leading-tight mb-6"
-          style={{ fontSize: "clamp(2rem, 7vw, 4.5rem)", fontFamily: "var(--font-anton), Anton, sans-serif" }}
+          style={{ fontSize: "clamp(2rem, 7vw, 4.5rem)", fontFamily: "var(--font-anton), Anton, sans-serif", animation: "fadeInPage 0.6s ease-out 0.1s both" }}
         >
           <span className="text-white">WATCH ON EVERY </span>
           <span
@@ -274,16 +239,10 @@ export function DevicesSection() {
           >
             SCREEN YOU OWN.
           </span>
-        </motion.h2>
+        </h2>
 
         {/* Subtitle */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16" style={{ animation: "fadeInPage 0.5s ease-out 0.2s both" }}>
           <p className="text-gray-400 text-lg mb-1">
             Enjoy seamless streaming on all your favorite devices.
           </p>
@@ -300,31 +259,19 @@ export function DevicesSection() {
               Unlimited entertainment.
             </span>
           </p>
-        </motion.div>
+        </div>
 
         {/* Device Cards Grid */}
-        <motion.div
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.08 } },
-          }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8"
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {devices.map((device) => (
             <DeviceCard key={device.name} device={device} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Bottom Features Strip */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+        <div
           className="rounded-[20px] px-8 py-5"
+          style={{ animation: "fadeInPage 0.6s ease-out 0.3s both" }}
           style={{
             background: "rgba(15,15,15,0.8)",
             border: "1px solid rgba(255,138,0,0.12)",
@@ -364,11 +311,9 @@ export function DevicesSection() {
                 sub: "4K · HDR · No Buffering",
               },
             ].map((feature) => (
-              <motion.div
+              <div
                 key={feature.title}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-                className="group flex items-center gap-3 px-3 py-3 lg:py-0 lg:px-6"
+                className="group flex items-center gap-3 px-3 py-3 lg:py-0 lg:px-6 transition-transform duration-200 hover:scale-105"
               >
                 {feature.icon}
                 <div>
@@ -377,10 +322,10 @@ export function DevicesSection() {
                   </p>
                   <p className="text-[#bdbdbd] text-xs">{feature.sub}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

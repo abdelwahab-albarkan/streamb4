@@ -109,7 +109,10 @@ const nextConfig: NextConfig = {
       'framer-motion',
       'recharts',
       'lucide-react',
+      'react-icons',
       '@uiw/react-md-editor',
+      '@uiw/react-markdown-preview',
+      'date-fns',
     ],
   },
 }

@@ -233,9 +233,8 @@ export default function PricingClient() {
 
               <div className="grid grid-cols-3 gap-1 relative">
                 {/* Sliding pill */}
-                <motion.div
+                <div
                   className="absolute inset-y-0 rounded-[14px]"
-                  layoutId="connectionPill"
                   style={{
                     width: 'calc(33.333% - 2px)',
                     left: `calc(${(activeConnections - 1) * 33.333}% + 2px)`,

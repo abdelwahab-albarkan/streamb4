@@ -172,24 +172,16 @@ function PlayerCard({
   onCopy: (code: string) => void;
 }) {
   const isBrowser = player.downloaderCode === "Browser";
-  const [hovered, setHovered] = useState(false);
 
   return (
     <motion.div
-      layout
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.3 }}
-      className="relative rounded-[20px] p-6 flex flex-col gap-4 overflow-hidden transition-all duration-300"
+      className="player-card relative rounded-[20px] p-6 flex flex-col gap-4 overflow-hidden"
       style={{
         background: "rgba(15, 15, 15, 0.6)",
-        border: hovered ? "1px solid rgba(255, 138, 0, 0.45)" : "1px solid rgba(255, 138, 0, 0.15)",
-        boxShadow: hovered 
-          ? "0 0 30px rgba(255, 138, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06)" 
-          : "inset 0 1px 0 rgba(255, 255, 255, 0.04)",
       }}
     >
       {/* Recommended badge */}
@@ -224,23 +216,21 @@ function PlayerCard({
         </div>
       )}
 
-      {/* Background glow when hovered */}
+      {/* Background glow when hovered — CSS-only */}
       <div
-        className="absolute inset-0 rounded-[20px] -z-10 opacity-0 transition-opacity duration-300"
+        className="player-card-glow absolute inset-0 rounded-[20px] -z-10 opacity-0 transition-opacity duration-300"
         style={{
           background: "radial-gradient(circle at bottom, rgba(255, 122, 0, 0.08) 0%, transparent 70%)",
-          opacity: hovered ? 1 : 0,
         }}
       />
 
       {/* App name row */}
       <div className="flex items-center gap-2.5 mt-3">
-        <div 
-          className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 transition-all duration-300"
+        <div
+          className="player-card-icon w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 transition-all duration-300"
           style={{
             background: "linear-gradient(145deg, rgba(255, 122, 0, 0.12) 0%, rgba(255, 179, 0, 0.05) 100%)",
-            border: hovered ? "1px solid rgba(255, 122, 0, 0.4)" : "1px solid rgba(255, 122, 0, 0.2)",
-            boxShadow: hovered ? "0 0 10px rgba(255, 122, 0, 0.2)" : "none",
+            border: "1px solid rgba(255, 122, 0, 0.2)",
           }}
         >
           {player.logo ? (
@@ -661,7 +651,6 @@ export default function DevicesClient() {
           </div>
         ) : (
           <motion.div
-            layout
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
           >
             <AnimatePresence mode="popLayout">

@@ -105,8 +105,8 @@ export function PricingSection() {
 
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5 }}
           className="flex justify-center mb-6"
@@ -122,8 +122,8 @@ export function PricingSection() {
 
         {/* Heading */}
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, delay: 0.05 }}
           className="font-anton text-center uppercase leading-[0.9] tracking-tight mb-4"
@@ -143,8 +143,8 @@ export function PricingSection() {
         </motion.h2>
 
         <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-gray-500 text-center text-base sm:text-lg max-w-xl mx-auto mb-14 leading-relaxed font-semibold"
@@ -154,8 +154,8 @@ export function PricingSection() {
 
         {/* Connection switcher */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.15 }}
           className="flex justify-center mb-6 px-4"
@@ -171,9 +171,8 @@ export function PricingSection() {
           >
             <div className="grid grid-cols-3 gap-1 relative">
               {/* Sliding pill */}
-              <motion.div
+              <div
                 className="absolute inset-y-0 rounded-[14px]"
-                layoutId="homePricingPill"
                 style={{
                   width: 'calc(33.333% - 2px)',
                   left: `calc(${(activeConnections - 1) * 33.333}% + 2px)`,
@@ -215,7 +214,7 @@ export function PricingSection() {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeConnections}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
@@ -230,7 +229,7 @@ export function PricingSection() {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeConnections}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.4 }}
@@ -239,7 +238,7 @@ export function PricingSection() {
             {currentData.plans.map((plan, i) => (
               <motion.div
                 key={plan.duration}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08, duration: 0.45 }}
                 whileHover={{ y: plan.popular ? -12 : -8, transition: { duration: 0.25 } }}
@@ -420,8 +419,8 @@ export function PricingSection() {
         {/* Trust badges */}
         <LucideGradDefs />
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-10"
@@ -468,8 +467,8 @@ export function PricingSection() {
 
         {/* Payment methods */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="flex flex-col items-center gap-5"

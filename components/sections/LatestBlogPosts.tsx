@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { getCategoryImage } from "@/lib/blogImages";
 
 interface Post {
@@ -72,12 +71,9 @@ export function LatestBlogPosts({ posts }: Props) {
               : null;
 
             return (
-              <motion.article
+              <article
                 key={post.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: i * 0.1, ease: "easeOut" }}
+                style={{ animation: `fadeInPage 0.45s ease-out ${i * 0.1}s both` }}
               >
                 <Link href={`/blog/${post.slug}`} className="group block h-full">
                   <div
@@ -136,7 +132,7 @@ export function LatestBlogPosts({ posts }: Props) {
                     </div>
                   </div>
                 </Link>
-              </motion.article>
+              </article>
             );
           })}
         </div>

@@ -1,31 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 const WA_URL = "https://wa.me/212625218443";
 
 export default function WhatsAppButton() {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <a
       href={WA_URL}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 group"
+      className="wa-btn fixed bottom-6 right-6 z-50 flex items-center gap-3 group"
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
-      {/* Tooltip label */}
-      <span
-        className="hidden sm:block text-white text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-300 pointer-events-none"
+      {/* Tooltip label — CSS hover handles show/hide, no React state */}
+      <span className="wa-tooltip hidden sm:block text-white text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap pointer-events-none"
         style={{
           background: "rgba(15,15,15,0.95)",
           border: "1px solid rgba(255,255,255,0.08)",
-          opacity: hovered ? 1 : 0,
-          transform: hovered ? "translateX(0)" : "translateX(8px)",
+          opacity: 0,
+          transform: "translateX(8px)",
+          transition: "opacity 0.3s, transform 0.3s",
           boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
         }}
       >
@@ -34,15 +30,11 @@ export default function WhatsAppButton() {
 
       {/* Button */}
       <div
-        className="relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300"
+        className="wa-circle relative w-14 h-14 rounded-full flex items-center justify-center"
         style={{
-          background: hovered
-            ? "linear-gradient(135deg,#25d366,#128c7e)"
-            : "linear-gradient(135deg,#25d366,#20ba5a)",
-          boxShadow: hovered
-            ? "0 8px 32px rgba(37,211,102,0.55), 0 0 0 6px rgba(37,211,102,0.12)"
-            : "0 4px 20px rgba(37,211,102,0.35), 0 0 0 0px rgba(37,211,102,0.12)",
-          transform: hovered ? "scale(1.1)" : "scale(1)",
+          background: "linear-gradient(135deg,#25d366,#20ba5a)",
+          boxShadow: "0 4px 20px rgba(37,211,102,0.35)",
+          transition: "transform 0.3s, box-shadow 0.3s, background 0.3s",
         }}
       >
         {/* Pulse ring */}

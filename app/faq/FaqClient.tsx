@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Search } from "lucide-react";
-import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { AccordionItem } from "@/components/ui/Accordion";
 import Link from "next/link";
@@ -37,12 +36,7 @@ export default function FaqClient() {
             </ol>
           </nav>
 
-          <motion.div
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="max-w-2xl mx-auto"
-          >
+          <div>
             <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-4">
               KNOWLEDGE BASE
             </p>
@@ -65,7 +59,7 @@ export default function FaqClient() {
                 className="w-full bg-[#141414] border border-[#2a2a2a] hover:border-[#FF6B00]/30 focus:border-[#FF6B00] rounded-xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none transition-colors"
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

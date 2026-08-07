@@ -2,7 +2,6 @@
 
 import React, { use } from "react";
 import { Check, Shield, Zap, Play } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
@@ -84,11 +83,7 @@ export default function CountryClient({ countryCode, config }: CountryClientProp
             </ol>
           </nav>
 
-          <motion.div
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div style={{ animation: "fadeInPage 0.7s ease-out forwards" }}>
             <span className="text-5xl mb-4 block" role="img" aria-label={config.name}>{config.flag}</span>
             <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-4">
               REGIONAL OPTIMIZED
@@ -116,7 +111,7 @@ export default function CountryClient({ countryCode, config }: CountryClientProp
                 View Pricing Plans
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

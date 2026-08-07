@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 
 interface FloatingElementProps {
   children: React.ReactNode;
@@ -19,17 +18,14 @@ export default function FloatingElement({
   className,
 }: FloatingElementProps) {
   return (
-    <motion.div
+    <div
       className={className}
-      animate={{ y: [0, -distance, 0] }}
-      transition={{
-        duration,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay,
+      style={{
+        ["--float-dist" as string]: `${distance}px`,
+        animation: `floatY ${duration}s ease-in-out ${delay}s infinite`,
       }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

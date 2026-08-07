@@ -6,7 +6,6 @@ import {
   Monitor, Zap, Globe, Unlock, Headphones, Smartphone,
   Server, Shield, Clock, Users, Wifi, Play,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -102,11 +101,7 @@ export default function FeaturesClient() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#FF6B00]/5 rounded-full blur-[180px]" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div>
             <p className="text-[#FF6B00] text-sm font-bold tracking-widest uppercase mb-4 block select-none">
               FEATURES
             </p>
@@ -119,7 +114,7 @@ export default function FeaturesClient() {
               Every feature is engineered for reliability, speed, and the best
               possible viewing experience. No compromises.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

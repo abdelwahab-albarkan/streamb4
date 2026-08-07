@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Check, Shield, DollarSign, Users, Award, TrendingUp, HelpCircle } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -83,11 +82,7 @@ export default function ResellerClient() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#FF6B00]/5 rounded-full blur-[150px]" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <div>
             <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-4">
               PARTNER PROGRAM
             </p>
@@ -98,7 +93,7 @@ export default function ResellerClient() {
             <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
               Earn up to 300% margins reselling the highest quality IPTV service. Get a white-label dashboard, 24/7 dedicated support, and complete flexibility.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

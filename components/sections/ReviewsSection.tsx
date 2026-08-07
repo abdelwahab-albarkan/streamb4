@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import GlowCard from "@/components/ui/GlowCard";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import Image from "next/image";
 
 const reviews = [
@@ -69,15 +67,9 @@ export function ReviewsSection() {
         </ScrollReveal>
 
         {/* 4 Cards Grid */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {reviews.map((review) => (
-            <motion.div key={review.name} variants={staggerItem} className="h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {reviews.map((review, i) => (
+            <div key={review.name} className="h-full" style={{ animation: `fadeInPage 0.45s ease-out ${i * 0.08}s both` }}>
               <GlowCard
                 className="p-7 rounded-[24px] relative overflow-hidden group flex flex-col justify-between h-full"
                 style={{
@@ -123,6 +115,7 @@ export function ReviewsSection() {
                       src={review.avatar}
                       alt={review.name}
                       fill
+                      sizes="40px"
                       className="object-cover"
                     />
                   </div>
@@ -144,9 +137,9 @@ export function ReviewsSection() {
                   }}
                 />
               </GlowCard>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
@@ -133,11 +132,8 @@ function CompareRow({
   index: number;
   isLast: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
   const isEven = index % 2 === 0;
-
   const rowBg = isEven ? "rgba(10,10,10,0.95)" : "rgba(8,8,8,0.98)";
-
   const streamBg = isEven
     ? "linear-gradient(145deg, rgba(255,122,0,0.05), rgba(10,10,10,0.98))"
     : "linear-gradient(145deg, rgba(255,122,0,0.04), rgba(8,8,8,1))";
@@ -145,12 +141,10 @@ function CompareRow({
   return (
     <>
       {/* Feature cell */}
-      <motion.div
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
-        className="group flex items-center gap-4 px-8 py-5 transition-all duration-200"
+      <div
+        className="group flex items-center gap-4 px-8 py-5 transition-colors duration-200 hover:bg-white/[0.02]"
         style={{
-          background: hovered ? "rgba(255,255,255,0.02)" : rowBg,
+          background: rowBg,
           borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.04)",
         }}
       >
@@ -158,7 +152,7 @@ function CompareRow({
         <span className="text-gray-400 text-sm font-semibold group-hover:text-gray-200 transition-colors duration-200">
           {row.feature}
         </span>
-      </motion.div>
+      </div>
 
       {/* StreamB4 cell */}
       <div
@@ -238,8 +232,8 @@ export function CompareSection() {
 
         {/* ── Eyebrow ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex items-center justify-center gap-4 mb-6"
@@ -263,8 +257,8 @@ export function CompareSection() {
 
         {/* ── Headline ── */}
         <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
           className="text-center font-anton uppercase leading-[0.92] tracking-tight mb-5 text-white"
@@ -296,8 +290,8 @@ export function CompareSection() {
 
         {/* ── Subtitle ── */}
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
           className="text-center text-gray-500 text-lg max-w-2xl mx-auto mb-16"
@@ -308,8 +302,8 @@ export function CompareSection() {
         {/* ── Table (Desktop) ── */}
         <div className="hidden lg:block">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
             className="relative"
@@ -395,8 +389,8 @@ export function CompareSection() {
         <div className="lg:hidden flex flex-col gap-6">
           {/* StreamB4 Card */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="rounded-[24px] p-6"
@@ -424,8 +418,8 @@ export function CompareSection() {
 
           {/* Cable TV Card */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
             className="rounded-[24px] p-6"
@@ -452,8 +446,8 @@ export function CompareSection() {
 
         {/* ── Bottom CTA ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.25, ease: "easeOut" }}
           className="flex flex-col items-center gap-6 mt-14"

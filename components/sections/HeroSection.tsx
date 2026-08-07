@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { getPopularMovies, type TMDBMedia } from "@/lib/tmdb";
 import {
   IconRocket,
@@ -89,10 +89,8 @@ interface CountryPillProps {
 
 function CountryPill({ flag, name }: CountryPillProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.05, y: -1 }}
-      transition={{ duration: 0.2 }}
-      className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-full cursor-default backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,122,0,0.15)]"
+    <div
+      className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-full cursor-default backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,122,0,0.15)] hover:scale-105"
       style={{
         background: "rgba(255,255,255,0.04)",
         border: "1px solid rgba(255,122,0,0.25)",
@@ -105,7 +103,7 @@ function CountryPill({ flag, name }: CountryPillProps) {
       <span className="text-gray-200 text-[11px] font-semibold tracking-wider uppercase select-none group-hover:text-orange-100 transition-colors">
         {name}
       </span>
-    </motion.div>
+    </div>
   );
 }
 
@@ -122,15 +120,8 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, number, title, subtitle }: FeatureCardProps) {
   return (
-    <motion.div
-      whileHover={{
-        scale: 1.02,
-        y: -1.5,
-        borderColor: "rgba(255,122,0,0.25)",
-        boxShadow: "0 0 25px rgba(255,122,0,0.05), inset 0 1px 0 rgba(255,255,255,0.05)",
-      }}
-      transition={{ duration: 0.2 }}
-      className="relative overflow-hidden flex items-center gap-3 p-3 rounded-[14px] transition-colors duration-300"
+    <div
+      className="relative overflow-hidden flex items-center gap-3 p-3 rounded-[14px] transition-all duration-200 hover:border-[rgba(255,122,0,0.25)] hover:shadow-[0_0_25px_rgba(255,122,0,0.05)]"
       style={{
         background: "rgba(255,255,255,0.02)",
         border: "1px solid rgba(255,255,255,0.05)",
@@ -159,7 +150,7 @@ function FeatureCard({ icon, number, title, subtitle }: FeatureCardProps) {
         </p>
         <p className="text-gray-500 text-[10px] md:text-xs leading-none">{subtitle}</p>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -169,15 +160,12 @@ function FeatureCard({ icon, number, title, subtitle }: FeatureCardProps) {
 
 export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[] }) {
   const [movies, setMovies] = useState<TMDBMedia[]>(initialMovies.slice(0, 26));
-  const [isMobile, setIsMobile] = useState(true);
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -80]);
-  const heroOpacity = useTransform(scrollY, [0, 400], isMobile ? [1, 1] : [1, 0]);
-  const tvY = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, -40]);
+  // isDesktop gates the TV mockup — only rendered on large screens to avoid
+  // shipping all those infinite Framer Motion animations + TMDB image requests to mobile
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsMobile(window.innerWidth < 768);
+    setIsDesktop(window.innerWidth >= 1024);
     if (initialMovies.length === 0) {
       async function loadHeroData() {
         try {
@@ -256,12 +244,12 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
       <div className="relative z-10 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center flex-grow py-8 lg:py-16">
 
         {/* LEFT COLUMN */}
-        <motion.div className="w-full max-w-[540px] mx-auto lg:mx-0 flex flex-col justify-center text-center lg:text-left" style={{ y: heroY, opacity: heroOpacity }}>
+        <div className="w-full max-w-[540px] mx-auto lg:mx-0 flex flex-col justify-center text-center lg:text-left">
           {/* 1. Country Badges Row */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
             className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-5 max-w-full"
           >
             <CountryPill flag={<FlagUSA />} name="USA" />
@@ -311,9 +299,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
           {/* Orange Accent Line */}
           <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 60, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
             className="h-[3px] mt-3 mb-5 rounded-full"
             style={{
               background: "linear-gradient(90deg, #ff7a00, #ffb300)",
@@ -323,9 +311,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
           {/* 3. Description */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
             className="text-gray-400 text-xs md:text-sm leading-[1.6] mb-6 max-w-[460px]"
           >
             Enjoy premium IPTV with lightning-fast servers,{" "}
@@ -336,11 +324,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
           {/* 4. Feature Badges 2x2 Grid (Compact) */}
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: { transition: { staggerChildren: 0.08, delayChildren: 0.35 } },
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
             className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6 w-full max-w-[500px] mx-auto lg:mx-0"
           >
             <FeatureCard
@@ -369,9 +355,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
           {/* 5. CTA Buttons (Reduced spacing, compact buttons) */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.45 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 mb-6 w-full"
           >
             <Link href="/pricing" className="w-full sm:w-auto">
@@ -418,9 +404,9 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
           {/* 6. Social Proof */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.35 }}
             className="flex items-center justify-center lg:justify-start gap-3"
           >
             {/* Real avatar photos */}
@@ -442,6 +428,7 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                     src={src}
                     alt="Happy customer"
                     fill
+                    sizes="36px"
                     className="object-cover"
                   />
                 </div>
@@ -460,19 +447,11 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
             </div>
 
             <div>
-              <div className="flex gap-0.5 mb-0.5">
+              <div className="flex gap-0.5 mb-0.5" aria-label="5 stars">
                 {[...Array(5)].map((_, i) => (
-                  <motion.svg
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.55 + i * 0.05 }}
-                    className="w-3 h-3"
-                    viewBox="0 0 24 24"
-                    fill="#ffb300"
-                  >
+                  <svg key={i} className="w-3 h-3" viewBox="0 0 24 24" fill="#ffb300" aria-hidden="true">
                     <path d="M12 2l3 6.5 7 1-5 4.9 1.2 7L12 18l-6.2 3.4L7 14.4 2 9.5l7-1z" />
-                  </motion.svg>
+                  </svg>
                 ))}
               </div>
               <p className="text-gray-400 text-[11px] font-medium leading-none">
@@ -480,10 +459,12 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
               </p>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* RIGHT COLUMN - 3D TV MOCKUP (Fitted, aligned to top) */}
-        <motion.div className="hidden lg:flex items-start justify-center relative w-full h-full self-start mt-0" style={{ y: tvY }}>
+        {/* RIGHT COLUMN - 3D TV MOCKUP — only rendered on desktop to avoid
+            shipping 8+ infinite Framer Motion animations to mobile */}
+        {isDesktop && (
+        <div className="hidden lg:flex items-start justify-center relative w-full h-full self-start mt-0">
           {movies.length > 0 && (
             <motion.div
               initial={{ opacity: 0, x: 50 }}
@@ -660,7 +641,8 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
 
             </motion.div>
           )}
-        </motion.div>
+        </div>
+        )}
       </div>
 
       {/* ============================================

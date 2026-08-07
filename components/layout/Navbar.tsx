@@ -530,6 +530,7 @@ export function Navbar() {
                 </span>
                 <button
                   onClick={() => setMobileOpen(false)}
+                  aria-label="Close menu"
                   className="w-8 h-8 rounded-full flex items-center justify-center
                     text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
