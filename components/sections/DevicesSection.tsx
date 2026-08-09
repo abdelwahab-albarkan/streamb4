@@ -287,7 +287,7 @@ export function DevicesSection() {
               },
               {
                 icon: <FeatureShield />,
-                title: "99.99% Uptime",
+                title: "99.9% Uptime",
                 sub: "Reliable & stable servers",
               },
               {

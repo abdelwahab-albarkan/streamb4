@@ -43,7 +43,7 @@ const PRICING_DATA = {
 
 const FEATURES = [
   '50,000+ Live Channels',
-  '180,000+ Movies & TV Shows',
+  '180,000+ Movies & Series',
   'Premium Sports Coverage',
   'True 4K Ultra HD + HDR10+',
   'Anti Freeze Technology',
@@ -394,7 +394,7 @@ export function PricingSection() {
             { Icon: Zap,           label: 'Instant Activation' },
             { Icon: Lock,          label: 'Secure Payments' },
             { Icon: FileText,      label: 'No Contracts' },
-            { Icon: Radio,         label: '99.99% Uptime' },
+            { Icon: Radio,         label: '99.9% Uptime' },
             { Icon: Shield,        label: 'Anti Freeze' },
             { Icon: MessageCircle, label: '24/7 Support' },
             { Icon: Earth,         label: 'Worldwide Access' },

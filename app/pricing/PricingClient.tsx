@@ -73,7 +73,7 @@ const TRUST_BADGES = [
   { Icon: Zap,           label: 'Instant Activation' },
   { Icon: Lock,          label: 'Secure Payments'    },
   { Icon: FileText,      label: 'No Contracts'       },
-  { Icon: Radio,         label: '99.99% Uptime'      },
+  { Icon: Radio,         label: '99.9% Uptime'       },
   { Icon: ShieldCheck,   label: 'Anti Freeze'        },
   { Icon: MessageCircle, label: 'Premium Support'    },
   { Icon: Globe,         label: 'Worldwide Access'   },

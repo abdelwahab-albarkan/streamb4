@@ -439,7 +439,7 @@ export function HeroSection({ initialMovies = [] }: { initialMovies?: TMDBMedia[
                 ))}
               </div>
               <p className="text-gray-400 text-[11px] font-medium leading-none">
-                <span className="text-white font-bold">50,000+</span> happy customers worldwide
+                <span className="text-white font-bold">230K+</span> happy customers worldwide
               </p>
             </div>
           </div>

@@ -1,11 +1,34 @@
 'use client'
+import Link from 'next/link'
 
 interface AuthorCardProps {
   author: string
 }
 
+const EXPERTISE_AREAS = [
+  'IPTV Setup',
+  'Firestick & Android TV',
+  'Smart TV Configuration',
+  '4K Streaming',
+  'Buffering Fixes',
+  'VPN & Privacy',
+]
+
+const SOCIAL_LINKS = [
+  {
+    label: 'Follow STREAMB4 on X (Twitter)',
+    href: 'https://x.com/streamb4t',
+    text: 'X / Twitter',
+  },
+  {
+    label: 'Follow STREAMB4 on Facebook',
+    href: 'https://www.facebook.com/profile.php?id=61591545360371',
+    text: 'Facebook',
+  },
+]
+
 export function AuthorCard({ author }: AuthorCardProps) {
-  const authorName = author || 'STREAMB4 Team'
+  const authorName = author || 'STREAMB4 Editorial Team'
   const initials = authorName[0].toUpperCase()
 
   return (
@@ -24,28 +47,57 @@ export function AuthorCard({ author }: AuthorCardProps) {
         style={{
           background: 'linear-gradient(135deg, #ff7a00, #ffb300)',
         }}
+        aria-hidden="true"
       >
         {initials}
       </div>
 
-      {/* Details info */}
+      {/* Details */}
       <div className="flex-1 text-center sm:text-left min-w-0">
-        <p className="text-white font-black text-lg mb-1">{authorName}</p>
+        <p className="text-white font-black text-lg mb-0.5">{authorName}</p>
         <p className="text-orange-500/80 text-[10px] font-black uppercase tracking-wider mb-2">
-          STREAMING EXPERT & AUTHOR
+          Streaming Technology Expert · STREAMB4
         </p>
-        <p className="text-gray-500 text-sm leading-relaxed mb-4">
-          Professional writer and streaming technician at STREAMB4. Specializing in IPTV setup guides, smart device installations, software tutorials, and streaming performance optimization.
+        <p className="text-gray-500 text-sm leading-relaxed mb-3">
+          IPTV setup technicians and streaming specialists at STREAMB4. Every guide is tested on real hardware — Firestick, Android TV boxes, Samsung, LG, Sony Smart TVs — before publication.{' '}
+          <Link href="/editorial-policy" className="text-orange-500/70 hover:text-orange-400 transition-colors">
+            See our editorial process →
+          </Link>
         </p>
-        <div className="flex justify-center sm:justify-start gap-4">
-          {['Twitter', 'LinkedIn'].map((platform) => (
-            <button
-              key={platform}
-              className="text-xs text-gray-600 hover:text-orange-400 font-bold transition-colors cursor-pointer"
+
+        {/* Expertise tags */}
+        <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 mb-4">
+          {EXPERTISE_AREAS.map((area) => (
+            <span
+              key={area}
+              className="px-2 py-0.5 rounded text-[10px] font-bold text-gray-500 uppercase tracking-wider"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
             >
-              {platform}
-            </button>
+              {area}
+            </span>
           ))}
+        </div>
+
+        {/* Social links */}
+        <div className="flex justify-center sm:justify-start gap-4">
+          {SOCIAL_LINKS.map((s) => (
+            <a
+              key={s.text}
+              href={s.href}
+              aria-label={s.label}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-600 hover:text-orange-400 font-bold transition-colors"
+            >
+              {s.text}
+            </a>
+          ))}
+          <Link
+            href="/about"
+            className="text-xs text-gray-600 hover:text-orange-400 font-bold transition-colors"
+          >
+            About Us
+          </Link>
         </div>
       </div>
     </div>

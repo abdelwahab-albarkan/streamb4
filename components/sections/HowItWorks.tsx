@@ -44,7 +44,7 @@ const steps = [
 
 const bottomFeatures = [
   { icon: <FeatureLightning />, title: "Instant Activation", sub: "Get started in seconds" },
-  { icon: <FeatureShield />, title: "99.99% Uptime", sub: "Reliable & stable servers" },
+  { icon: <FeatureShield />, title: "99.9% Uptime", sub: "Reliable & stable servers" },
   { icon: <FeatureDevices />, title: "Works On All Devices", sub: "TV, Mobile, PC & more" },
   { icon: <FeatureSupport />, title: "24/7 Customer Support", sub: "We're here anytime" },
   { icon: <FeatureFile />, title: "No Contracts", sub: "Cancel anytime" },

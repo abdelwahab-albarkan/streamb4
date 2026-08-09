@@ -42,13 +42,15 @@ const socials = [
 ];
 
 const navLinks = [
-  { label: "Pricing",  href: "/pricing" },
-  { label: "Features", href: "/features" },
-  { label: "Devices",  href: "/devices" },
-  { label: "Blog",     href: "/blog" },
-  { label: "Contact",  href: "/contact" },
-  { label: "Privacy",  href: "/legal/privacy" },
-  { label: "Terms",    href: "/legal/terms" },
+  { label: "Pricing",          href: "/pricing" },
+  { label: "Features",         href: "/features" },
+  { label: "Devices",          href: "/devices" },
+  { label: "Blog",             href: "/blog" },
+  { label: "About",            href: "/about" },
+  { label: "Contact",          href: "/contact" },
+  { label: "Editorial Policy", href: "/editorial-policy" },
+  { label: "Privacy",          href: "/legal/privacy" },
+  { label: "Terms",            href: "/legal/terms" },
 ];
 
 const languages = ["English", "Français", "العربية"];

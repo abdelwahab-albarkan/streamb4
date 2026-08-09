@@ -175,7 +175,15 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
     "dateModified": post.updatedAt || post.publishedAt || post.createdAt || "",
     "author": {
       "@type": "Person",
-      "name": post.author || "STREAMB4 Editorial Team"
+      "@id": "https://streamb4.com/editorial-policy#editorial-team",
+      "name": post.author || "STREAMB4 Editorial Team",
+      "url": "https://streamb4.com/editorial-policy",
+      "jobTitle": "Streaming Technology Expert",
+      "worksFor": { "@id": "https://streamb4.com/#organization" },
+      "sameAs": [
+        "https://x.com/streamb4t",
+        "https://www.facebook.com/profile.php?id=61591545360371"
+      ]
     },
     "publisher": { "@id": "https://streamb4.com/#organization" },
     "image": {
@@ -191,7 +199,10 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
     "speakable": {
       "@type": "SpeakableSpecification",
       "cssSelector": ["h1", "h2", ".article-summary"]
-    }
+    },
+    ...(post.readingTime > 0 && {
+      "timeRequired": `PT${post.readingTime}M`
+    })
   };
 
   const breadcrumbJsonLd = {
@@ -253,10 +264,12 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             {post.title}
           </h1>
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-            <div className="flex items-center gap-6 text-gray-500 text-xs font-semibold">
-              <span>By {post.author || "Admin"}</span>
-              <span>·</span>
-              <span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-gray-500 text-xs font-semibold">
+              <Link href="/editorial-policy" className="hover:text-orange-400 transition-colors">
+                By {post.author || "STREAMB4 Editorial Team"}
+              </Link>
+              <span aria-hidden="true">·</span>
+              <time dateTime={post.publishedAt || post.createdAt || ""}>
                 {post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString("en-US", {
                       month: "long",
@@ -270,8 +283,29 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                       year: "numeric",
                     })
                   : ""}
-              </span>
-              <span>·</span>
+              </time>
+              {post.updatedAt && post.updatedAt !== post.publishedAt && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span title="This article was updated after initial publication">
+                    Updated{" "}
+                    <time dateTime={post.updatedAt}>
+                      {new Date(post.updatedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </time>
+                  </span>
+                </>
+              )}
+              {post.readingTime > 0 && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{post.readingTime} min read</span>
+                </>
+              )}
+              <span aria-hidden="true">·</span>
               <span>{(post.views || 0).toLocaleString()} views</span>
             </div>
             <BookmarkButton postId={post.id} postTitle={post.title} postSlug={slug} />
@@ -325,6 +359,24 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
             {/* Author Bio Card */}
             <AuthorCard author={post.author} />
+
+            {/* Editorial transparency note */}
+            <div className="text-xs text-gray-600 space-y-1 border-t border-white/[0.04] pt-6">
+              <p>
+                Content by the{" "}
+                <Link href="/editorial-policy" className="text-gray-500 hover:text-orange-400 underline underline-offset-2 transition-colors">
+                  STREAMB4 Editorial Team
+                </Link>
+                {" "}— streaming technicians and IPTV specialists who test every guide on real hardware.
+              </p>
+              <p className="flex flex-wrap gap-x-4 gap-y-1">
+                <Link href="/editorial-policy" className="hover:text-gray-400 transition-colors">Editorial Policy</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/about" className="hover:text-gray-400 transition-colors">About STREAMB4</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/contact" className="hover:text-gray-400 transition-colors">Contact Us</Link>
+              </p>
+            </div>
 
             {/* Comments Section */}
             <CommentSection postSlug={slug} />
