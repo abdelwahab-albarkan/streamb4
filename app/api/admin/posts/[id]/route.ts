@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 import { jsonResponse } from "@/lib/serialize";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -119,6 +120,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     if (!updatedPost) {
       return jsonResponse("PUT /api/admin/posts/[id] [NOT FOUND]", { success: false, error: "Post not found" }, { status: 404 });
+    }
+
+    // Invalidate ISR cache immediately when a post is published so Googlebot
+    // never reads a stale noindex response left over from the post's draft phase.
+    const postSlug = (updatedPost as any).slug as string | undefined;
+    if ((updatedPost as any).status === "published" && postSlug) {
+      revalidatePath(`/blog/${postSlug}`);
+      revalidatePath("/blog", "page");
     }
 
     return jsonResponse("PUT /api/admin/posts/[id]", { success: true, post: updatedPost });

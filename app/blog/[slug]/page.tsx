@@ -79,11 +79,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {};
   }
 
+  // Genuine 404 — slug does not exist or post is not published
   if (!post) return { robots: { index: false, follow: false } };
+
   const ogImg = post.ogImage || post.featuredImage || "/og-image.jpg";
   return {
     title: post.seoTitle || post.title,
     description: post.metaDescription || post.excerpt,
+    // Explicitly declare index:true for every published post.
+    // Without this, ISR can serve a stale noindex cache entry from when the
+    // post was still a draft — even after it has been published in the DB.
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
     openGraph: {
       title: post.ogTitle || post.seoTitle || post.title,
       description: post.ogDescription || post.metaDescription || post.excerpt,

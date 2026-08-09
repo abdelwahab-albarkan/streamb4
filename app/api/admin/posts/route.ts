@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { generateSlug, isValidSlug } from "@/lib/slugUtils";
 import { jsonResponse } from "@/lib/serialize";
+import { revalidatePath } from "next/cache";
 
 // ─── GET ─────────────────────────────────────────────────────────────────────
 
@@ -103,6 +104,12 @@ export async function POST(request: Request) {
     };
 
     await new Post(newPost).save();
+
+    // Invalidate ISR for immediately-published posts so they are indexable at once.
+    if (newPost.status === "published" && newPost.slug) {
+      revalidatePath(`/blog/${newPost.slug}`);
+      revalidatePath("/blog", "page");
+    }
 
     return jsonResponse("POST /api/admin/posts", { success: true, post: newPost });
   } catch (error) {
