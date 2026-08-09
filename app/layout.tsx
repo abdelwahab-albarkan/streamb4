@@ -16,7 +16,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  preload: false,
+  preload: true,
 })
 
 const anton = Anton({
@@ -24,7 +24,7 @@ const anton = Anton({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-anton',
-  preload: false,
+  preload: true,
 })
 
 const spartan = League_Spartan({
@@ -211,13 +211,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://image.tmdb.org" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
-        <link rel="dns-prefetch" href="https://api.anthropic.com" />
         <link rel="dns-prefetch" href="https://image.pollinations.ai" />
         <link rel="dns-prefetch" href="https://clarity.microsoft.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link
           rel="alternate"
           type="application/rss+xml"
