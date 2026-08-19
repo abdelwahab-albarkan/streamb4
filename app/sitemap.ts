@@ -21,8 +21,9 @@ const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE}/contact`,       lastModified: new Date(), changeFrequency: "yearly",  priority: 0.4 },
   { url: `${BASE}/about`,         lastModified: new Date(), changeFrequency: "yearly",  priority: 0.4 },
   { url: `${BASE}/restream`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.65 },
-  { url: `${BASE}/legal/privacy`, lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
-  { url: `${BASE}/legal/terms`,   lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
+  { url: `${BASE}/editorial-policy`, lastModified: new Date(), changeFrequency: "yearly",  priority: 0.3 },
+  { url: `${BASE}/legal/privacy`,    lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
+  { url: `${BASE}/legal/terms`,      lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -47,8 +48,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: p.isFeatured ? 0.8 : 0.65,
     }));
-  } catch {
-    // DB not available — sitemap will only include static pages
+  } catch (err) {
+    // DB not available — sitemap returns only static pages.
+    // Check Vercel logs / MongoDB Atlas if blog posts are missing from sitemap.
+    console.error("[sitemap] MongoDB error — blog entries omitted:", err);
   }
 
   return [...STATIC_PAGES, ...blogEntries];

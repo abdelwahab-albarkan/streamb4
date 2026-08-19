@@ -9,10 +9,11 @@ User-agent: *
 Allow: /
 Allow: /blog?category=
 Allow: /blog?q=
+Allow: /_next/static/
+Allow: /_next/image
 Disallow: /api/
 Disallow: /admin/
 Disallow: /offline
-Disallow: /_next/
 
 # ──────────────────────────────────────────────────────────────────
 # AI crawlers — explicitly allowed for llms.txt discovery

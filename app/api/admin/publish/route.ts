@@ -395,13 +395,21 @@ async function publishToBlogger(
       : '',
     // Main content
     bodyHtml,
-    // Canonical reference (visible + structured)
+    // Canonical reference — visible footer + schema markup.
+    // NOTE: A proper <link rel="canonical"> in Blogger's <head> requires editing
+    // your Blogger theme template in Blogger Dashboard → Theme → Edit HTML,
+    // adding: <b:if cond='data:blog.pageType == "item"'><link rel="canonical" expr:href="data:post.url"/></b:if>
+    // That alone makes Blogger use its OWN URL as canonical. To point back to streamb4.com
+    // you need a custom per-post head snippet which the Blogger API does not support.
+    // The best achievable via API is this visible + structured footer:
     `<hr style="border:none;border-top:1px solid #333;margin:32px 0">`,
     `<p style="color:#888;font-size:0.875rem">
-      Originally published at
-      <a href="${canonicalUrl}" rel="canonical" style="color:#ff7a00">${canonicalUrl}</a>.
-      Read the full version on <a href="https://streamb4.com" style="color:#ff7a00">STREAMB4</a>.
+      This article was originally published on
+      <a href="${canonicalUrl}" style="color:#ff7a00">${canonicalUrl}</a>.
+      View the original at <a href="https://streamb4.com" style="color:#ff7a00">streamb4.com</a>.
     </p>`,
+    // Schema.org markup inside Blogger post body pointing back to canonical
+    `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"${canonicalUrl}"},"url":"${canonicalUrl}","isBasedOn":"${canonicalUrl}"}</script>`,
   ].filter(Boolean).join('\n')
 
   // Labels: category + tags (max 20)

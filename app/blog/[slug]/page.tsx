@@ -20,7 +20,23 @@ import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
 
-export const revalidate = 3600; // Cache for 1 hour (ISR)
+export const revalidate = 3600; // ISR: revalidate cached pages every hour
+export const dynamicParams = true; // Allow slugs not in generateStaticParams (new posts)
+
+// Pre-render all published blog posts at build time so Googlebot finds fully-formed
+// HTML immediately — no on-demand generation required for known posts.
+export async function generateStaticParams() {
+  try {
+    await connectDB();
+    const posts = await Post.find({ status: "published" })
+      .select("slug")
+      .lean() as { slug: string }[];
+    return posts.map((p) => ({ slug: p.slug }));
+  } catch (err) {
+    console.error("[generateStaticParams] blog slug — DB error:", err);
+    return [];
+  }
+}
 
 async function getPost(slug: string) {
   try {
