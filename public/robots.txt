@@ -11,6 +11,7 @@ Allow: /blog?category=
 Allow: /blog?q=
 Allow: /_next/static/
 Allow: /_next/image
+Allow: /api/media/
 Disallow: /api/
 Disallow: /admin/
 Disallow: /offline

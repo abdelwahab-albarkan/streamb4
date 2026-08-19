@@ -13,7 +13,7 @@ export async function GET() {
     const serialized = serializeDocs(docs as any[])
     const items = serialized.map((item: any) => ({
       ...item,
-      url: `/api/admin/media/${item._id}`,
+      url: `/api/media/${item._id}`,
     }))
     return jsonResponse('GET /api/admin/media', { success: true, items })
   } catch (err: any) {

@@ -19,6 +19,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Post } from "@/lib/models/Post";
 import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
+import { toPublicMediaUrl, toPublicMediaUrlAbsolute, transformMediaUrlsInContent } from "@/lib/mediaUrl";
 
 export const revalidate = 3600; // ISR: revalidate cached pages every hour
 export const dynamicParams = true; // Allow slugs not in generateStaticParams (new posts)
@@ -98,7 +99,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Genuine 404 — slug does not exist or post is not published
   if (!post) return { robots: { index: false, follow: false } };
 
-  const ogImg = post.ogImage || post.featuredImage || "/og-image.jpg";
+  const ogImg = toPublicMediaUrl(post.ogImage || post.featuredImage) || "/og-image.jpg";
   return {
     title: post.seoTitle || post.title,
     description: post.metaDescription || post.excerpt,
@@ -204,11 +205,11 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
     "publisher": { "@id": "https://streamb4.com/#organization" },
     "image": {
       "@type": "ImageObject",
-      "url": post.featuredImage || post.ogImage || "https://streamb4.com/og-image.jpg",
+      "url": toPublicMediaUrlAbsolute(post.featuredImage || post.ogImage),
       "width": 1200,
       "height": 630
     },
-    "thumbnailUrl": post.featuredImage || post.ogImage || "https://streamb4.com/og-image.jpg",
+    "thumbnailUrl": toPublicMediaUrlAbsolute(post.featuredImage || post.ogImage),
     "keywords": post.focusKeyword || post.tags?.join(", ") || "IPTV",
     "articleSection": post.category || "IPTV",
     "inLanguage": "en-US",
@@ -335,7 +336,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
         {/* Featured Image */}
         {(post.featuredImage || post.category) && (() => {
-          const heroImg = post.featuredImage || getCategoryImage(post.category)
+          const heroImg = toPublicMediaUrl(post.featuredImage) || getCategoryImage(post.category)
           return (
             <div className="aspect-video rounded-[28px] overflow-hidden border border-white/[0.06] max-h-[500px] relative">
               <Image
@@ -362,7 +363,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             <MobileTOC toc={toc} />
 
             <article className="prose prose-base md:prose-lg prose-invert prose-orange max-w-none text-gray-300 leading-relaxed space-y-6">
-              <MarkdownPreview source={post.content} />
+              <MarkdownPreview source={transformMediaUrlsInContent(post.content)} />
             </article>
 
             {/* Custom CTA callout blocks */}

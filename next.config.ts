@@ -95,6 +95,11 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        source: '/blog/draft-1784162544682',
+        destination: '/blog/best-sports-iptv-providers-2026',
+        permanent: true,
+      },
+      {
         source: '/feed',
         destination: '/api/rss',
         permanent: true,
