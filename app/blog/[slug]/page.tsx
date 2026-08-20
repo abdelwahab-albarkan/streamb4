@@ -21,7 +21,7 @@ import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
 import { toPublicMediaUrl, toPublicMediaUrlAbsolute, transformMediaUrlsInContent } from "@/lib/mediaUrl";
 
-export const revalidate = 3600; // ISR: revalidate cached pages every hour
+export const revalidate = 300; // ISR: revalidate cached pages every 5 minutes (reduces stale-noindex window)
 export const dynamicParams = true; // Allow slugs not in generateStaticParams (new posts)
 
 // Pre-render all published blog posts at build time so Googlebot finds fully-formed
