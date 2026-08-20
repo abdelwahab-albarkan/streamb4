@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Editorial Policy — How We Create IPTV Content | STREAMB4",
+  title: { absolute: "Editorial Policy — How We Create IPTV Content | STREAMB4" },
   description: "Learn how STREAMB4 creates, reviews, and updates IPTV guides and articles. Our editorial standards, fact-checking process, and content update policy.",
   alternates: {
     canonical: "https://streamb4.com/editorial-policy",

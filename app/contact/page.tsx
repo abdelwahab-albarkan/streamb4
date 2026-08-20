@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
-  title: "Contact STREAMB4 — 24/7 Customer Support & Sales",
+  title: { absolute: "Contact STREAMB4 — 24/7 Customer Support & Sales | STREAMB4" },
   description: "Contact the STREAMB4 support team. Available 24/7 via live chat and email. Average response time under 10 minutes. Pre-sales, technical support, and reseller enquiries.",
   alternates: {
     canonical: "https://streamb4.com/contact",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import FeaturesClient from "./FeaturesClient";
 
 export const metadata: Metadata = {
-  title: "IPTV Features — 4K Streaming, Anti-Buffering, 50,000+ Channels | STREAMB4",
+  title: { absolute: "IPTV Features — 4K Streaming, Anti-Buffering, 50,000+ Channels | STREAMB4" },
   description: "Discover STREAMB4 IPTV features: 50,000+ live channels, 4K Ultra HD streaming, anti-buffering technology, 24/7 support, no IP lock, EPG guide, catch-up TV, and multi-screen support.",
   alternates: {
     canonical: "https://streamb4.com/features",

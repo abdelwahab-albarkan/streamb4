@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About STREAMB4 — Premium IPTV Since 2022 | Our Story",
+  title: { absolute: "About STREAMB4 — Premium IPTV Since 2022 | Our Story" },
   description: "Learn about STREAMB4 — the premium IPTV service trusted by thousands of customers worldwide. Our mission, values, and commitment to the best streaming experience.",
   alternates: {
     canonical: "https://streamb4.com/about",

@@ -22,8 +22,7 @@ const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE}/about`,         lastModified: new Date(), changeFrequency: "yearly",  priority: 0.4 },
   { url: `${BASE}/restream`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.65 },
   { url: `${BASE}/editorial-policy`, lastModified: new Date(), changeFrequency: "yearly",  priority: 0.3 },
-  { url: `${BASE}/legal/privacy`,    lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
-  { url: `${BASE}/legal/terms`,      lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
+  // legal pages are noindex — excluded from sitemap to preserve crawl budget
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

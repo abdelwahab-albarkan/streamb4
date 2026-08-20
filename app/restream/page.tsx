@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import RestreamClient from "./RestreamClient";
 
 export const metadata: Metadata = {
-  title: "IPTV Restream Service — Broadcast to Multiple Platforms | STREAMB4",
+  title: { absolute: "IPTV Restream Service — Broadcast to Multiple Platforms | STREAMB4" },
   description: "Restream your IPTV content to YouTube, Facebook, Twitch, and more simultaneously. STREAMB4 restream service with dedicated 1 Gbps servers, 99.9% uptime, and 24/7 support.",
   alternates: {
     canonical: "https://streamb4.com/restream",

@@ -16,7 +16,7 @@ import { serializeDocs } from "@/lib/serialize";
 type Post = any;
 
 export const metadata: Metadata = {
-  title: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog",
+  title: { absolute: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog" },
   description: "Expert IPTV setup guides, streaming tutorials, device comparisons, and IPTV tips from the STREAMB4 team. Learn how to get the most from your IPTV subscription.",
   alternates: {
     canonical: "https://streamb4.com/blog",

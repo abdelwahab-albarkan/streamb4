@@ -23,17 +23,17 @@ export async function generateMetadata(
     return { robots: { index: false, follow: false } };
   }
 
-  const title = `Best IPTV Service in ${config.name} — ${config.channels} Channels | STREAMB4`;
+  const titleStr = `Best IPTV Service in ${config.name} — ${config.channels} Channels | STREAMB4`;
   const description = `Watch ${config.channels} live TV channels in ${config.name} in 4K Ultra HD. ${config.sports.slice(0, 3).join(", ")} and local networks. ${config.serverNode}. Instant activation.`;
 
   return {
-    title,
+    title: { absolute: titleStr },
     description,
     alternates: {
       canonical: `https://streamb4.com/${country}`,
     },
     openGraph: {
-      title,
+      title: titleStr,
       description,
       images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: `STREAMB4 IPTV for ${config.name} — ${config.channels} Live Channels` }],
       url: `https://streamb4.com/${country}`,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PricingClient from "./PricingClient";
 
 export const metadata: Metadata = {
-  title: "IPTV Subscription Plans & Pricing — From $39.99 | STREAMB4",
+  title: { absolute: "IPTV Subscription Plans & Pricing — From $39.99 | STREAMB4" },
   description: "Compare STREAMB4 IPTV plans: Solo from $39.99, Duo from $55, Family from $70. 50,000+ live channels, 4K quality, instant activation, no contracts. Choose your plan today.",
   alternates: {
     canonical: "https://streamb4.com/pricing",

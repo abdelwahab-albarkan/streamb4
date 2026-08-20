@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ResellerClient from "./ResellerClient";
 
 export const metadata: Metadata = {
-  title: "IPTV Reseller Program — White-Label IPTV Business | STREAMB4",
+  title: { absolute: "IPTV Reseller Program — White-Label IPTV Business | STREAMB4" },
   description: "Start your IPTV reseller business with STREAMB4. White-label solution, 25 to 1,000+ connections, high profit margins, dedicated account manager, and 24/7 support. Apply today.",
   alternates: {
     canonical: "https://streamb4.com/reseller",

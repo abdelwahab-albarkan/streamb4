@@ -7,7 +7,7 @@ import DevicesClient, { type PlayerData } from "./DevicesClient";
 import DevicesFAQ from "./DevicesFAQ";
 
 export const metadata: Metadata = {
-  title: "IPTV Downloader Codes & App Installation — Firestick, Smart TV, Android | STREAMB4",
+  title: { absolute: "IPTV Downloader Codes & App Installation — Firestick, Smart TV, Android | STREAMB4" },
   description: "Get 6-digit Downloader codes for IPTV Smarters Pro, TiviMate, IBO Player and more. Install IPTV apps on Firestick, Android TV Box, Samsung, LG Smart TVs instantly.",
   alternates: {
     canonical: "https://streamb4.com/devices",

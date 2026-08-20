@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import InstallClient from "./InstallClient";
 
 export const metadata: Metadata = {
-  title: "How to Install IPTV — Fire TV Stick, Smart TV, Android & Mobile | STREAMB4",
+  title: { absolute: "How to Install IPTV — Fire TV Stick, Smart TV, Android & Mobile | STREAMB4" },
   description: "Step-by-step IPTV setup guides for Amazon Fire TV Stick, Samsung Smart TV, Android TV Box, and mobile phones. Watch video tutorials and get streaming in under 5 minutes.",
   alternates: {
     canonical: "https://streamb4.com/install",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AffiliateClient from "./AffiliateClient";
 
 export const metadata: Metadata = {
-  title: "IPTV Affiliate Program — Earn 30% Recurring Commission | STREAMB4",
+  title: { absolute: "IPTV Affiliate Program — Earn 30% Recurring Commission | STREAMB4" },
   description: "Join the STREAMB4 affiliate program and earn 30% recurring commission on every sale and renewal. Real-time tracking dashboard, $50 minimum payout. Apply today.",
   alternates: {
     canonical: "https://streamb4.com/affiliate",

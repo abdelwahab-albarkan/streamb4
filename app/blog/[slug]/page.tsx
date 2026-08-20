@@ -100,8 +100,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return { robots: { index: false, follow: false } };
 
   const ogImg = toPublicMediaUrl(post.ogImage || post.featuredImage) || "/og-image.jpg";
+  const postTitle = post.seoTitle || post.title;
   return {
-    title: post.seoTitle || post.title,
+    title: { absolute: postTitle.includes("| STREAMB4") ? postTitle : `${postTitle} | STREAMB4` },
     description: post.metaDescription || post.excerpt,
     // Explicitly declare index:true for every published post.
     // Without this, ISR can serve a stale noindex cache entry from when the
