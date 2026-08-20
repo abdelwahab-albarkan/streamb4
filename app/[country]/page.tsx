@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import CountryClient, { COUNTRY_CONFIGS } from "./CountryClient";
+import CountryClient from "./CountryClient";
+import { COUNTRY_CONFIGS } from "@/lib/countryConfigs";
 
 function safeJsonLd(data: object): string {
   return JSON.stringify(data)

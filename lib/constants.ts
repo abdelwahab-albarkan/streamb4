@@ -346,7 +346,7 @@ export const MORE_LINKS = [
   { label: "Legal", href: "/legal/terms" },
   { label: "USA", href: "/usa" },
   { label: "Canada", href: "/canada" },
-  { label: "UK", href: "/uk" },
+  { label: "UK", href: "/united-kingdom" },
   { label: "Europe", href: "/europe" },
 ];
 
