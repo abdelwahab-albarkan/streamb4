@@ -23,8 +23,8 @@ const FAQSection      = dynamic(() => import("@/components/sections/FAQSection")
 const CTASection      = dynamic(() => import("@/components/sections/CTASection").then(m => ({ default: m.CTASection })));
 
 export const metadata: Metadata = {
-  title: { absolute: "STREAMB4 — Best IPTV Service | 50,000+ Channels, 4K Streaming" },
-  description: "STREAMB4 is the #1 premium IPTV service. Watch 50,000+ live TV channels and 180,000+ movies in 4K Ultra HD. Instant activation. No contracts. Free 24-hour trial.",
+  title: { absolute: "Best IPTV Service 2026 — 50,000+ Channels in 4K | STREAMB4" },
+  description: "Stream 50,000+ live TV channels and 180,000+ movies in 4K Ultra HD with STREAMB4. Instant activation. No contracts. Works on Firestick, Smart TV, Android, iOS and more.",
   alternates: {
     canonical: "https://streamb4.com",
   },

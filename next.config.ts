@@ -103,7 +103,12 @@ const nextConfig: NextConfig = {
         source: '/feed',
         destination: '/api/rss',
         permanent: true,
-      }
+      },
+      {
+        source: '/uk',
+        destination: '/united-kingdom',
+        permanent: true,
+      },
     ]
   },
 

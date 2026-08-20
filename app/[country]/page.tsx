@@ -18,7 +18,8 @@ export async function generateMetadata(
   { params }: { params: Promise<{ country: string }> }
 ): Promise<Metadata> {
   const { country } = await params;
-  const config = COUNTRY_CONFIGS[country.toLowerCase()];
+  const countryCode = country.toLowerCase();
+  const config = COUNTRY_CONFIGS[countryCode];
 
   if (!config) {
     return { robots: { index: false, follow: false } };
@@ -31,7 +32,7 @@ export async function generateMetadata(
     title: { absolute: titleStr },
     description,
     alternates: {
-      canonical: `https://streamb4.com/${country}`,
+      canonical: `https://streamb4.com/${countryCode}`,
     },
     openGraph: {
       title: titleStr,

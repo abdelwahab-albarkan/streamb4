@@ -339,6 +339,7 @@ export const NAV_LINKS = [
 ];
 
 export const MORE_LINKS = [
+  { label: "IPTV Devices", href: "/iptv" },
   { label: "Devices", href: "/devices" },
   { label: "Affiliate", href: "/affiliate" },
   { label: "FAQ", href: "/faq" },

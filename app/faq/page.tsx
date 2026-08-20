@@ -3,8 +3,8 @@ import FaqClient from "./FaqClient";
 import { CATEGORIZED_FAQS } from "./faqData";
 
 export const metadata: Metadata = {
-  title: { absolute: "IPTV FAQ — Frequently Asked Questions | STREAMB4" },
-  description: "Find answers to the most common IPTV questions: setup, device compatibility, pricing, billing, streaming quality, and more. Answered by the STREAMB4 team.",
+  title: { absolute: "IPTV Setup, Pricing & Compatibility Questions Answered | STREAMB4" },
+  description: "Answers to the most common IPTV questions — how to set up, which devices work, how billing works, and what to do if your stream buffers. From the STREAMB4 team.",
   alternates: {
     canonical: "https://streamb4.com/faq",
   },
