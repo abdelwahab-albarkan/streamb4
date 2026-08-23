@@ -84,7 +84,7 @@ export const DEVICE_CONFIGS: Record<string, DeviceConfig> = {
     icon: "📺",
     category: "smart_tv",
     os: "Tizen OS",
-    description: "Samsung Smart TVs run Tizen OS, which has a curated app store. IPTV apps including IPTV Smarters and Smart IPTV are available directly from the Samsung Content Store, and the TVs support screen mirroring as an alternative.",
+    description: "Samsung Smart TVs run Tizen OS, which has a curated app store. IPTV apps including IPTV Smarters and Smart IPTV are available from the Samsung Content Store on 2019+ models (availability varies by region). For older models or unsupported regions, screen mirroring from a phone is a reliable alternative.",
     primaryKeyword: "IPTV Samsung Smart TV",
     title: "How to Get IPTV on Samsung Smart TV 2026 — Apps & Setup Guide",
     metaDescription: "Set up IPTV on your Samsung Smart TV. Compatible apps from the Samsung Content Store, screen mirroring options, and step-by-step installation for STREAMB4.",
@@ -192,7 +192,7 @@ export const DEVICE_CONFIGS: Record<string, DeviceConfig> = {
     requirements: {
       internetSpeed: "25 Mbps for HD; 50 Mbps for 4K",
       resolution: "4K HDR and Dolby Vision on Apple TV 4K (2nd and 3rd generation)",
-      notes: "Apple TV 4K HD (1st generation) supports up to 4K but lacks the Dolby Vision support of newer models.",
+      notes: "Apple TV 4K (1st generation, 2017) supports 4K but lacks the Dolby Vision support of the 2nd and 3rd generation models.",
     },
     features: [
       "All IPTV apps installed via App Store — no sideloading",
@@ -295,7 +295,7 @@ export const DEVICE_CONFIGS: Record<string, DeviceConfig> = {
       "NVIDIA GameStream and GeForce NOW support",
     ],
     troubleshootingTips: [
-      "No buffering issues on Shield are almost always network-side — verify your internet speed is at or above 50 Mbps for 4K channels",
+      "Any buffering issues on Shield are almost always network-side — verify your internet speed is at or above 50 Mbps for 4K channels",
       "TiviMate recording not working — connect an external USB drive or HDD to the Shield's USB port and set it as the recording path in TiviMate settings",
       "Dolby Atmos audio not passing through — check Shield audio settings: Settings → Device Preferences → Sound → Dolby Atmos, set to Auto",
       "Google TV homescreen (on 2022+ Shield) vs Android TV — both are compatible; the app drawer and Play Store are the same",

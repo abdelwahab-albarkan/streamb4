@@ -13,7 +13,7 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
       },
       {
         question: "How many devices can I use simultaneously?",
-        answer: "Plans range from 1 to 6 simultaneous connections. Solo supports 1 screen, Duo supports 2, Family supports 3, Home supports 4, Extended supports 5, and Ultimate supports 6 screens — all usable on different devices at the same time."
+        answer: "STREAMB4 offers three plans with different simultaneous connection limits: Solo supports 1 screen, Duo supports 2, and Family supports 3 — all usable on different devices at the same time."
       },
       {
         question: "What countries does STREAMB4 work in?",
