@@ -54,8 +54,8 @@ const PRICING_DATA = {
 }
 
 const FEATURES = [
-  '25,000+ Live Channels',
-  '100,000+ Movies & TV Shows',
+  '50,000+ Live Channels',
+  '180,000+ Movies & TV Shows',
   'Premium Sports Coverage',
   'Ultra HD 4K Quality',
   'Anti Freeze Technology',

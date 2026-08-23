@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://streamb4.com",
     title: "STREAMB4 — Best IPTV Service | 50,000+ Live Channels in 4K",
-    description: "Stream 50,000+ live TV channels & 180,000+ movies in 4K. Plans from $39.99. Instant activation. No contracts. Try free for 24 hours.",
+    description: "Stream 50,000+ live TV channels & 180,000+ movies in 4K. Plans from $39.99 for 3 months. Instant activation. No contracts.",
     images: [{
       url: "/og-image.jpg",
       width: 1200,
@@ -96,9 +96,9 @@ const serviceSchema = {
     "itemListElement": [
       {
         "@type": "Offer",
-        "name": "Solo Plan",
-        "description": "1 simultaneous connection — 50,000+ live channels, 4K quality",
-        "price": "9.00",
+        "name": "Solo Plan — 3 Months",
+        "description": "1 simultaneous connection — 50,000+ live channels, 4K quality, 3-month subscription",
+        "price": "39.99",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -106,9 +106,9 @@ const serviceSchema = {
       },
       {
         "@type": "Offer",
-        "name": "Duo Plan",
-        "description": "2 simultaneous connections — 50,000+ live channels, 4K quality",
-        "price": "17.99",
+        "name": "Duo Plan — 3 Months",
+        "description": "2 simultaneous connections — 50,000+ live channels, 4K quality, 3-month subscription",
+        "price": "55.00",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -116,9 +116,9 @@ const serviceSchema = {
       },
       {
         "@type": "Offer",
-        "name": "Family Plan",
-        "description": "3 simultaneous connections — 50,000+ live channels, 4K quality",
-        "price": "24.99",
+        "name": "Family Plan — 3 Months",
+        "description": "3 simultaneous connections — 50,000+ live channels, 4K quality, 3-month subscription",
+        "price": "70.00",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -145,7 +145,7 @@ const homepageFaqSchema = {
       "name": "How much does STREAMB4 cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "STREAMB4 plans start from $9.00/month (Solo, 1 screen, billed monthly). A 12-month Solo plan costs $69.99, Duo (2 screens) $119.99, and Family (3 screens) $159.99. All plans include unlimited channels, VOD, and 4K quality."
+        "text": "STREAMB4 plans start from $39.99 for 3 months (Solo, 1 screen). A 12-month Solo plan costs $69.99 ($5.83/month equivalent), Duo (2 screens, 12 months) $120.00, and Family (3 screens, 12 months) $165.00. All plans include 50,000+ channels, 180,000+ VOD titles, and 4K quality."
       }
     },
     {
