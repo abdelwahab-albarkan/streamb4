@@ -27,7 +27,7 @@ const FEATURES = [
   {
     title: "Anti-Buffering Tech",
     icon: "zap",
-    description: "geo-routing routing across 26 worldwide edge network cache servers",
+    description: "geo-routing across worldwide edge servers for fast channel delivery",
   },
   {
     title: "Global Channel Library",
@@ -58,9 +58,9 @@ const FEATURE_DETAILS: Record<string, { stats: string; detail: string }> = {
       "Every channel is tested for quality. We deliver genuine 4K UHD at 60fps for sports, FHD 1080p for entertainment, and HD 720p minimum across all streams. No upscaled fakes — real source quality verified daily.",
   },
   "Anti-Buffering Tech": {
-    stats: "26 Edge Servers",
+    stats: "Global CDN",
     detail:
-      "Our proprietary CDN spans 26 edge servers across 4 continents, dynamically routing your stream through the fastest path. Adaptive bitrate technology adjusts in real-time, ensuring zero buffering even during peak events like the Super Bowl or Champions League finals.",
+      "Our CDN dynamically routes your stream through the fastest available path based on your location. Adaptive bitrate technology adjusts in real-time, reducing buffering during high-demand events like the Super Bowl or Champions League finals.",
   },
   "Global Channel Library": {
     stats: "50,000+ Channels • 60+ Countries",
@@ -85,10 +85,10 @@ const FEATURE_DETAILS: Record<string, { stats: string; detail: string }> = {
 };
 
 const TECH_STATS = [
-  { icon: <Server className="w-6 h-6" />, value: "26", label: "Edge Servers Worldwide" },
-  { icon: <Shield className="w-6 h-6" />, value: "99.9%", label: "Guaranteed Uptime" },
+  { icon: <Server className="w-6 h-6" />, value: "Global", label: "CDN Coverage" },
+  { icon: <Shield className="w-6 h-6" />, value: "99.9%", label: "Uptime Target" },
   { icon: <Clock className="w-6 h-6" />, value: "<5min", label: "Support Response" },
-  { icon: <Users className="w-6 h-6" />, value: "230K+", label: "Active Subscribers" },
+  { icon: <Users className="w-6 h-6" />, value: "7-Day", label: "Money-Back Guarantee" },
   { icon: <Wifi className="w-6 h-6" />, value: "10Gbps", label: "Server Capacity" },
   { icon: <Play className="w-6 h-6" />, value: "60fps", label: "4K Stream Quality" },
 ];

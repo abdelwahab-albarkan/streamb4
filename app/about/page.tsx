@@ -73,7 +73,7 @@ const VALUES = [
   },
   {
     title: "No Contracts. Ever.",
-    desc: "We believe streaming should be flexible. No lock-ins, no cancellation fees. Subscribe monthly, every 3 months, or annually — on your terms.",
+    desc: "We believe streaming should be flexible. No lock-ins, no cancellation fees. Subscribe every 3 months, every 6 months, or annually — on your terms.",
   },
   {
     title: "Real 24/7 Support",

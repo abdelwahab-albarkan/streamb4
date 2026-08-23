@@ -200,7 +200,7 @@ export default function IPTVPage() {
                 },
                 {
                   title: "Multiple Simultaneous Streams",
-                  body: "Depending on your plan, stream on 1–6 devices at the same time. Solo watches on one device, Family on three, Ultimate on six.",
+                  body: "Depending on your plan, stream on 1–3 devices at the same time. Solo supports one screen, Duo supports two, and Family supports three.",
                 },
                 {
                   title: "No IP Restrictions",
@@ -243,7 +243,7 @@ export default function IPTVPage() {
               Ready to Start Streaming?
             </h2>
             <p className="text-gray-400 mb-8">
-              One subscription. All your devices. 50,000+ live channels and 180,000+ movies from $9/month.
+              One subscription. All your devices. 50,000+ live channels and 180,000+ movies. Plans from $39.99 for 3 months.
             </p>
             <Link
               href="/pricing"

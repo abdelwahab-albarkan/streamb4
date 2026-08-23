@@ -45,7 +45,7 @@ export const COUNTRY_CONFIGS: Record<string, CountryConfig> = {
     name: "Europe",
     currency: "EUR",
     serverNode: "Frankfurt & Amsterdam Edge Nodes",
-    desc: "STREAMB4's European package covers 20,000+ channels across more than 30 countries, routed through Frankfurt and Amsterdam nodes for central coverage. Spanish (TF1, M6, France 5), German (ARD, ZDF, RTL), Italian (Rai Uno, Mediaset), Spanish (TVE, La1), Dutch (NOS), and Scandinavian public broadcasters are all included, with country-specific EPG guides in the correct local time zone. Top football leagues — La Liga, Ligue 1, Bundesliga, Serie A, and the Champions League — are covered across multiple feeds. The multi-lingual lineup means one subscription serves an entire household watching in different languages.",
+    desc: "STREAMB4's European package covers 20,000+ channels across more than 30 countries, routed through Frankfurt and Amsterdam nodes for central coverage. French (TF1, M6, France 5), German (ARD, ZDF, RTL), Italian (Rai Uno, Mediaset), Spanish (TVE, La1), Dutch (NOS), and Scandinavian public broadcasters are all included, with country-specific EPG guides in the correct local time zone. Top football leagues — La Liga, Ligue 1, Bundesliga, Serie A, and the Champions League — are covered across multiple feeds. The multi-lingual lineup means one subscription serves an entire household watching in different languages.",
     channels: "20,000+",
     sports: ["La Liga", "Ligue 1", "Bundesliga", "Serie A", "Eredivisie", "Champions League"],
     localNetworks: ["TF1", "ARD", "Rai Uno", "TVE", "NOS", "SVT"],
