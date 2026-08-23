@@ -98,7 +98,7 @@ const serviceSchema = {
         "@type": "Offer",
         "name": "Solo Plan",
         "description": "1 simultaneous connection — 50,000+ live channels, 4K quality",
-        "price": "39.99",
+        "price": "9.00",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -108,7 +108,7 @@ const serviceSchema = {
         "@type": "Offer",
         "name": "Duo Plan",
         "description": "2 simultaneous connections — 50,000+ live channels, 4K quality",
-        "price": "55.00",
+        "price": "17.99",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -118,7 +118,7 @@ const serviceSchema = {
         "@type": "Offer",
         "name": "Family Plan",
         "description": "3 simultaneous connections — 50,000+ live channels, 4K quality",
-        "price": "70.00",
+        "price": "24.99",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-01-01",
         "availability": "https://schema.org/InStock",
@@ -145,7 +145,7 @@ const homepageFaqSchema = {
       "name": "How much does STREAMB4 cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "STREAMB4 plans start from $39.99 for 3 months (1 screen). A 12-month Solo plan costs $69.99, Duo $120.00, and Family (3 screens) $165.00. All plans include unlimited channels, VOD, and 4K quality."
+        "text": "STREAMB4 plans start from $9.00/month (Solo, 1 screen, billed monthly). A 12-month Solo plan costs $69.99, Duo (2 screens) $119.99, and Family (3 screens) $159.99. All plans include unlimited channels, VOD, and 4K quality."
       }
     },
     {

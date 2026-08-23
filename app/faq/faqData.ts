@@ -18,6 +18,10 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
       {
         question: "What countries does STREAMB4 work in?",
         answer: "STREAMB4 works worldwide. There are no geographic restrictions or IP locks. You can stream from any country without a VPN."
+      },
+      {
+        question: "Can I try STREAMB4 before committing to a plan?",
+        answer: "Yes. Contact our support team before purchasing and ask about a short trial. We also offer a 7-day money-back guarantee on all first-time subscriptions, so you can subscribe with confidence."
       }
     ]
   },
@@ -26,7 +30,7 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
     items: [
       {
         question: "What internet speed do I need?",
-        answer: "We recommend a minimum of 10 Mbps for HD streaming and 25+ Mbps for stable 4K Ultra HD. Most modern broadband connections exceed these requirements comfortably."
+        answer: "We recommend a minimum of 10 Mbps for HD streaming and 25+ Mbps for stable 4K Ultra HD. Most modern broadband connections exceed these requirements comfortably. If you experience buffering on a fast connection, try using a wired Ethernet cable instead of Wi-Fi."
       },
       {
         question: "Which devices are compatible with STREAMB4?",
@@ -39,6 +43,18 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
       {
         question: "What IPTV player apps are supported?",
         answer: "STREAMB4 works with all major IPTV players: TiviMate, IPTV Smarters Pro, IBO Player, XCIPTV, Flixera, and Net IPTV. We support Xtream Codes, M3U playlists, and MAC address activation."
+      },
+      {
+        question: "How do I set up STREAMB4 on a Samsung or LG Smart TV?",
+        answer: "Samsung and LG Smart TVs use MAC address activation. Install IBO Player from your TV's app store (search 'IBO Player'). Open the app and note the MAC address shown on screen. Send that address to STREAMB4 support via live chat or email, and we'll activate your account to that TV within minutes — no username or password needed."
+      },
+      {
+        question: "What is Xtream Codes and do I need it?",
+        answer: "Xtream Codes is a login-based connection method used by most modern IPTV apps (TiviMate, IPTV Smarters, XCIPTV). Instead of loading a long M3U URL, you enter a server address, username, and password. STREAMB4 supports both Xtream Codes and M3U. Xtream Codes is recommended because it loads the EPG guide faster and lets the app remember your login."
+      },
+      {
+        question: "What is a 6-digit Downloader code and how do I use it?",
+        answer: "A Downloader code is a shortcode you enter in the AFTVnews Downloader app on your Firestick or Android TV Box. Instead of typing a full URL with your remote, you enter a 6-digit number and the app downloads the IPTV player APK automatically. For example: IPTV Smarters Pro is 6468112, TiviMate is 778786. You can find all current codes on our Devices page."
       }
     ]
   },
@@ -60,6 +76,10 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
       {
         question: "How long does activation take?",
         answer: "Activation is instant. Your IPTV credentials are delivered by email within minutes of your order being confirmed. No waiting, no manual processing."
+      },
+      {
+        question: "Can I upgrade my plan later?",
+        answer: "Yes. You can upgrade to a higher plan at any time by contacting our support team. The upgrade is applied immediately and prorated to your existing subscription period."
       }
     ]
   },
@@ -72,11 +92,15 @@ export const CATEGORIZED_FAQS: FAQGroup[] = [
       },
       {
         question: "Why am I experiencing buffering?",
-        answer: "Buffering is usually caused by a slow internet connection or Wi-Fi interference. We recommend using a wired Ethernet connection and ensuring at least 10 Mbps for HD or 25 Mbps for 4K."
+        answer: "Buffering is usually caused by one of three things: a slow or congested internet connection, Wi-Fi interference, or a busy time of day on your ISP's network. First, try switching from Wi-Fi to a wired Ethernet connection — this resolves the issue for most users. If you're already wired, try lowering the stream quality in your IPTV player settings from 4K to FHD or HD. If the problem continues, contact our 24/7 support team so we can check the specific stream and switch you to an alternative server node."
       },
       {
         question: "Does STREAMB4 include an Electronic Program Guide (EPG)?",
-        answer: "Yes. Full EPG (TV Guide) is included with all plans. You can see what is on now and plan ahead for upcoming programmes and sports events."
+        answer: "Yes. Full EPG (TV Guide) is included with all plans. You can see what is on now and plan ahead for upcoming programmes and sports events. EPG data is available for 7 days ahead on most channels."
+      },
+      {
+        question: "Is there a catch-up TV feature?",
+        answer: "Yes. STREAMB4 supports catch-up TV on supported channels, allowing you to watch programmes from the past 7 days on demand. Availability varies by channel — not every channel in the library supports catch-up, but the major networks in each region typically do."
       }
     ]
   }

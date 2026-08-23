@@ -56,7 +56,7 @@ const howToSchema = {
       "@type": "HowToStep",
       "position": 3,
       "name": "Download IPTV Player",
-      "text": "Open Downloader, enter the URL or shortcode provided by STREAMB4 support and press Go to download.",
+      "text": "Open Downloader and enter a 6-digit shortcode: IPTV Smarters Pro (6468112), TiviMate (778786), or IBO Player (417847). Press Go and the APK downloads automatically.",
       "url": "https://streamb4.com/install"
     },
     {

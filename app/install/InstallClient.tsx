@@ -23,7 +23,7 @@ const devices = [
     steps: [
       { icon: 'settings',    title: 'Enable Developer Options',  desc: 'On your Fire TV, go to Settings → My Fire TV → Developer Options and turn ON "Apps from Unknown Sources".' },
       { icon: 'download',    title: 'Install Downloader App',    desc: 'Search "Downloader" in the Amazon App Store and install it. This is the app you\'ll use to sideload IPTV players.' },
-      { icon: 'link',        title: 'Download IPTV Player',      desc: 'Open Downloader, enter the URL provided by STREAMB4 support (e.g. TiviMate or IPTV Smarters) and press Go to download.' },
+      { icon: 'link',        title: 'Download IPTV Player',      desc: 'Open Downloader, enter the 6-digit code for your player — IPTV Smarters Pro: 6468112, TiviMate: 778786, IBO Player: 417847 — and press Go to download the APK.' },
       { icon: 'package',     title: 'Install the APK',           desc: 'Once downloaded, tap Install. After installation select "Done" — do not open yet.' },
       { icon: 'key',         title: 'Enter Your Credentials',    desc: 'Open the IPTV player, choose "Add Playlist via URL" or "Xtream Codes", then enter the M3U URL / login details sent by STREAMB4.' },
       { icon: 'check',       title: 'Start Streaming',           desc: 'Your channels will load automatically. Enjoy 50,000+ live channels in crystal-clear 4K!' },

@@ -146,11 +146,11 @@ const breadcrumbSchema = {
 };
 
 const GUIDES = [
-  { label: "Amazon Firestick", Icon: Flame,      href: "/install" },
-  { label: "Samsung Smart TV", Icon: Monitor,    href: "/install" },
-  { label: "LG Smart TV",      Icon: Radio,      href: "/install" },
-  { label: "Android TV / Box", Icon: Cpu,        href: "/install" },
-  { label: "Mobile Phone",     Icon: Smartphone, href: "/install" },
+  { label: "Amazon Firestick", Icon: Flame,      href: "/iptv/firestick" },
+  { label: "Samsung Smart TV", Icon: Monitor,    href: "/iptv/samsung-tv" },
+  { label: "LG Smart TV",      Icon: Radio,      href: "/iptv/lg-tv" },
+  { label: "Android TV / Box", Icon: Cpu,        href: "/iptv/android-tv" },
+  { label: "Mobile Phone",     Icon: Smartphone, href: "/iptv/android-phone" },
 ];
 
 async function getPlayers(): Promise<PlayerData[]> {

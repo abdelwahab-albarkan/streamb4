@@ -291,10 +291,10 @@ export default function AboutPage() {
                 View Pricing
               </Link>
               <Link
-                href="/pricing"
+                href="/contact"
                 className="px-8 py-4 rounded-xl font-black text-white text-sm uppercase border border-white/10 hover:border-[#FF6B00]/40 transition-colors"
               >
-                View Plans & Pricing
+                Contact Us
               </Link>
             </div>
           </div>
