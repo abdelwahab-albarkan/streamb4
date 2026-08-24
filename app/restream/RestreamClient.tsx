@@ -102,7 +102,7 @@ export default function RestreamClient() {
                 <div className="space-y-4">
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center gap-2 text-xs text-gray-400">
-                      <Check className="w-4 h-4 text-[#FF6B00]" /> 99.99% Network Uptime
+                      <Check className="w-4 h-4 text-[#FF6B00]" /> 99.9% Network Uptime
                     </li>
                     <li className="flex items-center gap-2 text-xs text-gray-400">
                       <Check className="w-4 h-4 text-[#FF6B00]" /> Low Latency H264 / H265
@@ -147,7 +147,7 @@ export default function RestreamClient() {
             </div>
             <div className="p-6 bg-[#141414] border border-[#2a2a2a] rounded-xl text-center">
               <Zap className="w-10 h-10 text-[#FF6B00] mx-auto mb-4" />
-              <h3 className="text-white font-bold text-lg mb-2">Zero Freezing</h3>
+              <h3 className="text-white font-bold text-lg mb-2">Anti-Freeze Technology</h3>
               <p className="text-gray-400 text-sm">Local card inputs for direct and reliable sources.</p>
             </div>
           </div>
