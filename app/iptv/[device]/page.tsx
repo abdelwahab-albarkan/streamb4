@@ -338,7 +338,7 @@ export default async function DevicePage(
               Ready to Stream on {config.shortName}?
             </h2>
             <p className="text-gray-400 mb-8">
-              Get instant access to 50,000+ live channels and 180,000+ movies. Plans from $9/month.
+              Get instant access to 50,000+ live channels and 180,000+ movies. Plans from $39.99 for 3 months.
             </p>
             <Link
               href="/pricing"
