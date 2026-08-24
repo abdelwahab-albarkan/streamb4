@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { transporter, FROM } from "@/lib/email";
 
 // ── In-memory rate limiter: 5 submissions per hour per IP ─────────────────────
 // In-memory is fine for a contact form — resets on cold start (acceptable).
@@ -121,17 +121,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // SMTP credentials from environment
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = parseInt(process.env.SMTP_PORT ?? "587", 10);
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM ?? `STREAMB4 <${smtpUser}>`;
-
-  if (!smtpHost || !smtpUser || !smtpPass) {
+  // Guard: surface a clear server error if SMTP is not configured
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.error(
       "[contact] SMTP not configured. Missing:",
-      [!smtpHost && "SMTP_HOST", !smtpUser && "SMTP_USER", !smtpPass && "SMTP_PASS"]
+      [
+        !process.env.SMTP_HOST && "SMTP_HOST",
+        !process.env.SMTP_USER && "SMTP_USER",
+        !process.env.SMTP_PASS && "SMTP_PASS",
+      ]
         .filter(Boolean)
         .join(", "),
     );
@@ -140,17 +138,6 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
-
-  // Create transporter
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: smtpPort,
-    secure: smtpPort === 465,
-    auth: {
-      user: smtpUser,
-      pass: smtpPass,
-    },
-  });
 
   const submittedAt = new Date().toLocaleString("en-GB", {
     timeZone: "UTC",
@@ -193,8 +180,8 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: smtpFrom,
-      to: smtpUser,
+      from: FROM,
+      to: process.env.SMTP_USER,
       replyTo: `"${name}" <${email}>`,
       subject: `New Contact Message - STREAMB4 | ${subject}`,
       text: textBody,

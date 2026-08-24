@@ -10,17 +10,22 @@ function escapeHtml(str: unknown): string {
     .replace(/'/g, '&#39;')
 }
 
-const transporter = nodemailer.createTransport({
+const smtpPort = Number(process.env.SMTP_PORT) || 465
+
+export const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
+  port: smtpPort,
+  secure: smtpPort === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 })
 
-const FROM = process.env.EMAIL_FROM || 'STREAMB4 <noreply@streamb4.com>'
+export const FROM =
+  process.env.SMTP_FROM ||
+  process.env.EMAIL_FROM ||
+  `STREAMB4 <${process.env.SMTP_USER}>`
 
 // Welcome email for new subscriber
 export async function sendWelcomeEmail(email: string) {
