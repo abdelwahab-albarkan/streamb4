@@ -3,7 +3,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import MarkdownPreview from "@/components/blog/MarkdownPreviewClient";
-import ViewIncrementTrigger from "./ViewIncrementTrigger";
 import CommentSection from "@/components/blog/CommentSection";
 import BookmarkButton from "@/components/blog/BookmarkButton";
 import { getCategoryImage } from "@/lib/blogImages";
@@ -15,66 +14,15 @@ import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleFAQ } from "@/components/blog/ArticleFAQ";
 import { ContentBlock } from "@/components/blog/ContentBlocks";
 import { ArticlePricingStrip } from "@/components/blog/ArticlePricingStrip";
-import { connectDB } from "@/lib/mongodb";
-import { Post } from "@/lib/models/Post";
-import { serializeDoc, serializeDocs } from "@/lib/serialize";
 import { extractToc } from "@/lib/tocUtils";
 import { toPublicMediaUrl, toPublicMediaUrlAbsolute, transformMediaUrlsInContent } from "@/lib/mediaUrl";
+import { getPostBySlug, getRelatedPosts, getAllSlugs } from "@/lib/data/blogHelpers";
 
-export const revalidate = 300; // ISR: revalidate cached pages every 5 minutes (reduces stale-noindex window)
-export const dynamicParams = true; // Allow slugs not in generateStaticParams (new posts)
+// All blog pages are fully static — pre-built at deploy time
+export const dynamic = 'force-static';
 
-// Pre-render all published blog posts at build time so Googlebot finds fully-formed
-// HTML immediately — no on-demand generation required for known posts.
 export async function generateStaticParams() {
-  try {
-    await connectDB();
-    const posts = await Post.find({ status: "published" })
-      .select("slug")
-      .lean() as { slug: string }[];
-    return posts.map((p) => ({ slug: p.slug }));
-  } catch (err) {
-    console.error("[generateStaticParams] blog slug — DB error:", err);
-    return [];
-  }
-}
-
-async function getPost(slug: string) {
-  try {
-    await connectDB();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const post = await Post.findOne({ slug, status: "published" }).lean() as any;
-    return post ? serializeDoc(post) : null;
-  } catch (error) {
-    console.error("getPost error:", error);
-    return null;
-  }
-}
-
-// Does NOT catch — used by generateMetadata so DB errors don't permanently noindex valid posts.
-// Returns null only when the slug genuinely doesn't exist (true 404).
-async function getPostForMetadata(slug: string) {
-  await connectDB();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const post = await Post.findOne({ slug, status: "published" })
-    .select("title seoTitle metaDescription excerpt ogTitle ogDescription featuredImage ogImage twitterTitle twitterDescription")
-    .lean() as any;
-  return post ? serializeDoc(post) : null;
-}
-
-async function getRelatedPosts(category: string, currentId: string) {
-  try {
-    await connectDB();
-    const docs = await Post.find({ category, id: { $ne: currentId }, status: "published" })
-      .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
-      .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
-      .limit(3)
-      .lean();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return serializeDocs(docs as any[]);
-  } catch {
-    return [];
-  }
+  return getAllSlugs();
 }
 
 function safeJsonLd(data: object): string {
@@ -86,17 +34,8 @@ function safeJsonLd(data: object): string {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const post = getPostBySlug(slug);
 
-  let post;
-  try {
-    post = await getPostForMetadata(slug);
-  } catch {
-    // Transient DB failure — inherit global index:true so the post is not permanently noindexed.
-    // The page component will show an error UI; Google will re-crawl and get full content once DB recovers.
-    return {};
-  }
-
-  // Genuine 404 — slug does not exist or post is not published
   if (!post) return { robots: { index: false, follow: false } };
 
   const ogImg = toPublicMediaUrl(post.ogImage || post.featuredImage) || "/og-image.jpg";
@@ -104,9 +43,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: { absolute: postTitle.includes("| STREAMB4") ? postTitle : `${postTitle} | STREAMB4` },
     description: post.metaDescription || post.excerpt,
-    // Explicitly declare index:true for every published post.
-    // Without this, ISR can serve a stale noindex cache entry from when the
-    // post was still a draft — even after it has been published in the DB.
     robots: {
       index: true,
       follow: true,
@@ -127,8 +63,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     },
     twitter: {
       card: "summary_large_image",
-      title: post.twitterTitle || post.seoTitle || post.title,
-      description: post.twitterDescription || post.metaDescription || post.excerpt,
+      title: post.seoTitle || post.title,
+      description: post.metaDescription || post.excerpt,
       images: [ogImg],
     },
     alternates: {
@@ -139,7 +75,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await getPost(slug);
+  const post = getPostBySlug(slug);
 
   if (!post) {
     return (
@@ -168,9 +104,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
     );
   }
 
-  const relatedPosts = await getRelatedPosts(post.category, post.id);
-
-  // Generate Table of Contents (uses github-slugger algorithm to match rehype-slug output)
+  const relatedPosts = getRelatedPosts(post.category, post.id);
   const toc = extractToc(post.content);
 
   const articleFaqs: { question: string; answer: string }[] = Array.isArray(post.faqs) && post.faqs.length > 0
@@ -198,10 +132,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
       "url": "https://streamb4.com/editorial-policy",
       "jobTitle": "Streaming Technology Expert",
       "worksFor": { "@id": "https://streamb4.com/#organization" },
-      "sameAs": [
-        "https://x.com/streamb4t",
-        "https://www.facebook.com/profile.php?id=61591545360371"
-      ]
+      "sameAs": ["https://x.com/streamb4t", "https://www.facebook.com/profile.php?id=61591545360371"]
     },
     "publisher": { "@id": "https://streamb4.com/#organization" },
     "image": {
@@ -218,9 +149,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
       "@type": "SpeakableSpecification",
       "cssSelector": ["h1", "h2", ".article-summary"]
     },
-    ...(post.readingTime > 0 && {
-      "timeRequired": `PT${post.readingTime}M`
-    })
+    ...(post.readingTime > 0 && { "timeRequired": `PT${post.readingTime}M` })
   };
 
   const breadcrumbJsonLd = {
@@ -250,34 +179,23 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
       {faqJsonLd && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(faqJsonLd) }} />
       )}
-      <ViewIncrementTrigger slug={slug} />
 
-      {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 flex-1 w-full space-y-12">
-        {/* Breadcrumb */}
         <nav className="text-xs text-gray-600 font-semibold uppercase tracking-wider space-x-2">
-          <Link href="/" className="hover:text-white transition-colors">
-            Home
-          </Link>
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-white transition-colors">
-            Blog
-          </Link>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <span>/</span>
           <span className="text-gray-400">{post.category}</span>
         </nav>
 
-        {/* Article Header */}
         <div className="max-w-3xl space-y-4">
           <span className="px-3.5 py-1 rounded-full text-xs font-black text-black uppercase tracking-wider bg-gradient-to-r from-[#ff7a00] to-[#ffb300]">
             {post.category}
           </span>
           <h1
             className="font-anton text-white uppercase tracking-tight leading-none"
-            style={{
-              fontFamily: "var(--font-anton), Anton, sans-serif",
-              fontSize: "clamp(1.75rem, 6vw, 4rem)",
-            }}
+            style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(1.75rem, 6vw, 4rem)" }}
           >
             {post.title}
           </h1>
@@ -289,17 +207,9 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
               <span aria-hidden="true">·</span>
               <time dateTime={post.publishedAt || post.createdAt || ""}>
                 {post.publishedAt
-                  ? new Date(post.publishedAt).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
+                  ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
                   : post.createdAt
-                  ? new Date(post.createdAt).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
+                  ? new Date(post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
                   : ""}
               </time>
               {post.updatedAt && post.updatedAt !== post.publishedAt && (
@@ -308,11 +218,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                   <span title="This article was updated after initial publication">
                     Updated{" "}
                     <time dateTime={post.updatedAt}>
-                      {new Date(post.updatedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(post.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </time>
                   </span>
                 </>
@@ -323,19 +229,15 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                   <span>{post.readingTime} min read</span>
                 </>
               )}
-              <span aria-hidden="true">·</span>
-              <span>{(post.views || 0).toLocaleString()} views</span>
             </div>
             <BookmarkButton postId={post.id} postTitle={post.title} postSlug={slug} />
           </div>
         </div>
 
-        {/* Share buttons */}
         <div className="py-2">
           <ShareButtons title={post.title} slug={slug} />
         </div>
 
-        {/* Featured Image */}
         {(post.featuredImage || post.category) && (() => {
           const heroImg = toPublicMediaUrl(post.featuredImage) || getCategoryImage(post.category)
           return (
@@ -353,32 +255,24 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           )
         })()}
 
-        {/* Pricing Strip — full-width, sits between hero image and article body */}
         <ArticlePricingStrip />
 
-        {/* Grid Area: Content + TOC Sticky Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-          {/* Content */}
           <div className="lg:col-span-2 space-y-12">
-            {/* Mobile TOC — collapsible card, hidden on desktop */}
             <MobileTOC toc={toc} />
 
             <article className="prose prose-base md:prose-lg prose-invert prose-orange max-w-none text-gray-300 leading-relaxed space-y-6">
               <MarkdownPreview source={transformMediaUrlsInContent(post.content)} />
             </article>
 
-            {/* Custom CTA callout blocks */}
             <ContentBlock type="tip" title="Pro Streaming Tip">
               Always use a wired Ethernet connection when possible to ensure zero buffering and maximum 4K HDR stream stability.
             </ContentBlock>
 
-            {/* FAQs Accordion — only render if post has actual FAQ data */}
             {articleFaqs.length > 0 && <ArticleFAQ faqs={articleFaqs} />}
 
-            {/* Author Bio Card */}
             <AuthorCard author={post.author} />
 
-            {/* Editorial transparency note */}
             <div className="text-xs text-gray-600 space-y-1 border-t border-white/[0.04] pt-6">
               <p>
                 Content by the{" "}
@@ -396,13 +290,10 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
               </p>
             </div>
 
-            {/* Comments Section */}
             <CommentSection postSlug={slug} />
           </div>
 
-          {/* Sticky Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24">
-            {/* TOC */}
             {toc.length > 0 && (
               <div className="p-6 rounded-[24px] border border-white/[0.06] bg-white/[0.01] hidden lg:block">
                 <h4 className="font-anton text-sm text-white uppercase tracking-wider mb-4">Contents</h4>
@@ -410,7 +301,6 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
               </div>
             )}
 
-            {/* CTA card */}
             <div className="p-6 rounded-[24px] border border-orange-500/20 bg-gradient-to-b from-orange-500/[0.02] to-transparent text-center space-y-4">
               <h4 className="font-anton text-lg text-white uppercase tracking-wider">Get STREAMB4</h4>
               <p className="text-gray-500 text-xs">View pricing plans. No contracts. Cancel anytime.</p>
@@ -423,24 +313,14 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           </aside>
         </div>
 
-        {/* Related Posts */}
         <RelatedPosts posts={relatedPosts} />
 
-        {/* Follow STREAMB4 */}
         <div
           className="rounded-[28px] p-8 sm:p-10 text-center"
-          style={{
-            background: "rgba(255,122,0,0.03)",
-            border: "1px solid rgba(255,122,0,0.1)",
-          }}
+          style={{ background: "rgba(255,122,0,0.03)", border: "1px solid rgba(255,122,0,0.1)" }}
         >
-          <p className="text-orange-500 font-bold text-[10px] uppercase tracking-[0.25em] mb-2">
-            Stay Connected
-          </p>
-          <h3
-            className="font-anton text-2xl text-white uppercase mb-2"
-            style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}
-          >
+          <p className="text-orange-500 font-bold text-[10px] uppercase tracking-[0.25em] mb-2">Stay Connected</p>
+          <h3 className="font-anton text-2xl text-white uppercase mb-2" style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}>
             Follow STREAMB4
           </h3>
           <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto">
@@ -448,52 +328,10 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {[
-              {
-                name: "Discord",
-                label: "Join STREAMB4 on Discord",
-                href: "https://discord.gg/BFr5HSZfk",
-                color: "#5865F2",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
-                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/>
-                  </svg>
-                ),
-              },
-              {
-                name: "Facebook",
-                label: "Follow STREAMB4 on Facebook",
-                href: "https://www.facebook.com/profile.php?id=61591545360371",
-                color: "#1877F2",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
-                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-                  </svg>
-                ),
-              },
-              {
-                name: "X (Twitter)",
-                label: "Follow STREAMB4 on X",
-                href: "https://x.com/streamb4t",
-                color: "#e5e7eb",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622z"/>
-                  </svg>
-                ),
-              },
-              {
-                name: "Instagram",
-                label: "Follow STREAMB4 on Instagram",
-                href: "https://www.instagram.com/streamb4tv/?hl=fr",
-                color: "#E1306C",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
-                    <rect x="2" y="2" width="20" height="20" rx="5"/>
-                    <circle cx="12" cy="12" r="4"/>
-                    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
-                  </svg>
-                ),
-              },
+              { name: "Discord", label: "Join STREAMB4 on Discord", href: "https://discord.gg/BFr5HSZfk", color: "#5865F2", icon: <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg> },
+              { name: "Facebook", label: "Follow STREAMB4 on Facebook", href: "https://www.facebook.com/profile.php?id=61591545360371", color: "#1877F2", icon: <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg> },
+              { name: "X (Twitter)", label: "Follow STREAMB4 on X", href: "https://x.com/streamb4t", color: "#e5e7eb", icon: <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622z"/></svg> },
+              { name: "Instagram", label: "Follow STREAMB4 on Instagram", href: "https://www.instagram.com/streamb4tv/?hl=fr", color: "#E1306C", icon: <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg> },
             ].map((s) => (
               <a
                 key={s.name}
@@ -503,11 +341,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105"
-                style={{
-                  background: `${s.color}18`,
-                  border: `1px solid ${s.color}35`,
-                  color: s.color,
-                }}
+                style={{ background: `${s.color}18`, border: `1px solid ${s.color}35`, color: s.color }}
               >
                 {s.icon}
                 {s.name}

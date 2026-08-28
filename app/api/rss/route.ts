@@ -1,14 +1,9 @@
-import { connectDB } from "@/lib/mongodb";
-import { Post } from "@/lib/models/Post";
-import { xmlResponse } from "@/lib/serialize";
+import { getAllPosts } from "@/lib/data/blogHelpers";
+
+export const dynamic = 'force-static';
 
 export async function GET() {
-  await connectDB();
-  const posts = await Post.find({ status: "published" })
-    .select("title slug excerpt category publishedAt createdAt")
-    .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
-    .limit(20)
-    .lean();
+  const posts = getAllPosts().slice(0, 20);
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -21,13 +16,13 @@ export async function GET() {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     ${posts
       .map(
-        (post: any) => `
+        (post) => `
     <item>
       <title><![CDATA[${post.title}]]></title>
       <link>https://streamb4.com/blog/${post.slug}</link>
       <guid>https://streamb4.com/blog/${post.slug}</guid>
       <description><![CDATA[${post.excerpt}]]></description>
-      <pubDate>${new Date(post.publishedAt || (post as any).createdAt || Date.now()).toUTCString()}</pubDate>
+      <pubDate>${new Date(post.publishedAt || post.createdAt || Date.now()).toUTCString()}</pubDate>
       <category>${post.category}</category>
     </item>`
       )
@@ -35,8 +30,9 @@ export async function GET() {
   </channel>
 </rss>`;
 
-  return xmlResponse("GET /api/rss", rss, {
+  return new Response(rss, {
     headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
       "Cache-Control": "s-maxage=3600",
     },
   });

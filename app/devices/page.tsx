@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flame, Monitor, Radio, Cpu, Smartphone } from "lucide-react";
-import { connectDB } from "@/lib/mongodb";
-import { Player } from "@/lib/models/Player";
 import DevicesClient, { type PlayerData } from "./DevicesClient";
 import DevicesFAQ from "./DevicesFAQ";
 
@@ -153,35 +151,76 @@ const GUIDES = [
   { label: "Mobile Phone",     Icon: Smartphone, href: "/iptv/android-phone" },
 ];
 
-async function getPlayers(): Promise<PlayerData[]> {
-  try {
-    await connectDB();
-    const raw = await Player.find({}).lean();
-    const enabled = (raw as any[])
-      .filter((p) => p.enabled !== false)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-    return enabled.map((p) => ({
-      id: p.id || String(p._id),
-      name: p.name || "",
-      recommended: p.recommended ?? false,
-      featured: p.featured ?? false,
-      enabled: p.enabled ?? true,
-      downloaderCode: p.downloaderCode || "",
-      website: p.website || "",
-      apkUrl: p.apkUrl || "",
-      logo: p.logo || "",
-      version: p.version || "",
-      lastUpdated: p.lastUpdated || "",
-      platforms: p.platforms || [],
-      order: p.order ?? 999,
-    }));
-  } catch {
-    return [];
-  }
+// Static player data — previously managed in MongoDB admin panel.
+const STATIC_PLAYERS: PlayerData[] = [
+  {
+    id: "1",
+    name: "IPTV Smarters Pro",
+    recommended: true,
+    featured: true,
+    enabled: true,
+    downloaderCode: "6468112",
+    website: "https://www.iptvsmarters.com/",
+    apkUrl: "",
+    logo: "",
+    version: "",
+    lastUpdated: "",
+    platforms: ["firestick", "android-tv", "android-phone", "ios"],
+    order: 1,
+  },
+  {
+    id: "2",
+    name: "TiviMate",
+    recommended: true,
+    featured: false,
+    enabled: true,
+    downloaderCode: "778786",
+    website: "https://tivimate.com/",
+    apkUrl: "",
+    logo: "",
+    version: "",
+    lastUpdated: "",
+    platforms: ["firestick", "android-tv"],
+    order: 2,
+  },
+  {
+    id: "3",
+    name: "IBO Player",
+    recommended: false,
+    featured: false,
+    enabled: true,
+    downloaderCode: "417847",
+    website: "",
+    apkUrl: "",
+    logo: "",
+    version: "",
+    lastUpdated: "",
+    platforms: ["samsung-tv", "lg-tv", "android-tv"],
+    order: 3,
+  },
+  {
+    id: "4",
+    name: "GSE Smart IPTV",
+    recommended: false,
+    featured: false,
+    enabled: true,
+    downloaderCode: "680664",
+    website: "",
+    apkUrl: "",
+    logo: "",
+    version: "",
+    lastUpdated: "",
+    platforms: ["ios", "android-phone"],
+    order: 4,
+  },
+];
+
+function getPlayers(): PlayerData[] {
+  return STATIC_PLAYERS;
 }
 
-export default async function DevicesPage() {
-  const players = await getPlayers();
+export default function DevicesPage() {
+  const players = getPlayers();
 
   return (
     <>

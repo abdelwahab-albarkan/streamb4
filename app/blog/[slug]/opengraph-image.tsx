@@ -1,23 +1,12 @@
 import { ImageResponse } from "next/og";
-import { connectDB } from "@/lib/mongodb";
-import { Post } from "@/lib/models/Post";
-import { serializeDoc } from "@/lib/serialize";
+import { getPostBySlug } from "@/lib/data/blogHelpers";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/jpeg";
 
-async function getPost(slug: string) {
-  try {
-    await connectDB();
-    const doc = await Post.findOne({ slug, status: "published" })
-      .select("title category author readingTime")
-      .lean();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return doc ? serializeDoc(doc as any) : null;
-  } catch {
-    return null;
-  }
+function getPost(slug: string) {
+  return getPostBySlug(slug) ?? null;
 }
 
 export const alt = "STREAMB4 Blog Article";

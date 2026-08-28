@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { StatsBar } from "@/components/sections/StatsBar";
-import { connectDB } from "@/lib/mongodb";
-import { Post } from "@/lib/models/Post";
-import { serializeDocs } from "@/lib/serialize";
+import { getAllPosts } from "@/lib/data/blogHelpers";
 import { getPopularMovies, getPopularSports } from "@/lib/tmdb";
 
 // Below-fold sections — lazy-loaded to reduce initial JS bundle on mobile
@@ -191,26 +189,13 @@ const homepageFaqSchema = {
   ]
 };
 
-// Fetch exactly 3 newest published posts for the homepage section.
-// Done server-side with .limit(3) — never slice a large array on the client.
-async function getLatestPosts() {
-  try {
-    await connectDB();
-    const docs = await Post.find({ status: "published" })
-      .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
-      .sort({ publishedAt: -1, createdAt: -1 })
-      .limit(3)
-      .lean();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return serializeDocs(docs as any[]);
-  } catch {
-    return [];
-  }
+function getLatestPosts() {
+  return getAllPosts().slice(0, 3);
 }
 
 export default async function Home() {
-  const [latestPosts, movies, sports] = await Promise.all([
-    getLatestPosts(),
+  const latestPosts = getLatestPosts();
+  const [movies, sports] = await Promise.all([
     getPopularMovies().catch(() => []),
     getPopularSports().catch(() => []),
   ]);

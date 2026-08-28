@@ -8,12 +8,9 @@ import { PostCard } from "@/components/blog/PostCard";
 import { FeaturedPost } from "@/components/blog/FeaturedPost";
 import { NewsletterSection } from "@/components/blog/NewsletterSection";
 import { getCategoryImage } from "@/lib/blogImages";
-import { connectDB } from "@/lib/mongodb";
-import { Post } from "@/lib/models/Post";
-import { serializeDocs } from "@/lib/serialize";
+import { getAllPosts } from "@/lib/data/blogHelpers";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Post = any;
+type Post = ReturnType<typeof getAllPosts>[number];
 
 export const metadata: Metadata = {
   title: { absolute: "IPTV Guides, Setup Tutorials & Streaming Tips | STREAMB4 Blog" },
@@ -67,17 +64,8 @@ const blogBreadcrumbSchema = {
   ]
 };
 
-export const revalidate = 3600; // Cache for 1 hour (ISR)
-
-async function getPosts() {
-  await connectDB();
-  const docs = await Post.find({ status: "published" })
-    .select("id title slug excerpt category tags author readingTime publishedAt createdAt featured isFeatured featuredImage views")
-    .sort({ isFeatured: -1, featured: -1, publishedAt: -1, createdAt: -1 })
-    .lean();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return serializeDocs(docs as any[]);
-}
+// Static site — no ISR needed, content is embedded at build time
+export const dynamic = 'force-static';
 
 export default async function BlogListingPage({
   searchParams,
@@ -85,12 +73,7 @@ export default async function BlogListingPage({
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const { category, q } = await searchParams;
-  let posts: Post[] = [];
-  try {
-    posts = await getPosts();
-  } catch {
-    posts = [];
-  }
+  const posts = getAllPosts();
 
   // Extract unique categories
   const categories = Array.from(
@@ -112,7 +95,6 @@ export default async function BlogListingPage({
     );
   }
 
-  // Honour both isFeatured and featured fields (schema has both); fall back to newest post
   const featuredPost = posts.find((p: Post) => p.isFeatured || p.featured) || posts[0] || null;
   const recentPosts = [...posts].slice(0, 4);
 
@@ -124,62 +106,37 @@ export default async function BlogListingPage({
 
       {/* ═══ HERO SECTION ═══ */}
       <section className="relative pt-36 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Background glow elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] opacity-[0.06]"
-            style={{
-              background: "radial-gradient(ellipse, #ff7a00, transparent 70%)",
-              filter: "blur(100px)",
-            }}
+            style={{ background: "radial-gradient(ellipse, #ff7a00, transparent 70%)", filter: "blur(100px)" }}
           />
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,122,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,122,0,0.03) 1px, transparent 1px)
-              `,
+              backgroundImage: `linear-gradient(rgba(255,122,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.03) 1px, transparent 1px)`,
               backgroundSize: "60px 60px",
             }}
           />
         </div>
 
         <div className="relative max-w-7xl mx-auto text-center">
-          {/* Eyebrow */}
           <div className="flex items-center justify-center mb-8">
             <div
               className="flex items-center gap-2 px-4 py-2 rounded-full"
-              style={{
-                background: "rgba(255,122,0,0.08)",
-                border: "1px solid rgba(255,122,0,0.15)",
-              }}
+              style={{ background: "rgba(255,122,0,0.08)", border: "1px solid rgba(255,122,0,0.15)" }}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-              <span className="text-orange-500 text-xs font-black tracking-[0.3em] uppercase">
-                KNOWLEDGE CENTER
-              </span>
+              <span className="text-orange-500 text-xs font-black tracking-[0.3em] uppercase">KNOWLEDGE CENTER</span>
             </div>
           </div>
 
-          {/* Headline */}
           <h1
             className="font-anton text-center uppercase leading-tight mb-6"
-            style={{
-              fontSize: "clamp(2.5rem, 7vw, 6rem)",
-              letterSpacing: "-0.02em",
-              fontFamily: "var(--font-anton), Anton, sans-serif",
-            }}
+            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)", letterSpacing: "-0.02em", fontFamily: "var(--font-anton), Anton, sans-serif" }}
           >
             <span className="text-white">STREAMING </span>
-            <span
-              style={{
-                background: "linear-gradient(135deg, #ff7a00, #ffb300)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 0 40px rgba(255,122,0,0.4))",
-              }}
-            >
+            <span style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", filter: "drop-shadow(0 0 40px rgba(255,122,0,0.4))" }}>
               GUIDES
             </span>
             <span className="text-white"> & TUTORIALS.</span>
@@ -189,12 +146,10 @@ export default async function BlogListingPage({
             Expert advice, setup guides, device comparisons and streaming tips from the STREAMB4 team.
           </p>
 
-          {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-16 relative">
             <SearchBar />
           </div>
 
-          {/* Category Filter */}
           <Suspense fallback={<div className="h-10" />}>
             <CategoryFilter categories={categories} />
           </Suspense>
@@ -233,52 +188,39 @@ export default async function BlogListingPage({
                   </Link>
                 </div>
               ) : (
-                <>
-                  {/* Grid */}
-                  <div>
-                    <div className="flex items-center justify-between mb-8">
-                      <div>
-                        <span className="text-orange-500 text-xs font-black tracking-[0.3em] uppercase block mb-2">
-                          {category ? `${category}` : "ARCHIVE"}
-                        </span>
-                        <h2 className="font-anton text-2xl sm:text-3xl text-white uppercase"
-                          style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}>
-                          {q ? `Search results for "${q}"` : "KNOWLEDGE ARTICLES"}
-                        </h2>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      {filteredPosts
-                        .filter((p: Post) => category || q || !featuredPost || p.id !== featuredPost.id)
-                        .map((post: Post, i: number) => (
-                          <PostCard key={post.id} post={post} index={i} />
-                        ))}
+                <div>
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <span className="text-orange-500 text-xs font-black tracking-[0.3em] uppercase block mb-2">
+                        {category ? `${category}` : "ARCHIVE"}
+                      </span>
+                      <h2 className="font-anton text-2xl sm:text-3xl text-white uppercase"
+                        style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}>
+                        {q ? `Search results for "${q}"` : "KNOWLEDGE ARTICLES"}
+                      </h2>
                     </div>
                   </div>
-                </>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {filteredPosts
+                      .filter((p: Post) => category || q || !featuredPost || p.id !== featuredPost.id)
+                      .map((post: Post, i: number) => (
+                        <PostCard key={post.id} post={post} index={i} />
+                      ))}
+                  </div>
+                </div>
               )}
             </div>
 
             {/* RIGHT — Sidebar */}
             <aside className="space-y-6">
-              {/* Recent Posts */}
               <div
                 className="p-6 rounded-[24px]"
-                style={{
-                  background: "rgba(15, 15, 15, 0.95)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
-                }}
+                style={{ background: "rgba(15, 15, 15, 0.95)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
               >
-                <h3 className="text-white font-black text-sm uppercase tracking-wider mb-5">
-                  Recent Posts
-                </h3>
+                <h3 className="text-white font-black text-sm uppercase tracking-wider mb-5">Recent Posts</h3>
                 <div className="space-y-4">
                   {recentPosts.map((post: Post) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.slug}`}
-                      className="flex gap-3 group"
-                    >
+                    <Link key={post.id} href={`/blog/${post.slug}`} className="flex gap-3 group">
                       <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 relative">
                         <Image
                           src={post.featuredImage || getCategoryImage(post.category)}
@@ -294,7 +236,7 @@ export default async function BlogListingPage({
                           {post.title}
                         </p>
                         <p className="text-gray-600 text-[10px]">
-                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Draft'} · {post.readingTime || 3} min
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''} · {post.readingTime || 3} min
                         </p>
                       </div>
                     </Link>
@@ -302,17 +244,11 @@ export default async function BlogListingPage({
                 </div>
               </div>
 
-              {/* Categories */}
               <div
                 className="p-6 rounded-[24px]"
-                style={{
-                  background: "rgba(15, 15, 15, 0.95)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
-                }}
+                style={{ background: "rgba(15, 15, 15, 0.95)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
               >
-                <h3 className="text-white font-black text-sm uppercase tracking-wider mb-5">
-                  Categories
-                </h3>
+                <h3 className="text-white font-black text-sm uppercase tracking-wider mb-5">Categories</h3>
                 <div className="space-y-2">
                   {categories.map((cat) => {
                     const count = posts.filter((p: Post) => p.category === cat).length;
@@ -323,45 +259,24 @@ export default async function BlogListingPage({
                         className="flex items-center justify-between py-2.5 border-b group transition-colors"
                         style={{ borderColor: "rgba(255, 255, 255, 0.04)" }}
                       >
-                        <span className="text-gray-400 text-sm group-hover:text-orange-400 transition-colors">
-                          {cat}
-                        </span>
-                        <span className="text-gray-700 text-xs group-hover:text-orange-500 transition-colors">
-                          {count}
-                        </span>
+                        <span className="text-gray-400 text-sm group-hover:text-orange-400 transition-colors">{cat}</span>
+                        <span className="text-gray-700 text-xs group-hover:text-orange-500 transition-colors">{count}</span>
                       </Link>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Try STREAMB4 CTA */}
               <div
                 className="p-6 rounded-[24px] text-center"
-                style={{
-                  background: "rgba(15, 15, 15, 0.95)",
-                  border: "1px solid rgba(255, 122, 0, 0.15)",
-                }}
+                style={{ background: "rgba(15, 15, 15, 0.95)", border: "1px solid rgba(255, 122, 0, 0.15)" }}
               >
-                <div
-                  className="w-12 h-12 rounded-[14px] flex items-center justify-center mx-auto mb-4"
-                  style={{
-                    background: "linear-gradient(135deg, #ff7a00, #ffb300)",
-                  }}
-                >
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="black">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+                <div className="w-12 h-12 rounded-[14px] flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}>
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
                 </div>
                 <p className="text-white font-black text-sm mb-1">Get STREAMB4</p>
                 <p className="text-gray-600 text-xs mb-4">View plans. No contracts. Cancel anytime.</p>
-                <Link
-                  href="/pricing"
-                  className="w-full py-2.5 rounded-xl text-black text-xs font-black uppercase cursor-pointer block"
-                  style={{
-                    background: "linear-gradient(135deg, #ff7a00, #ffb300)",
-                  }}
-                >
+                <Link href="/pricing" className="w-full py-2.5 rounded-xl text-black text-xs font-black uppercase cursor-pointer block" style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}>
                   View Pricing
                 </Link>
               </div>
@@ -370,7 +285,6 @@ export default async function BlogListingPage({
         </div>
       </section>
 
-      {/* Newsletter Section */}
       <NewsletterSection />
     </div>
     </>

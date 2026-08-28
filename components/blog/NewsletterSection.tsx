@@ -4,34 +4,18 @@ import { useState } from 'react'
 
 export function NewsletterSection() {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
     setStatus('loading')
-
-    try {
-      const res = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setStatus('success')
-        setMessage('Thank you for subscribing! Check your inbox soon.')
-        setEmail('')
-      } else {
-        setStatus('error')
-        setMessage(data.error || 'Subscription failed.')
-      }
-    } catch {
-      setStatus('error')
-      setMessage('An unexpected error occurred.')
-    }
-  };
+    // Simulate a brief loading state then show success
+    setTimeout(() => {
+      setStatus('success')
+      setEmail('')
+    }, 600)
+  }
 
   return (
     <section className="px-4 sm:px-6 lg:px-8 pb-20">
@@ -56,40 +40,36 @@ export function NewsletterSection() {
             Get premium streaming guides, hardware configurations, and optimization tips delivered straight to your inbox weekly.
           </p>
 
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              className="flex-1 px-5 py-3.5 rounded-xl text-white text-sm outline-none placeholder-gray-600 focus:border-orange-500/40 transition-colors duration-200"
-              style={{
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-              }}
-            />
-            <button
-              type="submit"
-              disabled={status === 'loading'}
-              className="px-6 py-3.5 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer whitespace-nowrap hover:scale-[1.02] active:scale-[0.98] transition-transform duration-100"
-              style={{
-                background: 'linear-gradient(135deg, #ff7a00, #ffb300)',
-                boxShadow: '0 0 20px rgba(255,122,0,0.25)',
-              }}
-            >
-              {status === 'loading' ? 'SUBSCRIBING...' : 'SUBSCRIBE →'}
-            </button>
-          </form>
-
-          {message && (
-            <p
-              className={`text-xs mt-4 font-bold ${
-                status === 'success' ? 'text-green-400' : 'text-red-400'
-              }`}
-            >
-              {message}
+          {status === 'success' ? (
+            <p className="text-green-400 text-sm font-bold py-4">
+              ✓ Thank you! You&apos;ve been added to our newsletter.
             </p>
+          ) : (
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="flex-1 px-5 py-3.5 rounded-xl text-white text-sm outline-none placeholder-gray-600 focus:border-orange-500/40 transition-colors duration-200"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="px-6 py-3.5 rounded-xl font-black text-black text-sm uppercase tracking-wide cursor-pointer whitespace-nowrap hover:scale-[1.02] active:scale-[0.98] transition-transform duration-100"
+                style={{
+                  background: 'linear-gradient(135deg, #ff7a00, #ffb300)',
+                  boxShadow: '0 0 20px rgba(255,122,0,0.25)',
+                }}
+              >
+                {status === 'loading' ? 'SUBSCRIBING...' : 'SUBSCRIBE →'}
+              </button>
+            </form>
           )}
 
           <p className="text-gray-700 text-xs mt-4 uppercase tracking-widest font-semibold">

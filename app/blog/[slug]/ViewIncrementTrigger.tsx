@@ -1,13 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-
-export default function ViewIncrementTrigger({ slug }: { slug: string }) {
-  useEffect(() => {
-    fetch(`/api/blog/${slug}`, { method: "POST" }).catch((err) =>
-      console.error("Failed to increment views:", err)
-    );
-  }, [slug]);
-
+// View tracking removed — static site has no analytics backend.
+// This component is kept as a no-op so the import in page.tsx still resolves.
+export default function ViewIncrementTrigger({ slug: _ }: { slug: string }) {
   return null;
 }

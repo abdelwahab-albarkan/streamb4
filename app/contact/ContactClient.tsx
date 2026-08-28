@@ -63,7 +63,7 @@ export default function ContactClient() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const { name, email, subject, message } = form;
@@ -73,27 +73,18 @@ export default function ContactClient() {
     }
 
     setSubmitting(true);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, subject, message }),
-      });
 
-      const data = await res.json();
+    // Open pre-filled mailto — message is delivered via the user's own email client
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    const mailtoLink = `mailto:support@streamb4.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink, '_blank');
 
-      if (res.ok && data.success) {
-        setSuccess(true);
-        setForm(emptyForm);
-        showToast("Your message has been sent successfully.", "success");
-      } else {
-        showToast(data.message ?? "Something went wrong. Please try again.", "error");
-      }
-    } catch {
-      showToast("Network error. Please check your connection and try again.", "error");
-    } finally {
+    setTimeout(() => {
+      setSuccess(true);
+      setForm(emptyForm);
+      showToast("Your email client has been opened with your message.", "success");
       setSubmitting(false);
-    }
+    }, 400);
   }
 
   return (
@@ -247,9 +238,10 @@ export default function ContactClient() {
                   <div className="w-16 h-16 bg-[#FF6B00]/10 border border-[#FF6B00]/30 rounded-full flex items-center justify-center mx-auto text-[#FF6B00] mb-6">
                     <ShieldCheck className="w-8 h-8" />
                   </div>
-                  <h2 className="text-2xl font-black text-white mb-2">Message Sent!</h2>
+                  <h2 className="text-2xl font-black text-white mb-2">Email Client Opened!</h2>
                   <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-                    Your message has been registered. One of our specialists will reply within 10 minutes.
+                    Your message has been pre-filled in your email client. Send it from there and one of our specialists will reply within 10 minutes. You can also reach us directly at{" "}
+                    <a href="mailto:support@streamb4.com" className="text-orange-400 hover:underline">support@streamb4.com</a>.
                   </p>
                 </div>
               ) : (
