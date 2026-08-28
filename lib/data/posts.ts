@@ -656,4 +656,441 @@ For fans, this means more choice, better experiences, and the freedom to watch s
 
 [STREAMB4](/about) is part of the new era of live sports streaming. As sports streaming grows, audiences are increasingly looking for reliable platforms that deliver high-quality content without buffering or interruptions. The future of entertainment is live, interactive, and streaming.`,
   },
+  {
+    id: '1724948400000',
+    slug: 'meilleure-application-iptv-smart-tv-2026',
+    title: 'Quelle application IPTV choisir sur Smart TV en 2026 ?',
+    seoTitle: 'Meilleure application IPTV pour Smart TV en 2026 : comparatif complet | STREAMB4',
+    metaDescription: 'TiviMate, IPTV Smarters Pro, GSE Smart IPTV, Perfect Player... Quel lecteur IPTV choisir sur Android TV, LG webOS ou Samsung Tizen en 2026 ? Comparatif complet.',
+    focusKeyword: 'application IPTV Smart TV',
+    secondaryKeywords: [
+      'TiviMate',
+      'IPTV Smarters Pro',
+      'GSE Smart IPTV',
+      'Perfect Player IPTV',
+      'OTT Navigator',
+      'Smart IPTV Samsung',
+      'application IPTV Android TV',
+      'lecteur IPTV 2026',
+      'application IPTV LG webOS',
+      'Xtream Codes application',
+    ],
+    excerpt: 'TiviMate ou IPTV Smarters Pro ? Android TV, webOS ou Tizen ? Ce comparatif détaillé vous aide à choisir la meilleure application IPTV pour votre Smart TV en 2026, selon votre profil et votre téléviseur.',
+    category: 'Streaming Guides',
+    tags: ['IPTV', 'Smart TV', 'TiviMate', 'IPTV Smarters', 'Android TV', 'Samsung', 'LG', 'application', 'guide', 'comparatif'],
+    author: 'STREAMB4 Editorial Team',
+    readingTime: 15,
+    publishedAt: '2026-08-28T09:00:00.000Z',
+    updatedAt: '2026-08-28T09:00:00.000Z',
+    createdAt: '2026-08-28T09:00:00.000Z',
+    featuredImage: '',
+    ogTitle: 'Quelle application IPTV choisir sur Smart TV en 2026 ? Comparatif complet',
+    ogDescription: 'TiviMate, IPTV Smarters Pro, GSE Smart IPTV, Perfect Player : comparatif des meilleures applications IPTV pour Android TV, LG webOS et Samsung Tizen.',
+    ogImage: '',
+    status: 'published',
+    views: 0,
+    featured: false,
+    isFeatured: false,
+    isSticky: false,
+    faqs: [],
+    content: `Vous venez d'acquérir une Smart TV 4K flambant neuve, ou peut-être avez-vous décidé de donner une seconde vie à votre ancien téléviseur en le connectant à un boîtier Android. Une question vous taraude : quelle application utiliser pour regarder la télévision par internet ?
+
+Le choix est vaste, et les avis sur les forums sont souvent contradictoires. Certains jurent par TiviMate, d'autres ne jurent que par IPTV Smarters Pro. Et puis il y a ceux qui vous parlent de Kodi, de GSE Smart IPTV, ou encore des applications maison des fabricants comme Samsung ou LG.
+
+Ce guide a pour ambition de vous aider à y voir plus clair. Si vous débutez avec l'IPTV, vous pouvez d'abord consulter notre [guide complet pour débuter avec l'IPTV en France](/blog/guide-iptv-france-debuter-2026). Ici, nous allons passer en revue les meilleures applications IPTV disponibles en 2026, en les comparant sur des critères objectifs : interface utilisateur, compatibilité, fonctionnalités, prix, et performance. Nous verrons également quelle application convient à quel profil d'utilisateur.
+
+---
+
+## Pourquoi le choix de l'application est crucial ?
+
+Avant de plonger dans le comparatif, prenons un instant pour comprendre pourquoi l'application que vous allez installer est aussi importante, voire plus, que votre abonnement internet ou votre boîtier.
+
+### L'application est votre interface
+
+C'est elle que vous allez regarder tous les jours. Elle doit être agréable, intuitive, et rapide. Une interface mal conçue peut gâcher l'expérience la plus fluide.
+
+### L'application gère le décodage
+
+Toutes les applications n'intègrent pas les mêmes codecs. Une application bien optimisée saura décoder un flux H.265 sans accroc, là où une application plus ancienne ou moins performante fera ramer votre téléviseur ou fera planter la lecture.
+
+### L'application gère l'EPG
+
+Le guide des programmes (EPG) est essentiel pour naviguer dans les chaînes. Une bonne application affichera l'EPG de manière claire, permettra de le mettre en cache pour un accès rapide, et proposera des fonctionnalités comme la recherche ou la programmation d'enregistrements.
+
+### La stabilité et le buffering
+
+Une application mal codée peut provoquer des saccades, des coupures, ou un buffering incessant, même si votre connexion internet est parfaite. À l'inverse, une application bien conçue saura gérer les fluctuations du réseau et s'adapter pour offrir une lecture continue.
+
+---
+
+## Les systèmes d'exploitation des Smart TV : une compatibilité à vérifier
+
+La première chose à vérifier avant de choisir une application, c'est la compatibilité avec votre téléviseur. Toutes les Smart TV ne se valent pas.
+
+### Android TV et Google TV
+
+C'est le système le plus ouvert et le plus flexible. Présent sur les téléviseurs Sony, Philips, TCL, Xiaomi, et bien d'autres, il donne accès au Google Play Store. C'est sur cette plateforme que l'on trouve la plus grande variété d'applications IPTV. La quasi-totalité des applications citées dans ce guide sont disponibles sur Android TV.
+
+### webOS (LG)
+
+Les téléviseurs LG utilisent leur propre système, webOS. Le catalogue d'applications est plus restreint que sur Android TV. On y trouve des applications comme IPTV Smarters Pro, mais d'autres comme TiviMate n'y sont pas disponibles. Il faut parfois se rabattre sur des applications alternatives ou utiliser le navigateur internet.
+
+### Tizen (Samsung)
+
+Même constat pour Samsung. Leur système Tizen propose des applications IPTV, mais le choix est moins large. Certaines applications comme Smart IPTV ou SS IPTV sont populaires sur cette plateforme.
+
+### Apple TV
+
+Si vous êtes dans l'écosystème Apple, vous utiliserez tvOS. Les applications IPTV y sont moins nombreuses, mais il existe des références comme GSE Smart IPTV ou IPTVX.
+
+### Vidaa (Hisense) et autres systèmes propriétaires
+
+Hisense utilise Vidaa, et d'autres fabricants ont leurs propres systèmes. L'offre d'applications IPTV y est souvent très limitée. Dans ce cas, l'achat d'un boîtier externe (Fire TV Stick, NVIDIA Shield, Chromecast) devient une solution recommandée. Consultez notre [guide des appareils compatibles](/devices) pour choisir le bon équipement.
+
+---
+
+## Les critères de sélection d'une application IPTV
+
+Avant de vous présenter les applications, définissons ensemble les critères à prendre en compte pour faire votre choix.
+
+### 1. La compatibilité des formats
+
+Votre application doit être capable de lire les flux qui vous sont fournis. Vérifiez qu'elle supporte :
+
+- **Les protocoles** : HLS (HTTP Live Streaming), UDP, RTSP, etc. Le HLS est aujourd'hui le plus répandu.
+- **Les codecs** : H.264, H.265, et éventuellement AV1 pour les puristes.
+- **Les formats de playlist** : M3U, Xtream.
+
+### 2. La gestion de l'EPG
+
+Un bon EPG doit être :
+
+- **Clair** : les titres des programmes doivent être lisibles.
+- **Riche** : des informations comme les résumés, le genre, la note, sont un plus.
+- **Persistant** : l'application doit conserver l'EPG en cache pour que vous puissiez naviguer rapidement.
+- **Recherchable** : la possibilité de chercher un programme ou une chaîne est essentielle.
+
+### 3. Les fonctionnalités avancées
+
+- **Multi-écran** : regarder plusieurs chaînes simultanément (utile pour les parieurs sportifs).
+- **Rattrapage TV** : la possibilité de regarder un programme diffusé quelques heures plus tôt.
+- **Enregistrement** : la possibilité d'enregistrer un programme pour le regarder plus tard (nécessite un stockage externe).
+- **Listes de favoris** : pour retrouver rapidement vos chaînes préférées.
+- **Sous-titres et pistes audio** : la gestion des sous-titres et des différentes langues.
+
+### 4. L'interface utilisateur
+
+- **Intuitivité** : l'application doit être facile à prendre en main.
+- **Personnalisation** : la possibilité de changer le thème, l'ordre des chaînes, etc.
+- **Rapidité** : le lancement de l'application et le changement de chaîne doivent être fluides.
+
+### 5. Le prix
+
+Certaines applications sont entièrement gratuites, d'autres proposent une version gratuite limitée et une version premium payante. Le prix de la version premium varie généralement entre 3 et 10 euros par an, ce qui est très raisonnable.
+
+### 6. Le support et la mise à jour
+
+Une application mise à jour régulièrement est gage de sécurité et de performance. Un support client réactif peut aussi faire la différence.
+
+---
+
+## Comparatif détaillé des meilleures applications IPTV pour Smart TV en 2026
+
+Passons maintenant au cœur du sujet. Nous allons passer en revue les applications les plus populaires, en détaillant leurs forces et leurs faiblesses.
+
+### TiviMate
+
+TiviMate est aujourd'hui considérée par beaucoup comme la référence sur Android TV. Son interface est tellement bien conçue qu'elle donne l'impression d'utiliser une box opérateur premium.
+
+**Points forts** :
+- **Interface utilisateur exceptionnelle** : élégante, moderne, et très fluide.
+- **Gestion de l'EPG** : c'est son point fort. L'EPG est présenté dans une grille claire, avec des couleurs personnalisables. Il est possible de synchroniser plusieurs sources EPG.
+- **Multiliste** : permet de gérer plusieurs abonnements ou listes de chaînes différentes.
+- **Personnalisation poussée** : possibilité de changer le thème, la disposition, le comportement des touches de la télécommande.
+- **Rattrapage TV** : supporté si votre liste le permet.
+
+**Points faibles** :
+- **Exclusivité Android TV** : indisponible sur LG webOS, Samsung Tizen, et Apple TV.
+- **Version gratuite limitée** : la version gratuite permet d'ajouter une seule liste de chaînes. La version premium est nécessaire pour les listes multiples.
+
+**Prix** : environ 5 €/an pour la version premium.
+
+**Idéal pour** : les utilisateurs d'Android TV qui veulent le meilleur de l'expérience utilisateur, avec un EPG soigné et de nombreuses options de personnalisation.
+
+---
+
+### IPTV Smarters Pro
+
+IPTV Smarters Pro est sans doute l'application la plus connue du grand public. Elle est disponible sur presque toutes les plateformes (Android, iOS, Smart TV, Windows, Mac). Son succès vient de sa polyvalence et de son interface moderne.
+
+**Points forts** :
+- **Très grande compatibilité** : disponible sur la plupart des systèmes.
+- **Interface moderne** : des icônes, des transitions, un design qui fait "application de 2026".
+- **Intégration Xtream** : supporte nativement les identifiants Xtream, ce qui est très pratique.
+- **Multi-écran** : permet de regarder jusqu'à quatre chaînes simultanément.
+- **Gestion des sous-titres et des pistes audio**.
+
+**Points faibles** :
+- **Consommation de ressources** : l'application est lourde, ce qui peut poser problème sur les vieux téléviseurs Android.
+- **Prise en main** : elle est complète, mais un peu moins intuitive que TiviMate pour les néophytes.
+
+**Prix** : version gratuite avec publicités. Version premium à environ 5 €/an.
+
+**Idéal pour** : ceux qui recherchent une application polyvalente, disponible partout, avec des fonctionnalités avancées comme le multi-écran.
+
+---
+
+### GSE Smart IPTV
+
+GSE Smart IPTV est une application très technique, appréciée des utilisateurs expérimentés. Elle a une longue histoire dans le monde de l'IPTV.
+
+**Points forts** :
+- **Compatibilité exceptionnelle** : supporte une multitude de formats (M3U, Xtream, JSON, etc.).
+- **Codecs intégrés** : capable de lire des flux dans des formats exotiques.
+- **Personnalisation avancée** : des options de cache, de décodage, de réseau.
+- **Support Chromecast** : peut diffuser sur un autre écran.
+- **Disponible sur iOS** : c'est une des rares bonnes applications sur iPhone et Apple TV.
+
+**Points faibles** :
+- **Interface datée** : le design n'a pas beaucoup évolué et peut sembler austère.
+- **Courbe d'apprentissage** : pour tirer parti de toutes les options, il faut s'accrocher.
+
+**Prix** : version gratuite avec publicités. La version payante (GSE Pro) est disponible pour supprimer les pubs.
+
+**Idéal pour** : les technophiles qui veulent une application stable et extrêmement configurable, et qui n'ont pas peur de passer du temps à la paramétrer.
+
+---
+
+### Perfect Player
+
+Perfect Player est souvent comparée à TiviMate. Elle est appréciée pour sa légèreté et sa stabilité.
+
+**Points forts** :
+- **Très stable** : consomme peu de ressources et tourne parfaitement sur les appareils modestes.
+- **Interface épurée** : simple et efficace.
+- **Gestion avancée de l'EPG** : l'EPG peut être consulté en mode liste ou en mode grille.
+- **Gratuit** : l'application est entièrement gratuite (avec quelques publicités discrètes).
+
+**Points faibles** :
+- **Design minimaliste** : certains trouveront l'interface trop simple.
+- **Personnalisation limitée** : moins d'options de personnalisation que TiviMate.
+
+**Prix** : gratuit.
+
+**Idéal pour** : ceux qui veulent une application fiable, rapide, et qui ne veulent pas payer pour une version premium.
+
+---
+
+### OTT Navigator
+
+OTT Navigator est une autre application très complète, souvent comparée à TiviMate. Elle est disponible sur Android et Android TV.
+
+**Points forts** :
+- **Fonctionnalités riches** : programme, recherche, favoris, gestion des listes multiples.
+- **Interface moderne** : des couleurs, des animations, et un mode nuit.
+- **EPG très complet** : avec des options de filtrage et de recherche.
+
+**Points faibles** :
+- **Version gratuite limitée** : certaines fonctionnalités sont bloquées dans la version gratuite.
+- **Un peu complexe** : l'interface peut dérouter au début.
+
+**Prix** : version premium à environ 5 €/an.
+
+**Idéal pour** : les utilisateurs qui veulent une alternative à TiviMate avec des fonctionnalités similaires.
+
+---
+
+### Smart IPTV (pour Samsung et LG)
+
+Smart IPTV, souvent abrégée en SiPTV, est une application très populaire sur les téléviseurs Samsung et LG. Elle permet de télécharger une liste M3U via l'URL de votre playlist. Elle fonctionne également sur les téléviseurs Android.
+
+**Points forts** :
+- **Disponibilité sur les TV non-Android** : c'est la solution de référence pour les propriétaires de Samsung et LG.
+- **Interface correcte** : un guide des programmes en grille, des favoris.
+- **Configuration simple** : on entre l'URL de la M3U et c'est parti.
+
+**Points faibles** :
+- **Design vieillissant** : l'interface n'a pas beaucoup évolué.
+- **Payante** : un paiement unique est requis après une période d'essai.
+
+**Idéal pour** : les propriétaires de Smart TV Samsung ou LG qui veulent une application simple et fonctionnelle.
+
+---
+
+### Kodi
+
+Kodi est bien plus qu'une application IPTV. C'est un centre multimédia complet qui peut lire des films, des séries, de la musique, et bien sûr, des flux IPTV grâce à des extensions spécifiques (comme PVR IPTV Simple Client).
+
+**Points forts** :
+- **Extrêmement polyvalent** : un couteau suisse du multimédia.
+- **Personnalisation infinie** : grâce aux milliers d'extensions disponibles.
+- **Gratuit et open-source**.
+
+**Points faibles** :
+- **Configuration complexe** : installer et paramétrer l'IPTV sur Kodi est beaucoup moins simple qu'avec une application dédiée.
+- **Lourd** : Kodi consomme pas mal de ressources.
+
+**Prix** : gratuit.
+
+**Idéal pour** : les bricoleurs qui veulent un centre multimédia tout-en-un, et qui sont prêts à passer du temps sur la configuration.
+
+---
+
+## Tableau comparatif des applications IPTV
+
+| Application | Plateformes | Version gratuite | Prix premium | Interface | Multi-écran | EPG |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **TiviMate** | Android TV | Oui | ~5 €/an | ★★★★★ | Oui | ★★★★★ |
+| **IPTV Smarters Pro** | Android, iOS, TV | Oui | ~5 €/an | ★★★★ | Oui | ★★★★ |
+| **GSE Smart IPTV** | Android, iOS, TV | Oui | Achat unique | ★★★ | Oui | ★★★ |
+| **Perfect Player** | Android | Oui | Gratuit | ★★★ | Non | ★★★★ |
+| **OTT Navigator** | Android | Oui | ~5 €/an | ★★★★ | Oui | ★★★★ |
+| **Kodi** | Toutes | Oui | Gratuit | ★★ | Oui | ★★ |
+| **Smart IPTV** | Samsung, LG, Android | Oui | Achat unique | ★★★ | Non | ★★★ |
+
+---
+
+## Comment installer une application IPTV sur votre Smart TV ?
+
+L'installation varie selon le système d'exploitation de votre téléviseur. Voici les étapes générales. Pour aller plus loin, notre [guide d'installation IPTV complet](/install) couvre toutes les plateformes en détail.
+
+### Sur Android TV (Google TV)
+
+1. Accédez au Google Play Store depuis votre téléviseur.
+2. Utilisez la recherche pour trouver l'application (ex: "TiviMate").
+3. Cliquez sur "Installer".
+4. Une fois installée, ouvrez l'application et suivez les instructions pour ajouter votre playlist ou vos identifiants Xtream.
+
+### Sur LG webOS
+
+1. Appuyez sur le bouton "Home" de votre télécommande.
+2. Ouvrez le "LG Content Store".
+3. Recherchez une application compatible (ex: "Smart IPTV" ou "IPTV Smarters Pro").
+4. Téléchargez et installez l'application.
+
+### Sur Samsung Tizen
+
+1. Appuyez sur le bouton "Home" de votre télécommande.
+2. Ouvrez le "Samsung Smart Hub" (ou "App Store").
+3. Recherchez une application compatible (ex: "Smart IPTV").
+4. Téléchargez et installez.
+
+### Sur Apple TV
+
+1. Ouvrez l'App Store.
+2. Recherchez une application (ex: "GSE Smart IPTV").
+3. Téléchargez et installez.
+
+### Astuce pour les téléviseurs sans application compatible
+
+Si votre application n'est pas disponible sur le magasin d'applications de votre TV, vous pouvez toujours utiliser un boîtier externe comme le Chromecast, le Fire TV Stick ou l'Apple TV pour transformer votre téléviseur en Smart TV Android.
+
+---
+
+## L'importance des paramètres réseau pour vos applications IPTV
+
+Une fois votre application choisie et installée, quelques réglages réseau peuvent améliorer considérablement votre expérience.
+
+### Le buffer (tampon)
+
+La plupart des applications vous permettent de configurer la taille du buffer (tampon de lecture). Un buffer plus grand permet d'absorber les petites fluctuations de débit, mais il augmente le temps de latence. Pour le sport, un buffer trop long peut donner un décalage de plusieurs dizaines de secondes par rapport au direct.
+
+### Le décodage matériel
+
+Privilégiez toujours le décodage matériel (*hardware decoding*) par rapport au décodage logiciel (*software decoding*). Le décodage matériel utilise le processeur graphique de votre téléviseur ou boîtier, ce qui est plus efficace et consomme moins de ressources.
+
+### L'optimisation du réseau
+
+Assurez-vous que votre téléviseur est connecté en Ethernet plutôt qu'en Wi-Fi. Si vous devez utiliser le Wi-Fi, placez votre box le plus près possible du téléviseur. Dans les paramètres de l'application, l'option "auto-détection du débit" peut être désactivée pour forcer une qualité stable.
+
+---
+
+## Applications IPTV et services légaux en France
+
+Il est important de rappeler que les applications IPTV que nous venons de décrire sont des "lecteurs universels". Elles sont parfaitement légales en elles-mêmes.
+
+- **Vous pouvez les utiliser avec des listes légales** : l'offre TV de votre opérateur (si celle-ci est disponible sous forme de liste M3U), ou des services comme Molotov.
+- **Vous pouvez les utiliser avec des listes publiques** : les chaînes de la TNT sont parfois disponibles sous forme de listes gratuites.
+
+L'utilisation de ces applications avec des listes non officielles qui diffusent des contenus protégés sans autorisation reste illégale. Les applications elles-mêmes ne sont en rien responsables de l'usage que vous en faites.
+
+---
+
+## Questions spécifiques par système
+
+### Samsung vs LG : quel écosystème est le plus adapté à l'IPTV ?
+
+Les deux systèmes sont limités par rapport à Android TV. Cependant, quelques différences existent.
+
+- **Samsung (Tizen)** : les applications IPTV sont généralement moins nombreuses, mais Smart IPTV est une valeur sûre qui fonctionne très bien.
+- **LG (webOS)** : on trouve IPTV Smarters Pro dans le store, ce qui est un bon point. L'interface de webOS est très fluide et agréable.
+
+Dans les deux cas, si vous êtes un utilisateur exigeant, le boîtier externe est la solution de compromis.
+
+### Comment gérer les mises à jour ?
+
+Les applications IPTV évoluent rapidement. Il est conseillé d'activer les mises à jour automatiques pour bénéficier des dernières corrections de bugs et des nouvelles fonctionnalités.
+
+---
+
+## Mon avis d'expert : quelle application pour quel utilisateur en 2026 ?
+
+### Le débutant : My IPTV Player
+
+Si vous débutez et que vous voulez une application qui fonctionne sans prise de tête, My IPTV Player est un excellent choix. L'interface est claire, les options sont limitées à l'essentiel, et l'installation est rapide.
+
+### L'expert de l'interface : TiviMate
+
+Si l'expérience utilisateur est votre priorité, TiviMate est imbattable. C'est l'application qui ressemble le plus à une véritable box télé. La version premium est indispensable pour profiter pleinement de l'EPG multi-listes.
+
+### Le polyvalent : IPTV Smarters Pro
+
+Si vous avez besoin d'une application qui fonctionne sur tous vos appareils (TV, smartphone, tablette), IPTV Smarters Pro est un choix judicieux. Ses fonctionnalités (multi-écran, support Xtream) en font un outil très complet.
+
+### Le technicien : GSE Smart IPTV
+
+Pour ceux qui aiment régler les paramètres dans le détail, GSE Smart IPTV offre une liberté totale. Son interface n'est pas la plus belle, mais sa stabilité et sa compatibilité sont exceptionnelles.
+
+### Le propriétaire de TV Samsung/LG : Smart IPTV
+
+Malgré son interface un peu vieillotte, Smart IPTV reste la solution la plus fiable pour les systèmes propriétaires. Elle fait le job et ne vous décevra pas.
+
+### Le bricoleur : Kodi
+
+Si vous voulez tout centraliser (films, séries, musique, IPTV), Kodi est un choix judicieux. Mais préparez-vous à passer du temps à la configuration.
+
+---
+
+## Aller plus loin : bien choisir son abonnement IPTV
+
+Avoir la bonne application n'est que la moitié de l'équation. La qualité de votre expérience dépend aussi de votre fournisseur IPTV. Un bon service comme [STREAMB4](/features) propose une compatibilité native avec TiviMate, IPTV Smarters Pro et GSE Smart IPTV via Xtream Codes, un guide des programmes complet (EPG), un rattrapage TV sur 7 jours, et des flux 4K stables. Vous pouvez [tester STREAMB4 gratuitement pendant 24 heures](/free-trial) sans carte bancaire avant de vous engager.
+
+---
+
+## FAQ
+
+**L'application IPTV est-elle légale ?**
+
+Les applications elles-mêmes sont légales. Il s'agit de simples lecteurs multimédias. La légalité dépend de l'usage que vous en faites et de la source des flux que vous lisez.
+
+**Toutes les applications IPTV fonctionnent-elles sur toutes les Smart TV ?**
+
+Non. La compatibilité dépend du système d'exploitation de votre téléviseur (Android TV, webOS, Tizen, etc.). Vérifiez toujours la compatibilité avant d'installer une application.
+
+**Qu'est-ce que le format Xtream Codes ?**
+
+C'est une méthode de connexion à un serveur IPTV qui utilise un nom d'utilisateur, un mot de passe et une URL spécifique. C'est plus moderne et plus pratique que le fichier M3U, car l'application se synchronise automatiquement avec le serveur.
+
+**Combien coûte une application IPTV ?**
+
+La plupart proposent une version gratuite (souvent avec des publicités) et une version premium (payante, entre 3 et 10 euros par an). Certaines applications comme Perfect Player sont totalement gratuites.
+
+**Pourquoi mon application IPTV bufferise-t-elle ?**
+
+Les causes peuvent être multiples : connexion internet insuffisante, Wi-Fi instable, serveur saturé, ou paramètres de buffer mal configurés dans l'application.
+
+**Que signifie "EPG" ?**
+
+EPG est l'abréviation de *Electronic Program Guide*, soit le guide des programmes. Il vous permet de consulter la programmation des chaînes directement dans votre application IPTV.`,
+  },
 ]
