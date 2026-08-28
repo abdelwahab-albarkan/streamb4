@@ -2,8 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import { Check, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import MagneticButton from "@/components/ui/MagneticButton";
 import { Button } from "@/components/ui/Button";
 
 const SPORTS = [
@@ -129,55 +131,106 @@ const SPORTS = [
   },
 ];
 
+const WHY_FEATURES = [
+  { title: "Anti-Freeze Technology", desc: "Our proprietary stream management keeps live sports smooth even during peak kickoff and tipoff traffic." },
+  { title: "No Blackout Restrictions", desc: "Watch your team from any location. No out-of-market restrictions, no geographic locks, no VPN required." },
+  { title: "Multiple Sports Feeds", desc: "Key matches are carried on multiple feeds so you can switch if one has any technical issue — no missing the game." },
+  { title: "Full EPG Guide", desc: "See every match kickoff time, channel, and competition in your TV guide. Set reminders directly in your IPTV app." },
+  { title: "4K HDR Where Available", desc: "Broadcaster permitting, key matches on Sky Sports UHD, ESPN 4K, and ABC are available in 4K HDR." },
+];
+
+function Eyebrow({ text }: { text: string }) {
+  return (
+    <div className="flex items-center justify-center gap-4 mb-6">
+      <div className="h-px w-12 rounded-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,138,0,0.4))" }} />
+      <span
+        className="inline-flex items-center gap-2 text-orange-500 text-[11px] font-black tracking-[0.3em] uppercase px-4 py-2 rounded-full"
+        style={{ background: "rgba(255,138,0,0.07)", border: "1px solid rgba(255,138,0,0.15)" }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+        {text}
+      </span>
+      <div className="h-px w-12 rounded-full" style={{ background: "linear-gradient(90deg, rgba(255,138,0,0.4), transparent)" }} />
+    </div>
+  );
+}
+
 export default function SportsClient() {
   return (
     <>
       {/* HERO */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#FF6B00]/6 rounded-full blur-[160px] pointer-events-none" />
+      <section className="relative pt-36 pb-24 overflow-hidden bg-[#050505]">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,122,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.025) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(255,122,0,0.08), transparent 70%)", filter: "blur(80px)" }} />
+
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF6B00]/10 border border-[#FF6B00]/20 text-[#FF6B00] text-xs font-bold uppercase tracking-widest mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
-            1,800+ Sports Channels
-          </div>
-          <h1
-            className="font-black text-white uppercase leading-[0.92] tracking-tight mb-6"
-            style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2.5rem, 8vw, 5.5rem)" }}
-          >
-            STREAM EVERY{" "}
-            <span style={{ background: "linear-gradient(90deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              SPORT
-            </span>{" "}
-            IN 4K
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
-            NFL, Premier League, Champions League, NBA, UFC, Formula 1, NHL, MLB and more — live, in HD and 4K, on every device. No blackouts. No per-sport add-ons.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400 mb-10">
-            {["No Blackouts", "Live & Replay", "4K Where Available", "No Extra Fees"].map((t) => (
-              <span key={t} className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-[#FF6B00]" /> {t}
-              </span>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/free-trial">
-              <Button variant="primary" className="px-8 py-4 font-black text-base uppercase tracking-wide">
-                Try Free 24 Hours
-              </Button>
-            </Link>
-            <Link href="/pricing">
-              <Button variant="outline" className="px-8 py-4 font-bold text-base uppercase tracking-wide">
-                View Pricing →
-              </Button>
-            </Link>
-          </div>
+          <ScrollReveal delay={0.1}>
+            <span
+              className="inline-flex items-center gap-2 text-orange-500 text-[11px] font-black tracking-[0.3em] uppercase px-4 py-2 rounded-full mb-6"
+              style={{ background: "rgba(255,138,0,0.07)", border: "1px solid rgba(255,138,0,0.15)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+              1,800+ Sports Channels
+            </span>
+          </ScrollReveal>
+          <ScrollReveal delay={0.15}>
+            <h1
+              className="font-black text-white uppercase leading-[0.9] tracking-tight mb-6"
+              style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2.8rem, 8vw, 5.5rem)" }}
+            >
+              STREAM EVERY{" "}
+              <span style={{ background: "linear-gradient(90deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                SPORT
+              </span>{" "}
+              IN 4K
+            </h1>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
+              NFL, Premier League, Champions League, NBA, UFC, Formula 1, NHL, MLB and more — live, in HD and 4K, on every device. No blackouts. No per-sport add-ons.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.25}>
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-500 mb-10">
+              {["No Blackouts", "Live & Replay", "4K Where Available", "No Extra Fees"].map((t) => (
+                <span
+                  key={t}
+                  className="px-3 py-1.5 rounded-full"
+                  style={{ border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.3}>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link href="/free-trial">
+                <MagneticButton
+                  className="px-10 py-5 rounded-full font-black text-black text-base uppercase tracking-wide hover:scale-105 hover:shadow-[0_0_60px_rgba(255,122,0,0.6)] transition-all duration-300 cursor-pointer"
+                  style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", boxShadow: "0 0 40px rgba(255,122,0,0.35)" }}
+                >
+                  Try Free 24 Hours
+                </MagneticButton>
+              </Link>
+              <Link href="/pricing">
+                <MagneticButton className="px-10 py-5 rounded-full font-bold text-white text-base uppercase tracking-wide border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:scale-105 transition-all duration-300 cursor-pointer">
+                  View Pricing →
+                </MagneticButton>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* STATS */}
-      <AnimatedSection className="border-y border-[#1A1A1A] bg-[#0d0d0d] py-8">
+      <AnimatedSection className="border-y border-white/[0.04] bg-[#0d0d0d] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
@@ -199,9 +252,9 @@ export default function SportsClient() {
       <AnimatedSection className="py-24 bg-[#0A0A0A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-3">All Sports</p>
+            <Eyebrow text="All Sports" />
             <h2
-              className="font-black text-white uppercase leading-[0.92] tracking-tight"
+              className="font-black text-white uppercase leading-[0.9] tracking-tight"
               style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(1.8rem, 4vw, 3rem)" }}
             >
               EVERY SPORT ON ONE SUBSCRIPTION
@@ -211,21 +264,22 @@ export default function SportsClient() {
             {SPORTS.map((sport) => {
               const Card = (
                 <div
-                  className={`group p-6 rounded-2xl border bg-[#141414] transition-all duration-300 ${
-                    sport.slug
-                      ? "border-[#2a2a2a] hover:border-[#FF6B00]/40 hover:bg-[#1a1a1a] cursor-pointer"
-                      : "border-[#2a2a2a]"
-                  }`}
+                  className={`group p-6 rounded-[20px] transition-all duration-300 ${sport.slug ? "cursor-pointer hover:border-[#FF6B00]/30" : ""}`}
+                  style={{
+                    background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+                  }}
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{sport.emoji}</span>
-                      <div>
+                    <div>
+                      <div className="flex items-center gap-2.5 mb-1">
+                        <span className="text-2xl leading-none">{sport.emoji}</span>
                         <h3 className={`text-white font-bold text-lg leading-tight ${sport.slug ? "group-hover:text-[#FF6B00] transition-colors" : ""}`}>
                           {sport.name}
                         </h3>
-                        <p className="text-gray-500 text-xs">{sport.fullName}</p>
                       </div>
+                      <p className="text-gray-600 text-xs">{sport.fullName}</p>
                     </div>
                     <div className="text-right flex-shrink-0 ml-4">
                       <p className="text-[#FF6B00] font-bold text-sm">{sport.channels}</p>
@@ -235,9 +289,20 @@ export default function SportsClient() {
                   <p className="text-gray-400 text-sm leading-relaxed mb-4">{sport.desc}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {sport.channels_list.map((ch) => (
-                      <span key={ch} className="text-[10px] px-2 py-0.5 rounded-full bg-[#0d0d0d] border border-[#2a2a2a] text-gray-400">{ch}</span>
+                      <span
+                        key={ch}
+                        className="text-[10px] px-2 py-0.5 rounded-full text-gray-500"
+                        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}
+                      >
+                        {ch}
+                      </span>
                     ))}
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0d0d0d] border border-[#1a1a1a] text-gray-600">Season: {sport.season}</span>
+                    <span
+                      className="text-[10px] px-2 py-0.5 rounded-full text-gray-600"
+                      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
+                    >
+                      Season: {sport.season}
+                    </span>
                   </div>
                   {sport.slug && (
                     <div className="mt-4 flex items-center gap-1 text-[#FF6B00] text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -257,57 +322,64 @@ export default function SportsClient() {
       </AnimatedSection>
 
       {/* WHY STREAMB4 FOR SPORTS */}
-      <AnimatedSection className="py-24 bg-[#0d0d0d] border-y border-[#1A1A1A]">
+      <AnimatedSection className="py-24 bg-[#050505] border-y border-white/[0.04]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-3">Why STREAMB4</p>
+              <span
+                className="inline-flex items-center gap-2 text-orange-500 text-[11px] font-black tracking-[0.3em] uppercase px-4 py-2 rounded-full mb-6"
+                style={{ background: "rgba(255,138,0,0.07)", border: "1px solid rgba(255,138,0,0.15)" }}
+              >
+                Why STREAMB4
+              </span>
               <h2
-                className="font-black text-white uppercase leading-[0.92] tracking-tight mb-6"
+                className="font-black text-white uppercase leading-[0.9] tracking-tight mb-8"
                 style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(1.8rem, 4vw, 3rem)" }}
               >
                 BUILT FOR SPORTS FANS
               </h2>
-              <div className="space-y-4">
-                {[
-                  { title: "Anti-Freeze Technology", desc: "Our proprietary stream management keeps live sports smooth even during peak kickoff and tipoff traffic." },
-                  { title: "No Blackout Restrictions", desc: "Watch your team from any location. No out-of-market restrictions, no geographic locks, no VPN required." },
-                  { title: "Multiple Sports Feeds", desc: "Key matches are carried on multiple feeds so you can switch if one has any technical issue — no missing the game." },
-                  { title: "Full EPG Guide", desc: "See every match kickoff time, channel, and competition in your TV guide. Set reminders directly in your IPTV app." },
-                  { title: "4K HDR Where Available", desc: "Broadcaster permitting, key matches on Sky Sports UHD, ESPN 4K, and ABC are available in 4K HDR." },
-                ].map((f) => (
-                  <div key={f.title} className="flex gap-4">
-                    <div className="w-5 h-5 rounded-full bg-[#FF6B00]/15 border border-[#FF6B00]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-[#FF6B00]" />
-                    </div>
-                    <div>
-                      <p className="text-white font-semibold text-sm mb-1">{f.title}</p>
-                      <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
-                    </div>
+              <div className="space-y-6">
+                {WHY_FEATURES.map((f) => (
+                  <div key={f.title} className="border-l-2 border-[#FF6B00]/40 pl-5">
+                    <p className="text-white font-semibold text-sm mb-1">{f.title}</p>
+                    <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="space-y-4">
-              <div className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
-                <p className="text-gray-400 text-sm mb-1">Plans from</p>
+              <div
+                className="p-6 rounded-[20px]"
+                style={{
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)",
+                }}
+              >
+                <p className="text-gray-500 text-sm mb-1">Plans from</p>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="text-4xl font-black text-white">$9</span>
                   <span className="text-gray-500 text-sm">/month</span>
                 </div>
-                <p className="text-gray-400 text-sm mb-4">Solo plan · 1 screen · All 50,000+ channels included</p>
+                <p className="text-gray-400 text-sm mb-5">Solo plan · 1 screen · All 50,000+ channels included</p>
                 <Link href="/pricing">
                   <Button variant="primary" className="w-full font-black uppercase tracking-wide">
                     View All Plans
                   </Button>
                 </Link>
               </div>
-              <div className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
-                <p className="text-white font-bold mb-3">All plans include:</p>
+              <div
+                className="p-6 rounded-[20px]"
+                style={{
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(5,5,5,0.97) 100%)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                }}
+              >
+                <p className="text-white font-bold mb-4 text-sm">All plans include:</p>
                 <ul className="space-y-2">
                   {["1,800+ sports channels", "Live EPG guide", "Catch-up TV", "No blackouts", "4K where available", "24/7 support"].map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-gray-400">
-                      <Check className="w-4 h-4 text-[#FF6B00] flex-shrink-0" /> {f}
+                    <li key={f} className="text-sm text-gray-400 pl-3 border-l border-[#FF6B00]/30">
+                      {f}
                     </li>
                   ))}
                 </ul>
@@ -318,10 +390,21 @@ export default function SportsClient() {
       </AnimatedSection>
 
       {/* CTA */}
-      <AnimatedSection className="py-20 bg-[#050505] border-t border-[#1A1A1A]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative py-28 overflow-hidden bg-[#050505]">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "linear-gradient(135deg, rgba(255,122,0,0.07) 0%, rgba(5,5,5,1) 50%, rgba(255,179,0,0.04) 100%)" }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.025] pointer-events-none"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,122,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.5) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+        <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2
-            className="font-black text-white uppercase leading-[0.92] tracking-tight mb-4"
+            className="font-black text-white uppercase leading-[0.9] tracking-tight mb-4"
             style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
           >
             WATCH YOUR SPORT{" "}
@@ -332,18 +415,21 @@ export default function SportsClient() {
           <p className="text-gray-400 mb-8">Try the full service free for 24 hours — no credit card required.</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/free-trial">
-              <Button variant="primary" className="px-8 py-4 font-black text-base uppercase tracking-wide">
+              <MagneticButton
+                className="px-10 py-5 rounded-full font-black text-black text-base uppercase tracking-wide hover:scale-105 hover:shadow-[0_0_60px_rgba(255,122,0,0.6)] transition-all duration-300 cursor-pointer"
+                style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", boxShadow: "0 0 40px rgba(255,122,0,0.4)" }}
+              >
                 ⚡ Try Free — No Card Required
-              </Button>
+              </MagneticButton>
             </Link>
             <Link href="/channels">
-              <Button variant="outline" className="px-8 py-4 font-bold text-base uppercase tracking-wide">
+              <MagneticButton className="px-10 py-5 rounded-full font-bold text-white text-base uppercase tracking-wide border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:scale-105 transition-all duration-300 cursor-pointer">
                 Browse All Channels →
-              </Button>
+              </MagneticButton>
             </Link>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </>
   );
 }
