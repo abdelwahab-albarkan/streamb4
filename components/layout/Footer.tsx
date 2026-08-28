@@ -42,15 +42,19 @@ const socials = [
 ];
 
 const navLinks = [
-  { label: "Pricing",          href: "/pricing" },
-  { label: "Features",         href: "/features" },
-  { label: "Devices",          href: "/devices" },
-  { label: "Blog",             href: "/blog" },
-  { label: "About",            href: "/about" },
-  { label: "Contact",          href: "/contact" },
-  { label: "Editorial Policy", href: "/editorial-policy" },
-  { label: "Privacy",          href: "/legal/privacy" },
-  { label: "Terms",            href: "/legal/terms" },
+  { label: "Pricing",              href: "/pricing" },
+  { label: "Free Trial",           href: "/free-trial" },
+  { label: "Channels",             href: "/channels" },
+  { label: "Sports",               href: "/sports" },
+  { label: "Best IPTV Service",    href: "/best-iptv-service" },
+  { label: "Features",             href: "/features" },
+  { label: "Devices",              href: "/devices" },
+  { label: "Blog",                 href: "/blog" },
+  { label: "About",                href: "/about" },
+  { label: "Contact",              href: "/contact" },
+  { label: "Editorial Policy",     href: "/editorial-policy" },
+  { label: "Privacy",              href: "/legal/privacy" },
+  { label: "Terms",                href: "/legal/terms" },
 ];
 
 const languages = ["English", "Français", "العربية"];
@@ -121,13 +125,12 @@ export function Footer() {
               </h5>
               <ul className="space-y-2">
                 {[
-                  { label: "Watch NBA Live Stream",         href: "/blog/nba-live-stream" },
-                  { label: "Watch NFL Live Stream",         href: "/blog/nfl-live-stream" },
-                  { label: "Watch NHL Live Stream",         href: "/blog/nhl-live-stream" },
-                  { label: "Watch MLB Live Stream",         href: "/blog/mlb-live-stream" },
-                  { label: "Watch UEFA Champions League",   href: "/blog/uefa-champions-league-live" },
-                  { label: "Watch Liverpool FC",            href: "/blog/liverpool-fc-live-stream" },
-                  { label: "Watch Arsenal",                 href: "/blog/arsenal-live-stream" },
+                  { label: "Watch NBA Live",               href: "/sports/nba" },
+                  { label: "Watch NFL Live",               href: "/sports/nfl" },
+                  { label: "Watch Premier League Live",    href: "/sports/premier-league" },
+                  { label: "Watch Champions League Live",  href: "/sports/champions-league" },
+                  { label: "Watch UFC Live",               href: "/sports/ufc" },
+                  { label: "Watch Formula 1 Live",         href: "/sports/formula-1" },
                 ].map((l) => (
                   <li key={l.label}>
                     <Link href={l.href} className="text-gray-600 text-xs hover:text-orange-400 transition-colors duration-200 leading-relaxed">
@@ -136,7 +139,7 @@ export function Footer() {
                   </li>
                 ))}
                 <li>
-                  <Link href="/blog/sports" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
+                  <Link href="/sports" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
                     All Sports →
                   </Link>
                 </li>
@@ -166,8 +169,8 @@ export function Footer() {
                   </li>
                 ))}
                 <li>
-                  <Link href="/blog/regions" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
-                    Browse All Regions →
+                  <Link href="/channels" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
+                    Browse All Channels →
                   </Link>
                 </li>
               </ul>

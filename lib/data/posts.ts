@@ -365,7 +365,7 @@ Pour l'utilisateur français, le "bon" choix en 2026 concilie :
 
 Si vous êtes prêt à bricoler, un boîtier Android TV couplé à un bon VPN et un service sérieux peut offrir une expérience fantastique. Si vous voulez la tranquillité, l'abonnement à Molotov ou à votre FAI reste la meilleure option.
 
-Pour découvrir comment STREAMB4 s'intègre dans cet écosystème, consultez notre [guide des meilleures applications IPTV](/blog/best-iptv-service-firestick-2026) ou comparez les [offres de streaming](/blog/streamb4-vs-cable-tv-2026) disponibles en 2026.`,
+Pour découvrir comment STREAMB4 s'intègre dans cet écosystème, consultez notre [guide pour choisir la meilleure application IPTV sur Smart TV](/blog/meilleure-application-iptv-smart-tv-2026) ou explorez les [chaînes disponibles](/channels) pour votre pays et votre sport.`,
   },
   {
     id: '1724500800000',
@@ -456,7 +456,7 @@ The BRITs' move toward multi-platform streaming is not a temporary experiment. I
 
 Major events are increasingly "hybrid" — combining a physical live audience with a global digital audience. This has been accelerated by technological improvements in low-latency streaming, which reduce the delay between the live event and what viewers see on screen. The BBC, for example, has been running low-latency trials on iPlayer to bring streaming delays closer to broadcast levels.
 
-While major broadcasters like ITV deliver the BRITs through traditional and streaming channels, platforms like [STREAMB4](/features) specialise in providing uninterrupted, high-quality live viewing experiences for audiences who expect more from their entertainment.
+While major broadcasters like ITV deliver the BRITs through traditional and streaming channels, platforms like [STREAMB4](/channels) specialise in providing uninterrupted, high-quality live viewing experiences for audiences who expect more from their entertainment — with 50,000+ live channels available across every device.
 
 **Interactivity Is Becoming Essential**
 
@@ -492,7 +492,7 @@ This shift mirrors what has been happening in the broader live streaming industr
 
 Whether you are watching on ITV1, ITVX, YouTube, or catching highlights on Instagram, the BRITs 2026 is a celebration of music and a demonstration of how far live streaming has come. [STREAMB4](/about) is part of this new wave of entertainment, providing viewers with access to premium content beyond traditional television — and it is only going to get more interactive from here.
 
-For more streaming guides and live entertainment news, explore the [STREAMB4 blog](/blog).`,
+For more streaming guides and live entertainment news, explore the [STREAMB4 blog](/blog). You can also [start a free 24-hour trial](/free-trial) to access the full live channel lineup — no credit card required.`,
   },
   {
     id: '1787875201000',
@@ -614,7 +614,7 @@ Streaming allows fans to watch sports on any device, anywhere in the world. This
 
 Streaming platforms are adding interactive features to sports broadcasts. Real-time statistics, alternate camera angles, and social integration are becoming standard. This enhances the viewing experience beyond what traditional television can offer.
 
-Platforms like [STREAMB4](/features) are designed to deliver high-quality sports streaming without buffering or interruptions, giving fans the reliable experience they expect from live sports.
+Platforms like [STREAMB4](/sports) are designed to deliver high-quality sports streaming without buffering or interruptions, giving fans the reliable experience they expect from live sports — covering everything from the NFL and Premier League to UFC and Formula 1.
 
 **Cost Considerations**
 
@@ -654,7 +654,7 @@ This revolution is still in its early stages. As technology improves and streami
 
 For fans, this means more choice, better experiences, and the freedom to watch sports on their own terms. For streaming platforms, it is a massive opportunity to capture loyal, engaged audiences.
 
-[STREAMB4](/about) is part of the new era of live sports streaming. As sports streaming grows, audiences are increasingly looking for reliable platforms that deliver high-quality content without buffering or interruptions. The future of entertainment is live, interactive, and streaming.`,
+[STREAMB4](/about) is part of the new era of live sports streaming. As sports streaming grows, audiences are increasingly looking for reliable platforms that deliver high-quality content without buffering or interruptions. The future of entertainment is live, interactive, and streaming. If you are evaluating providers, our [complete guide to the best IPTV service in 2026](/best-iptv-service) covers what to look for and how to compare options.`,
   },
   {
     id: '1724948400000',

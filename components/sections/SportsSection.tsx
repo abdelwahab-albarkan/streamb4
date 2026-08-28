@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Star } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { getPopularSports, type TMDBMedia } from "@/lib/tmdb";
@@ -177,6 +178,16 @@ export function SportsSection({ initialMovies = [] }: { initialMovies?: TMDBMedi
           </div>
         </div>
       )}
+
+      <div className="text-center mt-10 px-4">
+        <Link
+          href="/sports"
+          className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-sm font-black uppercase tracking-widest text-black"
+          style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)" }}
+        >
+          View All Live Sports →
+        </Link>
+      </div>
     </AnimatedSection>
   );
 }
