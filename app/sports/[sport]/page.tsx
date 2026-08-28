@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { SPORT_CONFIGS } from "@/lib/sportConfigs";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
@@ -89,9 +89,9 @@ export default async function SportPage(props: { params: Promise<{ sport: string
       <main id="main-content">
 
         {/* HERO */}
-        <section className="relative pt-32 pb-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#FF6B00]/5 rounded-full blur-[160px] pointer-events-none" />
+        <section className="relative pt-32 pb-20 overflow-hidden bg-[#050505]">
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255,122,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.025) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(255,122,0,0.08), transparent 70%)", filter: "blur(80px)" }} />
           <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
@@ -164,31 +164,28 @@ export default async function SportPage(props: { params: Promise<{ sport: string
                     {config.shortName}
                   </span>
                 </h2>
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {config.whyStreamB4.map((point) => (
-                    <li key={point} className="flex gap-3">
-                      <span className="w-5 h-5 rounded-full bg-[#FF6B00]/15 border border-[#FF6B00]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-[#FF6B00]" />
-                      </span>
-                      <span className="text-gray-300 text-sm leading-relaxed">{point}</span>
+                    <li key={point} className="border-l-2 border-[#FF6B00]/40 pl-5 text-gray-300 text-sm leading-relaxed py-0.5">
+                      {point}
                     </li>
                   ))}
                 </ul>
               </div>
               <div className="space-y-4">
                 {/* Key Events */}
-                <div className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
+                <div className="p-6 rounded-2xl" style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
                   <p className="text-[#FF6B00] font-bold text-xs uppercase tracking-widest mb-4">Key Events Covered</p>
                   <div className="space-y-2">
                     {config.keyEvents.map((ev) => (
-                      <div key={ev} className="flex items-center gap-2 text-sm text-gray-300">
-                        <span className="text-[#FF6B00]">→</span> {ev}
+                      <div key={ev} className="text-sm text-gray-300 border-l-2 border-[#FF6B00]/30 pl-3 py-0.5">
+                        {ev}
                       </div>
                     ))}
                   </div>
                 </div>
                 {/* Quick Pricing */}
-                <div className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
+                <div className="p-6 rounded-2xl" style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
                   <p className="text-gray-400 text-sm mb-1">Plans from</p>
                   <div className="flex items-baseline gap-1 mb-3">
                     <span className="text-3xl font-black text-white">$9</span>
@@ -222,7 +219,7 @@ export default async function SportPage(props: { params: Promise<{ sport: string
                 { num: "02", title: "Install the App", desc: "IPTV Smarters or TiviMate on your device." },
                 { num: "03", title: "Start Watching", desc: "Enter your credentials and tune to the sport." },
               ].map((step) => (
-                <div key={step.num} className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
+                <div key={step.num} className="p-6 rounded-2xl" style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
                   <span
                     className="text-4xl font-black block mb-3"
                     style={{ fontFamily: "var(--font-anton), Anton, sans-serif", background: "linear-gradient(135deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}

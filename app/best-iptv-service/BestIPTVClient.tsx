@@ -2,30 +2,32 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Check, X, Star, ChevronDown } from "lucide-react";
+import { Check, X, ChevronDown } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import MagneticButton from "@/components/ui/MagneticButton";
 import { Button } from "@/components/ui/Button";
 
-const SCORE_CRITERIA = [
-  { criterion: "Channel Quantity", score: 9.9, detail: "50,000+ channels from 30+ countries" },
-  { criterion: "Stream Quality", score: 9.8, detail: "True 4K HDR on supported channels" },
-  { criterion: "Server Uptime", score: 9.9, detail: "99.9% guaranteed — monitored 24/7" },
-  { criterion: "Sports Coverage", score: 9.8, detail: "1,800+ sports channels, no blackouts" },
-  { criterion: "Value for Money", score: 9.7, detail: "From $9/mo — cable at $80-200+/mo" },
-  { criterion: "Device Compatibility", score: 9.9, detail: "Works on every major device and OS" },
-  { criterion: "Customer Support", score: 9.6, detail: "24/7 via chat, email, and WhatsApp" },
-  { criterion: "Free Trial", score: 9.8, detail: "24h full-access trial, no card required" },
+const FEATURES = [
+  { criterion: "Channel Quantity", detail: "50,000+ channels from 30+ countries" },
+  { criterion: "Stream Quality", detail: "True 4K HDR on supported channels" },
+  { criterion: "Server Uptime", detail: "99.9% guaranteed — monitored 24/7" },
+  { criterion: "Sports Coverage", detail: "1,800+ sports channels, no blackouts" },
+  { criterion: "Value for Money", detail: "From $9/mo — cable at $80–200+/mo" },
+  { criterion: "Device Compatibility", detail: "Works on every major device and OS" },
+  { criterion: "Customer Support", detail: "24/7 via chat, email, and WhatsApp" },
+  { criterion: "Free Trial", detail: "24h full-access trial, no card required" },
 ];
 
 const COMPARE = [
-  { feature: "Monthly Cost", streamb4: "From $9/mo", cable: "$80–200+/mo", isFav: true },
-  { feature: "Live Channels", streamb4: "50,000+", cable: "200–500", isFav: true },
-  { feature: "4K Ultra HD", streamb4: "Included", cable: "Extra $10–20/mo", isFav: true },
-  { feature: "VOD Library", streamb4: "180,000+ titles", cable: "Limited", isFav: true },
-  { feature: "Contracts", streamb4: "None", cable: "1–2 year lock-in", isFav: true },
-  { feature: "Simultaneous Screens", streamb4: "Up to 6", cable: "1–2 per box", isFav: true },
-  { feature: "Free Trial", streamb4: "24h — no card", cable: "Rarely offered", isFav: true },
-  { feature: "International Channels", streamb4: "40+ languages", cable: "Expensive add-ons", isFav: true },
+  { feature: "Monthly Cost", streamb4: "From $9/mo", cable: "$80–200+/mo" },
+  { feature: "Live Channels", streamb4: "50,000+", cable: "200–500" },
+  { feature: "4K Ultra HD", streamb4: "Included", cable: "Extra $10–20/mo" },
+  { feature: "VOD Library", streamb4: "180,000+ titles", cable: "Limited" },
+  { feature: "Contracts", streamb4: "None", cable: "1–2 year lock-in" },
+  { feature: "Simultaneous Screens", streamb4: "Up to 6", cable: "1–2 per box" },
+  { feature: "Free Trial", streamb4: "24h — no card", cable: "Rarely offered" },
+  { feature: "International Channels", streamb4: "40+ languages", cable: "Expensive add-ons" },
 ];
 
 const VERDICT_BULLETS = [
@@ -98,19 +100,41 @@ const IPTV_FAQS = [
   },
 ];
 
+const GLASS_CARD = {
+  background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(5,5,5,0.97) 100%)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+} as React.CSSProperties;
+
+function Eyebrow({ text }: { text: string }) {
+  return (
+    <div className="flex items-center justify-center gap-4 mb-6">
+      <div className="h-px w-12 rounded-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,138,0,0.4))" }} />
+      <span
+        className="inline-flex items-center gap-2 text-orange-500 text-[11px] font-black tracking-[0.3em] uppercase px-4 py-2 rounded-full"
+        style={{ background: "rgba(255,138,0,0.07)", border: "1px solid rgba(255,138,0,0.15)" }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+        {text}
+      </span>
+      <div className="h-px w-12 rounded-full" style={{ background: "linear-gradient(90deg, rgba(255,138,0,0.4), transparent)" }} />
+    </div>
+  );
+}
+
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-[#2a2a2a] rounded-xl overflow-hidden">
+    <div className="rounded-2xl overflow-hidden" style={GLASS_CARD}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left bg-[#141414] hover:bg-[#1a1a1a] transition-colors"
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
       >
         <span className="text-white font-semibold pr-4 text-sm">{q}</span>
         <ChevronDown className={`w-5 h-5 text-[#FF6B00] flex-shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="px-5 pb-5 pt-3 bg-[#141414] text-gray-400 text-sm leading-relaxed border-t border-[#2a2a2a]">
+        <div className="px-5 pb-5 pt-3 text-gray-400 text-sm leading-relaxed border-t border-white/[0.05]">
           {a}
         </div>
       )}
@@ -118,71 +142,67 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-function StarRating({ score }: { score: number }) {
-  const full = Math.floor(score / 2);
-  return (
-    <div className="flex items-center gap-0.5">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={`w-4 h-4 ${i < full ? "text-[#FF6B00] fill-[#FF6B00]" : "text-gray-700"}`}
-        />
-      ))}
-    </div>
-  );
-}
-
 export default function BestIPTVClient() {
-  const overallScore = (SCORE_CRITERIA.reduce((s, c) => s + c.score, 0) / SCORE_CRITERIA.length).toFixed(1);
-
   return (
     <>
       {/* HERO */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0d0700] to-[#0A0A0A]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#FF6B00]/5 rounded-full blur-[160px] pointer-events-none" />
+      <section className="relative pt-32 pb-20 overflow-hidden bg-[#050505]">
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: "linear-gradient(rgba(255,122,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.025) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(255,122,0,0.08), transparent 70%)", filter: "blur(80px)" }} />
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF6B00]/10 border border-[#FF6B00]/20 text-[#FF6B00] text-xs font-bold uppercase tracking-widest mb-6">
-            Editorial Guide · Updated August 2026
-          </div>
-          <h1
-            className="font-black text-white uppercase leading-[0.92] tracking-tight mb-6"
-            style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2.2rem, 7vw, 4.5rem)" }}
-          >
-            BEST IPTV SERVICE{" "}
-            <span style={{ background: "linear-gradient(90deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              2026
-            </span>{" "}
-            — COMPLETE GUIDE
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
-            Everything you need to choose the right IPTV service in 2026 — what to look for, how to compare providers, which features actually matter, and why they matter for your specific use case.
-          </p>
+          <ScrollReveal>
+            <Eyebrow text="Editorial Guide · August 2026" />
+            <h1
+              className="font-black text-white uppercase leading-[0.92] tracking-tight mb-6 text-center"
+              style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(2.2rem, 7vw, 4.5rem)" }}
+            >
+              BEST IPTV SERVICE{" "}
+              <span style={{ background: "linear-gradient(90deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                2026
+              </span>{" "}
+              — COMPLETE GUIDE
+            </h1>
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl leading-relaxed mb-10 mx-auto text-center">
+              Everything you need to choose the right IPTV service in 2026 — what to look for, how to compare providers, which features actually matter, and why they matter for your specific use case.
+            </p>
+          </ScrollReveal>
 
-          {/* Quick Verdict */}
-          <div
-            className="p-6 rounded-2xl border border-[#FF6B00]/30 mb-8"
-            style={{ background: "linear-gradient(135deg,rgba(255,107,0,0.06),rgba(255,107,0,0.02))" }}
-          >
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <p className="text-5xl font-black text-white">{overallScore}</p>
-                  <p className="text-[#FF6B00] text-xs font-bold uppercase tracking-wider">Overall Score</p>
-                </div>
-                <div className="w-px h-12 bg-[#2a2a2a]" />
-                <div>
-                  <p className="text-[#FF6B00] font-bold text-xs uppercase tracking-widest mb-1">Our #1 Pick for 2026</p>
-                  <p className="text-white font-black text-2xl">STREAMB4</p>
-                  <StarRating score={Number(overallScore)} />
+          {/* Editorial pick card */}
+          <div className="rounded-[24px] p-8" style={{
+            background: "linear-gradient(145deg, rgba(255,107,0,0.06) 0%, rgba(5,5,5,0.98) 100%)",
+            border: "1px solid rgba(255,107,0,0.2)",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}>
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="flex-1">
+                <p className="text-[#FF6B00] font-bold text-xs uppercase tracking-[0.25em] mb-2">Editorial Pick — 2026</p>
+                <p className="text-white font-black text-3xl mb-3" style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}>STREAMB4</p>
+                <div className="flex flex-wrap gap-4">
+                  {[
+                    { label: "Channels", value: "50,000+" },
+                    { label: "VOD", value: "180,000+" },
+                    { label: "Uptime", value: "99.9%" },
+                    { label: "From", value: "$9/mo" },
+                  ].map((s) => (
+                    <div key={s.label}>
+                      <p className="text-gray-500 text-xs uppercase tracking-wider">{s.label}</p>
+                      <p className="text-white font-black text-lg">{s.value}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="md:ml-auto">
-                <Link href="/free-trial">
-                  <Button variant="primary" className="font-black uppercase tracking-wide px-6 py-3">
-                    Try Free 24 Hours
-                  </Button>
-                </Link>
+              <div className="flex-shrink-0">
+                <MagneticButton>
+                  <Link href="/free-trial">
+                    <span className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest text-white"
+                      style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", boxShadow: "0 0 40px rgba(255,122,0,0.35)" }}>
+                      Try Free 24 Hours
+                    </span>
+                  </Link>
+                </MagneticButton>
               </div>
             </div>
           </div>
@@ -201,14 +221,14 @@ export default function BestIPTVClient() {
               HOW WE EVALUATED
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               { title: "30-Day Live Testing", desc: "Each service was run live for 30 days across Firestick, Smart TV, and a laptop. We tracked buffering events, stream drops, and EPG accuracy." },
               { title: "Channel Count Verification", desc: "We manually verified channel counts by category — sports, entertainment, news, international — rather than relying on provider claims." },
               { title: "Live Sports Stress Test", desc: "We streamed peak-traffic events: Premier League kickoffs, NFL Sunday, and UFC PPV main cards. These are the moments services fail under load." },
               { title: "Support Response Time", desc: "We submitted support tickets and WhatsApp messages at different times of day to measure actual response times rather than claimed availability." },
             ].map((m) => (
-              <div key={m.title} className="p-5 rounded-xl bg-[#141414] border border-[#2a2a2a]">
+              <div key={m.title} className="p-5 rounded-2xl" style={GLASS_CARD}>
                 <h3 className="text-white font-bold mb-2 text-sm">{m.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{m.desc}</p>
               </div>
@@ -217,42 +237,28 @@ export default function BestIPTVClient() {
         </div>
       </AnimatedSection>
 
-      {/* SCORE BREAKDOWN */}
+      {/* FEATURE COVERAGE */}
       <AnimatedSection className="py-24 bg-[#0A0A0A]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-3">Criteria Breakdown</p>
+            <p className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest mb-3">What's Covered</p>
             <h2
               className="font-black text-white uppercase leading-[0.92] tracking-tight"
               style={{ fontFamily: "var(--font-anton), Anton, sans-serif", fontSize: "clamp(1.8rem, 4vw, 3rem)" }}
             >
-              STREAMB4 SCORES
+              STREAMB4 FEATURE COVERAGE
             </h2>
           </div>
-          <div className="space-y-3">
-            {SCORE_CRITERIA.map((c) => (
-              <div key={c.criterion} className="p-4 rounded-xl bg-[#141414] border border-[#2a2a2a] flex items-center gap-4">
-                <div className="flex-1">
-                  <p className="text-white font-semibold text-sm">{c.criterion}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">{c.detail}</p>
-                </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className="w-24 h-1.5 rounded-full bg-[#2a2a2a] overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${c.score * 10}%`, background: "linear-gradient(90deg,#ff7a00,#ffb300)" }}
-                    />
-                  </div>
-                  <span className="text-white font-black text-sm w-8 text-right">{c.score}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {FEATURES.map((f) => (
+              <div key={f.criterion} className="flex items-start gap-4 p-4 rounded-xl" style={GLASS_CARD}>
+                <Check className="w-4 h-4 text-[#FF6B00] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-white font-semibold text-sm">{f.criterion}</p>
+                  <p className="text-gray-500 text-xs mt-0.5">{f.detail}</p>
                 </div>
               </div>
             ))}
-          </div>
-          <div className="mt-6 p-5 rounded-xl border border-[#FF6B00]/30 flex items-center justify-between" style={{ background: "rgba(255,107,0,0.05)" }}>
-            <span className="text-white font-bold">Overall Score</span>
-            <span className="text-2xl font-black" style={{ background: "linear-gradient(90deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {overallScore} / 10
-            </span>
           </div>
         </div>
       </AnimatedSection>
@@ -269,18 +275,18 @@ export default function BestIPTVClient() {
               STREAMB4 vs TRADITIONAL TV
             </h2>
           </div>
-          <div className="rounded-2xl border border-[#2a2a2a] overflow-hidden">
-            <div className="grid grid-cols-3 bg-[#1a1a1a] border-b border-[#2a2a2a]">
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="grid grid-cols-3 border-b" style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.06)" }}>
               <div className="p-4 text-gray-500 text-xs uppercase tracking-wider font-bold">Feature</div>
-              <div className="p-4 text-center border-x border-[#2a2a2a]">
+              <div className="p-4 text-center" style={{ borderLeft: "1px solid rgba(255,255,255,0.06)", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
                 <span className="text-[#FF6B00] font-black text-sm uppercase tracking-wide">STREAMB4</span>
               </div>
               <div className="p-4 text-center text-gray-500 text-sm font-bold">Cable / Satellite</div>
             </div>
-            {COMPARE.map((row) => (
-              <div key={row.feature} className="grid grid-cols-3 border-b border-[#1a1a1a] last:border-0 hover:bg-[#141414] transition-colors">
+            {COMPARE.map((row, i) => (
+              <div key={row.feature} className="grid grid-cols-3 hover:bg-white/[0.015] transition-colors" style={{ borderBottom: i < COMPARE.length - 1 ? "1px solid rgba(255,255,255,0.04)" : undefined }}>
                 <div className="p-4 text-gray-400 text-sm">{row.feature}</div>
-                <div className="p-4 text-center border-x border-[#1a1a1a]">
+                <div className="p-4 text-center" style={{ borderLeft: "1px solid rgba(255,255,255,0.04)", borderRight: "1px solid rgba(255,255,255,0.04)" }}>
                   <span className="text-emerald-400 font-semibold text-sm">{row.streamb4}</span>
                 </div>
                 <div className="p-4 text-center text-gray-500 text-sm">{row.cable}</div>
@@ -310,15 +316,14 @@ export default function BestIPTVClient() {
               </p>
               <ul className="space-y-3">
                 {VERDICT_BULLETS.map((b) => (
-                  <li key={b} className="flex gap-3">
-                    <Check className="w-5 h-5 text-[#FF6B00] flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-300 text-sm">{b}</span>
+                  <li key={b} className="border-l-2 border-[#FF6B00]/40 pl-5 text-gray-300 text-sm leading-relaxed py-0.5">
+                    {b}
                   </li>
                 ))}
               </ul>
             </div>
             <div className="space-y-4">
-              <div className="p-6 rounded-2xl bg-[#141414] border border-[#FF6B00]/20">
+              <div className="p-6 rounded-2xl" style={{ ...GLASS_CARD, border: "1px solid rgba(255,107,0,0.2)" }}>
                 <p className="text-[#FF6B00] font-bold text-xs uppercase tracking-widest mb-4">What We Liked</p>
                 <ul className="space-y-2">
                   {["No blackouts on any sport tested", "Trial is genuinely unrestricted", "Support responded in 4 minutes average", "Stable through 6 simultaneous streams", "Catch-up works reliably for 7 days"].map((p) => (
@@ -328,7 +333,7 @@ export default function BestIPTVClient() {
                   ))}
                 </ul>
               </div>
-              <div className="p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a]">
+              <div className="p-6 rounded-2xl" style={GLASS_CARD}>
                 <p className="text-gray-500 font-bold text-xs uppercase tracking-widest mb-4">Minor Considerations</p>
                 <ul className="space-y-2">
                   {["WhatsApp-based ordering (not instant web checkout)", "Some regional sports feeds vary by time of year"].map((p) => (
@@ -338,11 +343,14 @@ export default function BestIPTVClient() {
                   ))}
                 </ul>
               </div>
-              <Link href="/free-trial">
-                <Button variant="primary" className="w-full font-black uppercase tracking-wide py-4">
-                  ⚡ Try Free — No Card Required
-                </Button>
-              </Link>
+              <MagneticButton>
+                <Link href="/free-trial" className="block">
+                  <span className="flex items-center justify-center gap-2 w-full py-4 px-6 rounded-xl font-black text-sm uppercase tracking-widest text-white"
+                    style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", boxShadow: "0 0 40px rgba(255,122,0,0.35)" }}>
+                    Try Free — No Card Required
+                  </span>
+                </Link>
+              </MagneticButton>
             </div>
           </div>
         </div>
@@ -362,44 +370,14 @@ export default function BestIPTVClient() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              {
-                icon: "🏈⚽🏀",
-                title: "Sports Fans",
-                desc: "You watch NFL, Premier League, Champions League, NBA, or UFC regularly. STREAMB4 covers all of these with no blackouts and no per-sport fees.",
-                href: "/sports",
-              },
-              {
-                icon: "🇺🇸🇬🇧🇨🇦",
-                title: "USA, UK & Canada Viewers",
-                desc: "Dedicated edge nodes in Chicago, New York, London, Toronto, and Montreal give low-latency streams for viewers in North America and the UK.",
-                href: "/channels",
-              },
-              {
-                icon: "📺",
-                title: "Cord-Cutters",
-                desc: "You're paying $80-200/month for cable and want to switch. STREAMB4 gives you more channels at 10% of the cost with no lock-in contract.",
-                href: "/pricing",
-              },
-              {
-                icon: "👨‍👩‍👧‍👦",
-                title: "Families",
-                desc: "Up to 6 simultaneous connections on one subscription. Different family members can watch different channels on different devices at the same time.",
-                href: "/pricing",
-              },
-              {
-                icon: "🌍",
-                title: "International Viewers",
-                desc: "Living abroad and want home-country channels? French, German, Arabic, Spanish, Italian, and 35+ other country packages are included.",
-                href: "/channels",
-              },
-              {
-                icon: "💼",
-                title: "Resellers",
-                desc: "Want to sell IPTV subscriptions under your own brand? STREAMB4's reseller program gives you wholesale pricing and a complete back-end.",
-                href: "/reseller",
-              },
+              { icon: "🏈⚽🏀", title: "Sports Fans", desc: "You watch NFL, Premier League, Champions League, NBA, or UFC regularly. STREAMB4 covers all of these with no blackouts and no per-sport fees.", href: "/sports" },
+              { icon: "🇺🇸🇬🇧🇨🇦", title: "USA, UK & Canada Viewers", desc: "Dedicated edge nodes in Chicago, New York, London, Toronto, and Montreal give low-latency streams for viewers in North America and the UK.", href: "/channels" },
+              { icon: "📺", title: "Cord-Cutters", desc: "You're paying $80-200/month for cable and want to switch. STREAMB4 gives you more channels at 10% of the cost with no lock-in contract.", href: "/pricing" },
+              { icon: "👨‍👩‍👧‍👦", title: "Families", desc: "Up to 6 simultaneous connections on one subscription. Different family members can watch different channels on different devices at the same time.", href: "/pricing" },
+              { icon: "🌍", title: "International Viewers", desc: "Living abroad and want home-country channels? French, German, Arabic, Spanish, Italian, and 35+ other country packages are included.", href: "/channels" },
+              { icon: "💼", title: "Resellers", desc: "Want to sell IPTV subscriptions under your own brand? STREAMB4's reseller program gives you wholesale pricing and a complete back-end.", href: "/reseller" },
             ].map((card) => (
-              <Link key={card.title} href={card.href} className="group p-6 rounded-2xl bg-[#141414] border border-[#2a2a2a] hover:border-[#FF6B00]/40 transition-all duration-300">
+              <Link key={card.title} href={card.href} className="group p-6 rounded-2xl transition-all duration-300 hover:border-[#FF6B00]/40" style={GLASS_CARD}>
                 <span className="text-3xl block mb-3">{card.icon}</span>
                 <h3 className="text-white font-bold mb-2 group-hover:text-[#FF6B00] transition-colors">{card.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{card.desc}</p>
@@ -426,7 +404,7 @@ export default function BestIPTVClient() {
           </div>
           <div className="space-y-4">
             {WHAT_TO_LOOK_FOR.map((item, i) => (
-              <div key={item.title} className="flex gap-5 p-5 rounded-xl bg-[#141414] border border-[#2a2a2a]">
+              <div key={item.title} className="flex gap-5 p-5 rounded-2xl" style={GLASS_CARD}>
                 <span
                   className="text-2xl font-black flex-shrink-0 w-8 leading-none mt-0.5"
                   style={{ fontFamily: "var(--font-anton), Anton, sans-serif", background: "linear-gradient(135deg,#ff7a00,#ffb300)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
@@ -465,7 +443,7 @@ export default function BestIPTVClient() {
                 The key technical components are a media server (where the stream originates), a CDN (which gets the stream to you efficiently), and a client app on your device (which displays the stream). The quality of each layer determines your experience.
               </p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {[
                 { term: "Live Channels", def: "Real-time broadcast streams — sports, news, entertainment — delivered as they happen. Same as traditional TV but over IP." },
                 { term: "VOD (Video on Demand)", def: "A library of films and series you can watch any time, similar to Netflix. Most IPTV services include a VOD catalogue alongside live channels." },
@@ -474,7 +452,7 @@ export default function BestIPTVClient() {
                 { term: "Anti-Freeze / Anti-Buffering", def: "Technology that automatically switches to a backup server when your primary stream becomes unstable. The key reliability differentiator between providers." },
                 { term: "M3U / Xtream Codes", def: "The two main playlist formats used by IPTV apps. Xtream Codes is more feature-rich and is used by STREAMB4 for EPG and catch-up support." },
               ].map((item) => (
-                <div key={item.term} className="p-4 rounded-xl bg-[#0A0A0A] border border-[#2a2a2a]">
+                <div key={item.term} className="p-4 rounded-xl" style={GLASS_CARD}>
                   <p className="text-[#FF6B00] font-bold text-xs uppercase tracking-wider mb-1">{item.term}</p>
                   <p className="text-gray-400 text-sm leading-relaxed">{item.def}</p>
                 </div>
@@ -514,33 +492,41 @@ export default function BestIPTVClient() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
             {[
-              { name: "Solo", connections: "1 screen", monthly: "$9", quarterly: "$34.99", best: "3 months" },
-              { name: "Family", connections: "3 screens", monthly: "$24.99", quarterly: "$74.99", best: "Most popular", highlight: true },
-              { name: "Ultimate", connections: "6 screens", monthly: "$45.99", quarterly: "$129.99", best: "Best value" },
+              { name: "Solo", connections: "1 screen", monthly: "$9", quarterly: "$34.99", note: "3 months", highlight: false },
+              { name: "Family", connections: "3 screens", monthly: "$24.99", quarterly: "$74.99", note: "Most popular", highlight: true },
+              { name: "Ultimate", connections: "6 screens", monthly: "$45.99", quarterly: "$129.99", note: "Best value", highlight: false },
             ].map((plan) => (
               <div
                 key={plan.name}
-                className={`p-6 rounded-2xl border ${plan.highlight ? "border-[#FF6B00] bg-[#1a1a1a]" : "border-[#2a2a2a] bg-[#141414]"}`}
+                className="p-6 rounded-2xl"
+                style={plan.highlight ? {
+                  background: "linear-gradient(145deg, rgba(255,107,0,0.08) 0%, rgba(5,5,5,0.97) 100%)",
+                  border: "1px solid rgba(255,107,0,0.3)",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+                } : GLASS_CARD}
               >
                 {plan.highlight && (
                   <span className="inline-block px-3 py-1 rounded-full bg-[#FF6B00] text-white text-xs font-black uppercase tracking-wide mb-3">
-                    {plan.best}
+                    {plan.note}
                   </span>
                 )}
                 <h3 className="text-white font-black text-xl mb-1">{plan.name}</h3>
                 <p className="text-gray-500 text-xs mb-3">{plan.connections}</p>
                 <p className="text-3xl font-black text-white">{plan.monthly}<span className="text-gray-500 text-sm font-normal">/mo</span></p>
                 <p className="text-gray-500 text-xs mt-1 mb-4">{plan.quarterly} for 3 months</p>
-                {!plan.highlight && <p className="text-[#FF6B00] text-xs font-semibold">{plan.best}</p>}
+                {!plan.highlight && <p className="text-[#FF6B00] text-xs font-semibold">{plan.note}</p>}
               </div>
             ))}
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/pricing">
-              <Button variant="primary" className="px-8 py-4 font-black text-base uppercase tracking-wide">
-                View All Plans & Pricing
-              </Button>
-            </Link>
+            <MagneticButton>
+              <Link href="/pricing">
+                <span className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest text-white"
+                  style={{ background: "linear-gradient(135deg, #ff7a00, #ffb300)", boxShadow: "0 0 40px rgba(255,122,0,0.35)" }}>
+                  View All Plans & Pricing
+                </span>
+              </Link>
+            </MagneticButton>
             <Link href="/free-trial">
               <Button variant="outline" className="px-8 py-4 font-bold text-base uppercase tracking-wide">
                 Try Free First →
