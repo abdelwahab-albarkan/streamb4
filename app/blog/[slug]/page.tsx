@@ -16,6 +16,7 @@ import { ContentBlock } from "@/components/blog/ContentBlocks";
 import { ArticlePricingStrip } from "@/components/blog/ArticlePricingStrip";
 import { extractToc } from "@/lib/tocUtils";
 import { toPublicMediaUrl, toPublicMediaUrlAbsolute, transformMediaUrlsInContent } from "@/lib/mediaUrl";
+import { notFound } from "next/navigation";
 import { getPostBySlug, getRelatedPosts, getAllSlugs } from "@/lib/data/blogHelpers";
 
 // All blog pages are fully static — pre-built at deploy time
@@ -36,7 +37,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = getPostBySlug(slug);
 
-  if (!post) return { robots: { index: false, follow: false } };
+  if (!post) {
+    return {
+      title: { absolute: "Article Not Found | STREAMB4" },
+      robots: { index: false, follow: false },
+    };
+  }
 
   const ogImg = toPublicMediaUrl(post.ogImage || post.featuredImage) || "/og-image.jpg";
   const postTitle = post.seoTitle || post.title;
@@ -78,30 +84,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   const post = getPostBySlug(slug);
 
   if (!post) {
-    return (
-      <div className="min-h-screen bg-[#050505] text-white flex flex-col">
-        <div className="flex-1 flex items-center justify-center pt-24">
-          <div className="max-w-2xl mx-auto px-8 text-center">
-            <div className="text-6xl mb-6">📄</div>
-            <h1
-              className="font-anton text-4xl text-white uppercase mb-4"
-              style={{ fontFamily: "var(--font-anton), Anton, sans-serif" }}
-            >
-              ARTICLE NOT FOUND
-            </h1>
-            <p className="text-gray-500 mb-8">This article doesn&apos;t exist or has been removed.</p>
-            <Link href="/blog">
-              <span
-                className="px-8 py-4 rounded-full font-black text-black text-sm uppercase cursor-pointer"
-                style={{ background: "linear-gradient(135deg,#ff7a00,#ffb300)" }}
-              >
-                ← Back to Blog
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   const relatedPosts = getRelatedPosts(post.category, post.id);

@@ -154,13 +154,13 @@ export function Footer() {
               </h5>
               <ul className="space-y-2">
                 {[
-                  { label: "IPTV United Kingdom", href: "/blog/iptv-uk" },
-                  { label: "IPTV United States",  href: "/blog/iptv-usa" },
-                  { label: "IPTV Dubai",          href: "/blog/iptv-dubai" },
-                  { label: "IPTV Canada",         href: "/blog/iptv-canada" },
-                  { label: "IPTV Australia",      href: "/blog/iptv-australia" },
-                  { label: "IPTV London",         href: "/blog/iptv-london" },
-                  { label: "IPTV Manchester",     href: "/blog/iptv-manchester" },
+                  { label: "IPTV United States",  href: "/usa" },
+                  { label: "IPTV United Kingdom", href: "/united-kingdom" },
+                  { label: "IPTV Canada",         href: "/canada" },
+                  { label: "IPTV Europe",         href: "/europe" },
+                  { label: "Global Channels",     href: "/channels" },
+                  { label: "24-Hour Free Trial",  href: "/free-trial" },
+                  { label: "All Pricing Plans",   href: "/pricing" },
                 ].map((l) => (
                   <li key={l.label}>
                     <Link href={l.href} className="text-gray-600 text-xs hover:text-orange-400 transition-colors duration-200 leading-relaxed">
@@ -184,13 +184,14 @@ export function Footer() {
               </h5>
               <ul className="space-y-2">
                 {[
-                  { label: "Android TV",                              href: "/install#android-tv" },
-                  { label: "iOS / Apple TV",                          href: "/install#apple-tv" },
-                  { label: "Smart TV (Tizen/WebOS)",                  href: "/install#smart-tv" },
-                  { label: "How to Install on Amazon Firestick",      href: "/install#firestick" },
-                  { label: "How to Watch on Nvidia Shield",           href: "/blog/nvidia-shield-iptv" },
-                  { label: "Install on Generic Android TV Box",       href: "/install#android-tv" },
-                  { label: "Watch on Windows PC/Laptop",              href: "/blog/iptv-windows-pc" },
+                  { label: "Amazon Firestick",    href: "/iptv/firestick" },
+                  { label: "Apple TV (tvOS)",     href: "/iptv/apple-tv" },
+                  { label: "Samsung Smart TV",    href: "/iptv/samsung-tv" },
+                  { label: "LG Smart TV (webOS)", href: "/iptv/lg-tv" },
+                  { label: "Android TV & Google", href: "/iptv/android-tv" },
+                  { label: "Nvidia Shield Pro",   href: "/iptv/nvidia-shield" },
+                  { label: "Windows PC / Laptop", href: "/iptv/windows-pc" },
+                  { label: "Mac & macOS",         href: "/iptv/mac" },
                 ].map((l) => (
                   <li key={l.label}>
                     <Link href={l.href} className="text-gray-600 text-xs hover:text-orange-400 transition-colors duration-200 leading-relaxed">
@@ -206,11 +207,11 @@ export function Footer() {
               </h5>
               <ul className="space-y-2">
                 {[
-                  { label: "TiviMate IPTV Player",  href: "/devices#tivimate" },
-                  { label: "IPTV Smarters Pro",      href: "/devices#smarters" },
-                  { label: "XCIPTV Player",          href: "/devices#xciptv" },
-                  { label: "Flix IPTV",              href: "/devices#flix" },
-                  { label: "Net IPTV",               href: "/devices#netiptv" },
+                  { label: "TiviMate IPTV Player",  href: "/iptv/android-tv" },
+                  { label: "IPTV Smarters Pro",      href: "/install" },
+                  { label: "IBO Player (Smart TV)",  href: "/iptv/samsung-tv" },
+                  { label: "XCIPTV Player",          href: "/install" },
+                  { label: "Apple TV Players",       href: "/iptv/apple-tv" },
                 ].map((l) => (
                   <li key={l.label}>
                     <Link href={l.href} className="text-gray-600 text-xs hover:text-orange-400 transition-colors duration-200 leading-relaxed">
@@ -224,8 +225,8 @@ export function Footer() {
                   </Link>
                 </li>
                 <li className="pt-0.5">
-                  <Link href="/blog/iptv-alternatives" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
-                    View IPTV Alternatives →
+                  <Link href="/best-iptv-service" className="text-orange-500 text-xs font-bold hover:text-orange-400 transition-colors duration-200">
+                    View IPTV Service Guide →
                   </Link>
                 </li>
               </ul>
@@ -239,16 +240,15 @@ export function Footer() {
               </h5>
               <ul className="space-y-2">
                 {[
-                  { label: "The Best IPTV Service Providers in 2026 (Ranked & Reviewed)",                       href: "/blog/best-iptv-service-providers-2026" },
-                  { label: "How to Watch FIFA World Cup 2026 Live Stream",                                       href: "/blog/fifa-world-cup-2026-live-stream" },
-                  { label: "What is IPTV? The Ultimate Guide for Beginners in 2026",                            href: "/blog/what-is-iptv-guide-2026" },
-                  { label: "Best Premium IPTV Service 2026: Stop Buffering, Start Streaming",                   href: "/blog/best-premium-iptv-2026" },
-                  { label: "Avis IPTV France : Quel est le Meilleur Fournisseur Stable ?",                      href: "/blog/meilleur-iptv-france-2026" },
-                  { label: "5 Simple Steps to Turn Your Apple TV 4K Into a Live Sports Machine (2026 Guide)",   href: "/blog/apple-tv-4k-live-sports-guide-2026" },
-                  { label: "How to Jailbreak Firestick in 2026? Use These 5 Safer Steps",                       href: "/blog/firestick-jailbreak-safer-steps-2026" },
-                  { label: "Affordable Streaming Options in Canada 2026: Save $1,000+/Year",                    href: "/blog/affordable-streaming-canada-2026" },
-                  { label: "Best IPTV Alternatives in Canada 2026: Legal Streaming Guide",                      href: "/blog/best-iptv-alternatives-canada-2026" },
-                  { label: "Best Devices for Streaming in Canada 2026: Ranked & Tested",                        href: "/blog/best-streaming-devices-canada-2026" },
+                  { label: "Guide complet pour débuter l'IPTV en 2026",                         href: "/blog/guide-iptv-france-debuter-2026" },
+                  { label: "Quelle application IPTV choisir sur Smart TV en 2026 ?",           href: "/blog/meilleure-application-iptv-smart-tv-2026" },
+                  { label: "The Live Sports Streaming Revolution in 2026",                     href: "/blog/live-sports-streaming-revolution" },
+                  { label: "BRIT Awards 2026: Live Streaming & Cord-Cutting",                  href: "/blog/brits-2026-how-to-watch-live-streaming" },
+                  { label: "Best IPTV Service 2026: Complete Comparison & Guide",              href: "/best-iptv-service" },
+                  { label: "Step-by-Step Firestick & Smart TV Installation",                   href: "/install" },
+                  { label: "Anti-Freeze Technology & Server Infrastructure",                   href: "/features" },
+                  { label: "Frequently Asked Questions & Troubleshooting",                     href: "/faq" },
+                  { label: "Supported Devices & Compatibility Directory",                      href: "/devices" },
                 ].map((l) => (
                   <li key={l.label}>
                     <Link href={l.href} className="text-gray-600 text-xs hover:text-orange-400 transition-colors duration-200 leading-relaxed line-clamp-2">

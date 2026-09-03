@@ -214,7 +214,7 @@ La plupart des téléviseurs modernes (Android TV, WebOS, Tizen) peuvent install
 - **Google Chromecast avec Google TV** : interface simple et efficace.
 - **Apple TV** : qualité de construction irréprochable pour les fans d'Apple.
 
-Pour comparer les options, consultez notre [guide des meilleurs boîtiers IPTV](/blog/best-devices-iptv-streaming-2026).
+Pour comparer les options, consultez notre [répertoire des appareils compatibles](/devices).
 
 ---
 
@@ -305,7 +305,7 @@ Le buffering est le phénomène qui fait que la lecture se met en pause, avec un
 3. **Prioriser le trafic** : certains routeurs permettent la fonction QoS (*Quality of Service*).
 4. **Choisir un serveur de secours** : si votre prestataire vous donne plusieurs URLs, testez-les.
 
-Pour aller plus loin, consultez notre guide complet sur la [résolution des problèmes de buffering IPTV](/blog/fix-iptv-buffering-issues-2026).
+Pour aller plus loin, découvrez notre technologie anti-coupure et notre infrastructure sur notre [page des fonctionnalités](/features).
 
 ---
 
@@ -349,7 +349,7 @@ Certaines applications trouvées hors des stores officiels peuvent contenir des 
 
 ### Oublier le VPN
 
-Si vous utilisez un service non officiel, votre FAI peut voir le trafic et potentiellement limiter votre débit (throttling). Un VPN peut chiffrer votre connexion et contourner ces limitations. Il peut aussi être utile pour accéder à votre compte Molotov depuis l'étranger. Pour en savoir plus, consultez notre [guide complet sur les VPN pour le streaming](/blog/vpn-streamb4-privacy-guide).
+Si vous utilisez un service non officiel, votre FAI peut voir le trafic et potentiellement limiter votre débit (throttling). Un VPN peut chiffrer votre connexion et contourner ces limitations. Il peut aussi être utile pour accéder à votre compte Molotov depuis l'étranger. Pour en savoir plus sur la compatibilité réseau et VPN, consultez notre [foire aux questions](/faq).
 
 ---
 
